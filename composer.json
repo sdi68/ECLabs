@@ -1,0 +1,10 @@
+{
+  "require-dev": {
+    "phing/phing": "2.*",
+    "pear/pear": "v1.10.13",
+    "pear/net_ftp": "dev-master"
+  },
+  "require": {
+    "phpunit/phpunit": "9.2.2"
+  }
+}

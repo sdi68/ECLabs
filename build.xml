@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ECLabs library" default="Build project production" basedir=".">
+    <tstamp>
+        <format property="build.date" pattern="%Y-%m-%d"/>
+    </tstamp>
+
+    <property name="ftp.host" value="dsanae.beget.tech"/>
+    <property name="ftp.port" value="21"/>
+    <property name="ftp.username" value="dsanae_sdi68"/>
+    <property name="ftp.password" value="ptncb*6F"/>
+    <property name="ftp.mode" value="binary"/>
+    <property name="ftp.common_dir" value="/econsultlab.ru/public_html/uploads/joomla/libraries/eclabs/"/>
+    <!--Каталог сборок, входящих в пакет-->
+    <property name="packages" value="packages"/>
+    <!--Версия пакета-->
+    <property name="pkg_version" value="1_0_0"/>
+    <!--Префикс файла манифеста по-умолчанию-->
+    <property name = "manifest_prefix" value = "update_" />
+    <!--Очищаем директорию на FTP перед копирование сборки и манифеста-->
+    <property name = "ftp.clearFirst" value = "false" />
+    <!-- Флаг что не пакет -->
+    <property name="is_package" value="0"/>
+
+    <target name ="Build project production" description="Сформировать продуктивную сборку пакета">
+        <!--Тип сборки пакета development|production-->
+        <property name = "build_type" value = "production" />
+        <!--Каталог с релизами-->
+        <property name="releases" value="releases"/>
+        <!--Папка сборки пакета текущей версии-->
+        <property name = "release_dir" value = "${releases}/${pkg_version}/" />
+        <!--Удаляем предыдущие сборки-->
+        <echo msg="Deleting old ${build_type} build."/>
+        <delete quiet="false">
+            <fileset dir="${releases}">
+                <include name="*.zip"/>
+            </fileset>
+        </delete>
+
+        <phingcall target="_build_source_package" >
+            <property name = "source" value = "eclabs" />
+            <property name = "prefix" value = "lib_" />
+            <property name = "version" value = "1_0_0" />
+            <property name = "source_dir" value = "src/current" />
+            <property name = "ftp_dir" value = "${ftp.common_dir}/" />
+            <property name = "manifest_dir" value = "${source_dir}/" />
+        </phingcall>
+
+        <!-- Загружаем инструкции -->
+        <phingcall target="_upload_instruction" >
+            <property name = "source_dir" value = "${releases}/${pkg_version}/doc/" />
+            <property name = "ftp_dir" value = "${ftp.common_dir}doc/" />
+        </phingcall>
+    </target>
+
+
+    <target name ="Build project development" description="Сформировать сборку пакета для разработки">
+        <!--Тип сборки пакета development|production-->
+        <property name = "build_type" value = "development" />
+        <!--Каталог с релизами-->
+        <property name="releases" value="dev"/>
+        <!--Папка сборки пакета текущей версии-->
+        <property name = "release_dir" value = "${releases}/" />
+
+        <!--Удаляем предыдущие сборки-->
+        <echo msg="Deleting old ${build_type} build."/>
+        <delete quiet="false">
+            <fileset dir="${releases}">
+                <include name="*.zip"/>
+            </fileset>
+        </delete>
+
+        <phingcall target="_build_source_package" >
+            <property name = "source" value = "eclabs" />
+            <property name = "prefix" value = "lib_" />
+            <property name = "version" value = "1_0_0" />
+            <property name = "source_dir" value = "src/current" />
+            <property name = "ftp_dir" value = "${ftp.common_dir}/" />
+            <property name = "manifest_dir" value = "${source_dir}/" />
+        </phingcall>
+    </target>
+    <!-- Сборка и отправка по FTP -->
+    <target name ="_build_source_package" description="Сформировать архив и переместить его в папку пакетов">
+
+        <echo msg="Making the ${build_type} ${source} package."/>
+
+        <if>
+            <equals arg1="${is_package}" arg2="1" />
+            <then>
+                <!-- Собирается пакет, поэтому надо включить все компоненты из releases -->
+                <echo msg="Add ${source} ${source} includes zip."/>
+                <zip destfile="${release_dir}${prefix}${source}.zip">
+                    <fileset dir="${source_dir}">
+                        <include name="**"/>
+                        <exclude name="${manifest_prefix}${source}.xml"/>
+                    </fileset>
+                    <fileset dir="${release_dir}">
+                        <include name="packages/**"/>
+                        <exclude name="${manifest_prefix}${source}.xml"/>
+                    </fileset>
+                </zip>
+            </then>
+            <else>
+                <!-- Собирается компонент пакета -->
+                <zip destfile="${release_dir}${prefix}${source}.zip">
+                    <fileset dir="${source_dir}">
+                        <include name="**"/>
+                        <exclude name="${manifest_prefix}${source}.xml"/>
+                    </fileset>
+                </zip>
+            </else>
+        </if>
+
+        <if>
+            <equals arg1="${build_type}" arg2="development" />
+            <then>
+                <echo msg="Skip FTP deploy ${source} package."/>
+            </then>
+        <else>
+        <echo msg="FTP deploy ${source} package."/>
+        <ftpdeploy
+                host="${ftp.host}"
+                port="${ftp.port}"
+                username="${ftp.username}"
+                password="${ftp.password}"
+                dir="${ftp_dir}"
+                ssl="false"
+                passive="false"
+                level='error'
+                clearFirst="${ftp.clearFirst}"
+                dirmode="inherit"
+                mode="${ftp.mode}">
+            <fileset dir="${release_dir}">
+                <include name="${prefix}${source}.zip"/>
+            </fileset>
+            <fileset dir="${manifest_dir}">
+                <include name="${manifest_prefix}${source}.xml"/>
+            </fileset>
+        </ftpdeploy>
+        </else>
+        </if>
+    </target>
+
+    <target name ="_upload_instruction" description="Отправить по FTP инструкцию">
+        <if>
+            <equals arg1="${build_type}" arg2="development" />
+            <then>
+                <echo msg="Skip FTP deploy instruction files."/>
+            </then>
+            <else>
+                <echo msg="FTP deploy instruction files."/>
+                <property name = "doc_dir" value = "${releases}/${pkg_version}/doc/" />
+                <ftpdeploy
+                        host="${ftp.host}"
+                        port="${ftp.port}"
+                        username="${ftp.username}"
+                        password="${ftp.password}"
+                        dir="${ftp_dir}"
+                        ssl="false"
+                        passive="false"
+                        level='error'
+                        clearFirst="${ftp.clearFirst}"
+                        dirmode="inherit"
+                        mode="${ftp.mode}">
+                    <fileset dir="${doc_dir}">
+                        <include name="*.pdf"/>
+                    </fileset>
+                </ftpdeploy>
+            </else>
+        </if>
+    </target>
+
+</project>
