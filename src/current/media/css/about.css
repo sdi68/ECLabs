@@ -1,0 +1,54 @@
+/*
+ * @package         Econsult Labs Library
+ * @version         1.0.0
+ *
+ * @author          ECL <info@econsultlab.ru>
+ * @link            https://econsultlab.ru
+ * @copyright       Copyright © 2023 ECL All Rights Reserved
+ * @license         http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
+ */
+
+:root {
+--about-text-light: var(--template-text-light,#fff);
+--about-bg-dark: var(--template-bg-dark,rgb(31, 48, 71));
+--about-bg-light: var(--template-bg-light,#f0f4fb);
+}
+
+.sdi-about-controls {
+    display: inline-block;
+}
+.sdi-about-controls .controls {
+    margin-left: 0 !important;
+}
+.sdi-about-controls .control-label{
+    display: none;
+}
+.about-wrap {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+    align-items: center;
+    background-color: var(--about-bg-dark);
+    color: var(--about-text-light);
+    padding: 15px;
+}
+
+.about-wrap > .about-img {
+    flex-shrink: 0;
+}
+
+.about-wrap .about-links {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.about-wrap .about-links > a {
+    color: var(--about-text-light);
+    padding: 0 5px
+}
+
+.about-wrap .about-links > a:not(:last-of-type) {
+    border-right: 1px solid var(--about-bg-light);
+}
