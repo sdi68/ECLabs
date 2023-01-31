@@ -14,6 +14,7 @@ namespace ECLabs\Library;
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
 use vmCustomPlugin;
 
 require_once JPATH_LIBRARIES . '/eclabs/classes/autoload.php';
@@ -120,6 +121,68 @@ abstract class ECLvmCustomPlugin extends vmCustomPlugin
 		int    &$custom_parent_id,
 		string &$value_parent_id_field
 	): bool;
+
+
+	/**
+	 * Update custom plugin data (customfield_params) after save product.
+	 * Fix escape unicode chars.
+	 *
+	 * @param $data
+	 * @param $product_data
+	 *
+	 * @return bool
+	 *
+	 * @since 1.0.0
+	 */
+	public final function plgVmAfterStoreProduct(&$data, &$product_data): bool
+	{
+		if (isset($data['customfield_params']) && is_array($data['customfield_params']))
+		{
+			foreach ($data['customfield_params'] as $k => $v)
+			{
+				$str = "";
+				if (isset($data['field']) && is_array($data['field']))
+				{
+					if (isset($data['field'][$k]))
+					{
+						$fld_data = $data['field'][$k];
+						if ($this->_itsMe($fld_data['custom_element'], $fld_data['virtuemart_custom_id']))
+						{
+							if (is_array($this->_varsToPushParam))
+							{
+								foreach ($this->_varsToPushParam as $param => $p_v)
+								{
+									if (isset($v[$param]))
+									{
+										$str .= ECLTools::buildParamString($param, $v[$param]);
+									}
+								}
+
+								$dbo   = Factory::getDbo();
+								$query = $dbo->getQuery(true);
+								$query->update($dbo->quoteName('#__virtuemart_product_customfields'))
+									->set($dbo->quoteName('customfield_params') . ' = ' . $dbo->quote($str))
+									->where($dbo->quoteName('virtuemart_customfield_id') . ' = ' . $dbo->quote($fld_data['virtuemart_customfield_id']));
+								$dbo->setQuery($query);
+								try
+								{
+									$dbo->execute();
+								}
+								catch (\Exception $e)
+								{
+									ECLLanguage::loadLibLanguage();
+									vmError(Text::sprintf('ECLABS_LIBRARY_VMCUSTOMPLUGIN_ERROR_SAVING_DATA', $fld_data['custom_element'], $e->getMessage()));
+								}
+							}
+						}
+					}
+				}
+
+			}
+		}
+
+		return true;
+	}
 
 	/**
 	 * Check what plugin is called
