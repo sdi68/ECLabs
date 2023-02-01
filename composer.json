@@ -3,7 +3,6 @@
   "description": "Библиотека расширений от ECL для Joomla",
   "type": "library",
   "license": "MIT",
-  "version": "1.0.0",
   "homepage": "https://econsultlab.ru",
   "keywords": ["Joomla"],
   "authors": [
@@ -12,13 +11,13 @@
       "email": "info@econsultlab.ru"
     }
   ],
-  "minimum-stability": "dev",
   "require-dev": {
     "phing/phing": "2.*",
     "pear/pear": "v1.10.13",
-    "pear/net_ftp": "dev-master"
+    "pear/net_ftp": "dev-master",
+    "phpunit/phpunit": "9.2.2"
   },
   "require": {
-    "phpunit/phpunit": "9.2.2"
+    "php": ">=7.4.2"
   }
 }
