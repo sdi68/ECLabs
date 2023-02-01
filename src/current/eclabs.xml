@@ -31,7 +31,7 @@
 
 	<updateservers>
 		<server type="extension" priority="1" name="Econsult Labs Library">
-			https://econsultlab.ru/public_html/uploads/joomla/libraries/eclabs/update_eclabs.xml
+			https://econsultlab.ru/uploads/joomla/libraries/eclabs/update_eclabs.xml
 		</server>
 	</updateservers>
 

@@ -29,7 +29,7 @@
         </tags>
         <maintainer>ECL</maintainer>
         <maintainerurl>https://econsultlab.ru</maintainerurl>
-        <targetplatform name="joomla" version="3.[6789]|10 4"/>
+        <targetplatform name="joomla" version="3.[6789]|10 | 4"/>
         <php_minimum>7.4</php_minimum>
     </update>
 </updates>
