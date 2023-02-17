@@ -72,7 +72,7 @@
     </config>
     <!-- Update servers -->
     <updateservers>
-        <server type="extension" priority="1" name="eclabs">
+        <server type="extension" priority="1" name="eclabs system plugin">
             https://econsultlab.ru/uploads/joomla/packages/eclabs/plugins/system/eclabs/update_eclabs.xml
         </server>
     </updateservers>
