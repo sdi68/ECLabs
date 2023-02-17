@@ -33,6 +33,7 @@
     <files>
         <filename plugin="eclabs">eclabs.php</filename>
         <folder>sql</folder>
+        <folder>eclabs</folder>
     </files>
     <languages>
         <language tag="ru-RU">language/ru-RU/ru-RU.plg_system_eclabs.ini</language>
