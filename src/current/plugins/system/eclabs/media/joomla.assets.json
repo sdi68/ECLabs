@@ -1,0 +1,14 @@
+{
+  "$schema": "https://developer.joomla.org/schemas/json-schema/web_assets.json",
+  "name": "plg_system_eclabs",
+  "version": "1.0.0",
+  "description": "Econsult Labs system Plugin - used by Econsult Labs extensions",
+  "license": "GNU/GPL",
+  "assets": [
+    {
+      "name": "plg_system_eclabs.version",
+      "type": "script",
+      "uri": "plg_system_eclabs/version.js"
+    }
+  ]
+}
