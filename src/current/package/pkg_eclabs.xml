@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<extension version="3.9" type="package" method="upgrade">
+	<name>PKG_ECLABS</name>
+	<packagename>swjprojects</packagename>
+	<author>Econsult labs</author>
+	<creationDate>2023-02</creationDate>
+	<copyright>(C) 2023 ECL. All rights reserved.</copyright>
+	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
+	<authorEmail>info@econsultlab.ru</authorEmail>
+	<authorUrl>https://econsultlab.ru</authorUrl>
+	<version>1.0.0</version>
+	<description>PKG_ECLABS_DESCRIPTION</description>
+	<scriptfile>script.php</scriptfile>
+	<languages folder="language">
+		<language tag="en-GB">en-GB/en-GB.pkg_eclabs.sys.ini</language>
+		<language tag="ru-RU">ru-RU/ru-RU.pkg_eclabs.sys.ini</language>
+	</languages>
+	<files folder="packages">
+		<file type="library" id="eclabs" >lib_eclabs.zip</file>
+		<file type="plugin" id="eclabs" group = "system">plg_eclabs.zip</file>
+	</files>
+	<updateservers>
+		<server type="extension" priority="1" name="ECLabs package">
+			https://econsultlab.ru/uploads/joomla/packages/eclabs/update_eclabs.xml
+		</server>
+	</updateservers>
+</extension>

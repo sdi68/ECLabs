@@ -1,6 +1,6 @@
 {
   "name": "sdi68/eclabs",
-  "description": "Библиотека расширений от ECL для Joomla",
+  "description": "Библиотека для расширений Joomla от ECL",
   "type": "library",
   "license": "MIT",
   "homepage": "https://econsultlab.ru",

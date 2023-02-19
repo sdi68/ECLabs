@@ -9,20 +9,23 @@
  */
 
 :root {
---about-text-light: var(--template-text-light,#fff);
---about-bg-dark: var(--template-bg-dark,rgb(31, 48, 71));
---about-bg-light: var(--template-bg-light,#f0f4fb);
+    --about-text-light: var(--template-text-light, #fff);
+    --about-bg-dark: var(--template-bg-dark, rgb(31, 48, 71));
+    --about-bg-light: var(--template-bg-light, #f0f4fb);
 }
 
 .sdi-about-controls {
     display: inline-block;
 }
+
 .sdi-about-controls .controls {
     margin-left: 0 !important;
 }
-.sdi-about-controls .control-label{
+
+.sdi-about-controls .control-label {
     display: none;
 }
+
 .about-wrap {
     display: flex;
     flex-flow: row nowrap;
@@ -51,4 +54,21 @@
 
 .about-wrap .about-links > a:not(:last-of-type) {
     border-right: 1px solid var(--about-bg-light);
+}
+
+.about-wrap span[class ^= "alert-"] {
+    padding: 0.2rem;
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+}
+
+.about-wrap .ecl-version-container {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.about-wrap .ecl-version-container .btn-refresh {
+    padding: 0.25rem 0.5rem;
 }

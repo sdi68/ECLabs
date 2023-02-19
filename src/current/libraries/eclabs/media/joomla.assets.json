@@ -1,0 +1,42 @@
+{
+  "$schema": "https://developer.joomla.org/schemas/json-schema/web_assets.json",
+  "name": "eclabs",
+  "version": "1.0.0",
+  "description": "Econsult Labs Library - used by Econsult Labs extensions",
+  "license": "GNU/GPL",
+  "assets": [
+    {
+      "name": "eclabs.about",
+      "type": "style",
+      "uri": "eclabs/about.css"
+    },
+    {
+      "name": "eclabs.ecl",
+      "type": "script",
+      "uri": "eclabs/ecl.js"
+    },
+    {
+      "name": "eclabs.request",
+      "type": "script",
+      "uri": "eclabs/ecl_request.js",
+      "dependencies": [
+        "eclabs.ecl"
+      ]
+    },
+    {
+      "name": "eclabs.request",
+      "type": "style",
+      "uri": "eclabs/ecl_request.css"
+    },
+    {
+      "name": "eclabs.modal",
+      "type": "script",
+      "uri": "eclabs/ecl_modal.js"
+    },
+    {
+      "name": "eclabs.modal",
+      "type": "style",
+      "uri": "eclabs/ecl_modal.css"
+    }
+  ]
+}

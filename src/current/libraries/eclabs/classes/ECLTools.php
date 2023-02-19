@@ -11,6 +11,9 @@
 
 namespace ECLabs\Library;
 
+use JConfig;
+use Joomla\CMS\Factory;
+
 defined('_JEXEC') or die;
 
 /**
@@ -43,5 +46,37 @@ class ECLTools
 
 		return $str;
 	}
+
+    /**
+     * Сохранить лог в файл.
+     *
+     * @param string $name Имя файла
+     *
+     * @param array $data Данные для сохранения в лог
+     *
+     * @param bool $enabled Разрешить логирование
+     *
+     * @since   1.0.0
+     *
+     */
+    public static function Storelog(string $name, array $data, bool $enabled = false): void
+    {
+        if (!$enabled)
+            return;
+
+        // Add timestamp to the entry
+        $entry = Factory::getDate()->format('[Y-m-d H:i:s]') . ' - ' . json_encode($data) . "\n";
+
+        // Compute the log file's path.
+        static $path;
+        if (!$path) {
+            $config = new JConfig();
+            $path = $config->log_path . '/' . $name . '.php';
+            if (!file_exists($path)) {
+                file_put_contents($path, "<?php die('Forbidden.'); ?>\n\n");
+            }
+        }
+        file_put_contents($path, $entry, FILE_APPEND);
+    }
 
 }

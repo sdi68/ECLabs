@@ -9,7 +9,7 @@
     <property name="ftp.username" value="dsanae_sdi68"/>
     <property name="ftp.password" value="ptncb*6F"/>
     <property name="ftp.mode" value="binary"/>
-    <property name="ftp.common_dir" value="/econsultlab.ru/public_html/uploads/joomla/libraries/eclabs/"/>
+    <property name="ftp.common_dir" value="/econsultlab.ru/public_html/uploads/joomla/packages/eclabs/"/>
     <!--Каталог сборок, входящих в пакет-->
     <property name="packages" value="packages"/>
     <!--Версия пакета-->
@@ -30,8 +30,13 @@
         <property name = "release_dir" value = "${releases}/${pkg_version}/" />
         <!--Удаляем предыдущие сборки-->
         <echo msg="Deleting old ${build_type} build."/>
+        <!--Удаляем предыдущие сборки-->
+        <echo msg="Deleting old ${build_type} build."/>
         <delete quiet="false">
             <fileset dir="${releases}">
+                <include name="*.zip"/>
+            </fileset>
+            <fileset dir="${release_dir}">
                 <include name="*.zip"/>
             </fileset>
         </delete>
@@ -40,9 +45,33 @@
             <property name = "source" value = "eclabs" />
             <property name = "prefix" value = "lib_" />
             <property name = "version" value = "1_0_0" />
-            <property name = "source_dir" value = "src/current" />
-            <property name = "ftp_dir" value = "${ftp.common_dir}/" />
+            <property name = "source_dir" value = "src/current/libraries/${source}" />
+            <property name = "ftp_dir" value = "${ftp.common_dir}/libraries/${source}/" />
             <property name = "manifest_dir" value = "${source_dir}/" />
+        </phingcall>
+
+        <phingcall target="_build_source_package" >
+            <property name = "source" value = "eclabs" />
+            <property name = "prefix" value = "plg_" />
+            <property name = "version" value = "" />
+            <property name = "source_dir" value = "src/current/plugins/system/${source}" />
+            <property name = "ftp_dir" value = "${ftp.common_dir}plugins/system/${source}/" />
+            <property name = "manifest_dir" value = "${source_dir}/" />
+        </phingcall>
+
+        <!-- Собираем пакет -->
+        <phingcall target="_build_source_package" >
+            <!-- Флаг, что собирается пакет -->
+            <property name = "is_package" value = "true" />
+            <property name = "source" value = "eclabs" />
+            <property name = "prefix" value = "pkg_" />
+            <property name = "version" value = "" />
+            <!-- <property name = "source_dir" value = "${releases}" /> -->
+            <property name = "source_dir" value = "src/current/package/" />
+            <property name = "ftp_dir" value = "${ftp.common_dir}" />
+            <property name = "manifest_dir" value = "${source_dir}/" />
+            <property name = "release_dir" value = "${releases}/" />
+            <property name = "ftp.clearFirst" value = "false" />
         </phingcall>
 
         <!-- Загружаем инструкции -->
@@ -59,12 +88,15 @@
         <!--Каталог с релизами-->
         <property name="releases" value="dev"/>
         <!--Папка сборки пакета текущей версии-->
-        <property name = "release_dir" value = "${releases}/" />
+        <property name = "release_dir" value = "${releases}/${packages}/" />
 
         <!--Удаляем предыдущие сборки-->
         <echo msg="Deleting old ${build_type} build."/>
         <delete quiet="false">
             <fileset dir="${releases}">
+                <include name="*.zip"/>
+            </fileset>
+            <fileset dir="${release_dir}">
                 <include name="*.zip"/>
             </fileset>
         </delete>
@@ -73,10 +105,35 @@
             <property name = "source" value = "eclabs" />
             <property name = "prefix" value = "lib_" />
             <property name = "version" value = "1_0_0" />
-            <property name = "source_dir" value = "src/current" />
+            <property name = "source_dir" value = "src/current/libraries/${source}" />
             <property name = "ftp_dir" value = "${ftp.common_dir}/" />
             <property name = "manifest_dir" value = "${source_dir}/" />
         </phingcall>
+
+        <phingcall target="_build_source_package" >
+            <property name = "source" value = "eclabs" />
+            <property name = "prefix" value = "plg_" />
+            <property name = "version" value = "" />
+            <property name = "source_dir" value = "src/current/plugins/system/${source}" />
+            <property name = "ftp_dir" value = "${ftp.common_dir}plugins/system/${source}/" />
+            <property name = "manifest_dir" value = "${source_dir}/" />
+        </phingcall>
+
+        <!-- Собираем пакет -->
+        <phingcall target="_build_source_package" >
+            <!-- Флаг, что собирается пакет -->
+            <property name = "is_package" value = "true" />
+            <property name = "source" value = "eclabs" />
+            <property name = "prefix" value = "pkg_" />
+            <property name = "version" value = "" />
+            <!-- <property name = "source_dir" value = "${releases}" /> -->
+            <property name = "source_dir" value = "src/current/package/" />
+            <property name = "ftp_dir" value = "${ftp.common_dir}" />
+            <property name = "manifest_dir" value = "${source_dir}/" />
+            <property name = "release_dir" value = "${releases}/" />
+            <property name = "ftp.clearFirst" value = "false" />
+        </phingcall>
+
     </target>
     <!-- Сборка и отправка по FTP -->
     <target name ="_build_source_package" description="Сформировать архив и переместить его в папку пакетов">

@@ -33,10 +33,10 @@ class ECLVersion
 		$version = new Version();
 		switch (true)
 		{
-			case $version->isCompatible('3.0'):
-				return '3';
 			case $version->isCompatible('4.0'):
 				return '4';
+			case $version->isCompatible('3.0'):
+				return '3';
 			default:
 				return '';
 		}

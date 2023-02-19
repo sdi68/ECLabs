@@ -16,7 +16,7 @@ use ECLabs\Library\ECLVersion;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Factory as JFactory;
 use Joomla\CMS\Form\Form;
-use Joomla\CMS\Language\Text;
+use Joomla\CMS\Plugin\PluginHelper;
 
 require_once JPATH_LIBRARIES . '/eclabs/classes/autoload.php';
 
@@ -55,11 +55,25 @@ class JFormFieldECL_About extends JFormField
 	protected $this_xml_path = '';
 
 	/**
+	 * Layout по-умолчанию
+	 * @var string
+	 * @since 1.0.0
+	 */
+	protected $layout = 'default';
+
+	/**
+	 * Extension not used update server swjprojects
+	 * @var string
+	 * @since 1.0.0
+	 */
+	protected $free_update = true;
+
+	/**
 	 * Method to instantiate the form field object.
 	 *
 	 * @param   Form  $form  The form to attach to the form field object.
 	 *
-	 * @since   1.7.0
+	 * @since   1.0.0
 	 */
 	public function __construct($form = null)
 	{
@@ -74,13 +88,17 @@ class JFormFieldECL_About extends JFormField
 	 *
 	 * @return  mixed  The property value or null.
 	 *
-	 * @since   3.2
+	 * @since   1.0.0
 	 */
 	public function __get($name)
 	{
 		if ($name === 'ext_page' || $name === 'ext_doc' || $name === 'this_xml_path')
 		{
 			return $this->$name;
+		}
+		else if ($name === 'free_update')
+		{
+			return (bool) $this->$name;
 		}
 
 		return parent::__get($name);
@@ -94,7 +112,7 @@ class JFormFieldECL_About extends JFormField
 	 *
 	 * @return  void
 	 *
-	 * @since   3.2
+	 * @since   1.0.0
 	 */
 	public function __set($name, $value)
 	{
@@ -105,7 +123,9 @@ class JFormFieldECL_About extends JFormField
 			case 'this_xml_path':
 				$this->$name = (string) $value;
 				break;
-
+			case 'free_update':
+				$this->$name = (bool) $value;
+				break;
 			default:
 				parent::__set($name, $value);
 		}
@@ -124,7 +144,7 @@ class JFormFieldECL_About extends JFormField
 	 * @return  boolean  True on success.
 	 *
 	 * @see     FormField::setup()
-	 * @since   3.2
+	 * @since   1.0.0
 	 */
 	public function setup(\SimpleXMLElement $element, $value, $group = null)
 	{
@@ -135,6 +155,7 @@ class JFormFieldECL_About extends JFormField
 			$this->ext_page      = (string) $this->element['ext_page'];
 			$this->ext_doc       = (string) $this->element['ext_doc'];
 			$this->this_xml_path = (string) $this->element['this_xml_path'];
+			$this->free_update   = !((string) $this->element['free_update'] === 'false');
 		}
 
 		return $return;
@@ -150,6 +171,8 @@ class JFormFieldECL_About extends JFormField
 	 */
 	protected function getInput()
 	{
+		$info = simplexml_load_file(JPATH_SITE . $this->this_xml_path);
+
 		// Подключаем скрипты админки
 		switch (ECLVersion::getJoomlaVersion())
 		{
@@ -159,6 +182,7 @@ class JFormFieldECL_About extends JFormField
 				$wr = $wa->getRegistry();
 				$wr->addRegistryFile('/media/eclabs/joomla.assets.json');
 				$wa->useStyle('eclabs.about');
+				break;
 			default:
 				$doc = JFactory::getDocument();
 				$doc->addStyleSheet('/media/eclabs/css/about.css');
@@ -169,29 +193,7 @@ class JFormFieldECL_About extends JFormField
 			$this->ext_image = '/media/eclabs/images/logo.png';
 		}
 
-		$info = simplexml_load_file(JPATH_SITE . $this->this_xml_path);
-
-		$html = "<div class = \"about-wrap\">";
-		$html .= "<div class = \"about-img\">";
-		$html .= ('<img src = "' . $this->ext_image . '"/>');
-		$html .= "</div>";
-		$html .= "<div class = \"about-intro\">";
-		$html .= "<div class = \"about-title\">";
-		$html .= (JText::_($info->name) . '.<span> ' . Text::_("JVERSION") . ' ' . $info->version . '</span>');
-		$html .= "</div>";
-		$html .= "<div class = \"about-links\">";
-		if (!empty($this->ext_page))
-			$html .= ('<a href ="' . $this->ext_page . '">' . Text::_('ECLABS_ABOUT_FIELD_PAGE') . '</a>');
-		if (!empty($this->ext_doc))
-			$html .= ('<a href ="' . $this->ext_doc . '">' . JText::_('ECLABS_ABOUT_FIELD_DOC') . '</a>');
-		$html .= "</div>";
-		$html .= "<div class = \"about-copyright\">";
-		$html .= $info->copyright;
-		$html .= "</div>";
-		$html .= "</div>";
-		$html .= "</div>";
-
-		return $html;
+		return parent::getInput();
 	}
 
 	/**
@@ -214,7 +216,36 @@ class JFormFieldECL_About extends JFormField
 	 */
 	protected function getLayoutData()
 	{
-		$options = array('options' => array('class' => 'sdi-about-controls'));
+		$info = simplexml_load_file(JPATH_SITE . $this->this_xml_path);
+		ECLLanguage::loadLibLanguage();
+
+		$user_data               = array();
+		$version                 = array();
+		$version['current']      = (string) $info->version;
+		$version['new']          = (string) $info->version;
+		$version['error']        = "";
+		$version['container_id'] = "version-" . $info->name;
+		if ($this->free_update)
+		{
+			$version['current'] = (string) $info->version;
+			$version['new']     = "";
+			$version['error']   = "";
+		}
+		else
+		{
+			PluginHelper::importPlugin('system');
+			$version['html'] = "";
+			$user_data       = array('ECL' => array('user' => '', 'password' => ''));
+			$update_info     = array();
+			$results         = Factory::getApplication()->triggerEvent('onRenderVersionBlock', array('about', (array) $info, $info->name, $user_data, &$update_info, &$version['html']));
+		}
+
+		$options = array(
+			'options'   => array('class' => 'sdi-about-controls'),
+			'info'      => $info,
+			'version'   => $version,
+			'user_data' => $user_data
+		);
 
 		return array_merge(parent::getLayoutData(), $options);
 	}
@@ -235,4 +266,14 @@ class JFormFieldECL_About extends JFormField
 		return parent::renderField($options);
 	}
 
+	/**
+	 * Set layout path
+	 * @return array
+	 *
+	 * @since 1.0.0
+	 */
+	public function getLayoutPaths()
+	{
+		return array_merge([JPATH_LIBRARIES . '/eclabs/layouts/about/'], parent::getLayoutPaths());
+	}
 }
