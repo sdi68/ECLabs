@@ -2,20 +2,20 @@
 /**
  * @package         Econsult Labs Library
  * @subpackage   Econsult Labs system plugin
- * @version         1.0.0
- *
- * @author          ECL <info@econsultlab.ru>
- * @link            https://econsultlab.ru
- * @copyright       Copyright © 2023 ECL All Rights Reserved
- * @license         http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
+ * @version           1.0.0
+ * @author            ECL <info@econsultlab.ru>
+ * @link                 https://econsultlab.ru
+ * @copyright      Copyright © 2023 ECL All Rights Reserved
+ * @license           http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
+use ECLabs\Library\ECLLanguage;
 use Joomla\CMS\Language\Text;
 
 /**
  * @var stdClass $vars
  */
-
+ECLLanguage::loadLibLanguage();
 ?>
 <span><?php echo Text::_("JVERSION") . '&nbsp;' . $vars->version['current']; ?></span>&nbsp;
 <span class="<?php echo $vars->class; ?>">

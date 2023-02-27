@@ -13,11 +13,17 @@
 defined('_JEXEC') or die;
 
 use ECLabs\Library\ECLExtension;
+use ECLabs\Library\ECLLanguage;
 use ECLabs\Library\ECLPlugin;
 use ECLabs\Library\ECLUpdateInfoStatus;
 use ECLabs\Library\ECLVersion;
+use Joomla\CMS\Document\HtmlDocument;
+use Joomla\CMS\Event\Table\BeforeStoreEvent;
 use Joomla\CMS\Factory;
+use Joomla\CMS\Installer\Installer;
 use Joomla\CMS\Language\Text;
+use Joomla\Component\Installer\Administrator\Model\InstallModel;
+use Joomla\Database\ParameterType;
 
 require_once JPATH_LIBRARIES . '/eclabs/classes/autoload.php';
 
@@ -32,8 +38,28 @@ $lang->load('plg_system_eclabs', JPATH_ADMINISTRATOR);
 class PlgSystemECLabs extends ECLPlugin
 {
 	/**
+	 * @var Installer
+	 * @since 1.0.0
+	 */
+	private $_installer;
+	/**
+	 * Идентификатор устанавливаемого/обновляемого расширения
+	 * @var int
+	 * @since 1.0.0
+	 */
+	private int $_eid;
+
+	/**
+	 * Массив информации по отложенным изменениям расширений ECL
+	 * @var array
+	 * @since 1.0.0
+	 */
+	private $_updateSites = array();
+
+	/**
 	 * @param          $subject
 	 * @param   array  $config
+	 *
 	 * @since       1.0.0
 	 */
 	public function __construct(&$subject, array $config = array())
@@ -43,16 +69,160 @@ class PlgSystemECLabs extends ECLPlugin
 		$this->_plugin_path = __DIR__;
 	}
 
+
+	/**
+	 * Обработка события.
+	 * Производится обновление таблицы #__update_sites информацией о платных расширениях ECL
+	 * Информация формируется в событиях onExtensionAfterInstall и onExtensionAfterUpdate
+	 *
+	 * @throws Exception
+	 * @since 1.0.0
+	 */
+	public function onBeforeRender()
+	{
+		$app = Factory::getApplication();
+		$doc = $app->getDocument();
+
+		// Если рендер не html то выходим
+		if (!($doc instanceof HtmlDocument))
+			return;
+
+		// Если не admin - то выходим
+		if (!$app->isClient('administrator'))
+			return;
+
+		$this->_updateSites = Factory::getApplication()->getUserState('eclabs.updateSites', false);
+		$this->_logging(array('eclabs.updateSites' => $this->_updateSites));
+		if (is_array($this->_updateSites))
+		{
+			//var_dump($this->_updateSites);
+			ECLExtension::updateXMLLocation($this->_updateSites);
+			Factory::getApplication()->setUserState('eclabs.updateSites', null);
+		}
+	}
+
+	/**
+	 * Формируем информацию для платных расширений ECL после установки
+	 *
+	 * @param   Installer  $installer
+	 * @param   int        $eid
+	 *
+	 * @since 1.0.0
+	 */
+	public function onExtensionAfterInstall(Installer $installer, int $eid)
+	{
+		$this->_logging(array('eid' => $eid, 'installer' => $installer));
+		if ($eid)
+		{
+			$this->_installer = $installer;
+			$this->_eid       = (int) $eid;
+
+			// Handle any update sites
+			$this->_processUpdateSites();
+		}
+	}
+
+	/**
+	 * Формируем информацию для платных расширений ECL после обновления или перестроения серверов обновлений
+	 *
+	 * @param   Installer  $installer
+	 * @param   int        $eid
+	 *
+	 * @since 1.0.0
+	 */
+	public function onExtensionAfterUpdate(Installer $installer, int $eid)
+	{
+		$this->_logging(array('eid' => $eid, 'installer' => $installer));
+		if ($eid)
+		{
+			$this->_installer = $installer;
+			$this->_eid       = (int) $eid;
+
+			// Handle any update sites
+			$this->_processUpdateSites();
+		}
+	}
+
+	/**
+	 * Обновляет информацию о сервере обновлений для платных расширений ECL
+	 *
+	 * @param   string       $location
+	 * @param   string|null  $extra_query
+	 *
+	 *
+	 * @throws Exception
+	 * @since 1.0.0
+	 */
+	private function _updateLocationAndExtraQuery(string $location, ?string $extra_query)
+	{
+		$update_site_id = ECLExtension::getUpdateSiteId($this->_eid);
+		ECLExtension::updateECLLocationAndExtraQuery($update_site_id, $location, $extra_query);
+	}
+
+	/**
+	 * Processes the list of update sites for an extension.
+	 *
+	 * @return  void
+	 *
+	 * @throws Exception
+	 * @since   1.6
+	 */
+	private function _processUpdateSites(): void
+	{
+		$manifest      = $this->_installer->getManifest();
+		$updateservers = $manifest->updateservers;
+
+		if ($updateservers)
+		{
+			$children = $updateservers->children();
+		}
+		else
+		{
+			$children = [];
+		}
+
+		if (count($children))
+		{
+			foreach ($children as $child)
+			{
+				$attrs = $child->attributes();
+				$this->_logging(array($this->_eid, (string) $attrs['name'], (string) $attrs['type'], trim($child), true, $this->installer->extraQuery));
+				$tmp = ECLExtension::generateXMLLocation($this->_eid, (string) $attrs['name'], (string) $attrs['type'], trim($child), true, $this->installer->extraQuery);
+				if ($tmp !== false)
+				{
+					// Вернем значение location из манифеста
+					// extra_query не используется
+					$this->_updateLocationAndExtraQuery(trim($child), null);
+					$this->_updateSites[] = $tmp;
+					$this->_logging(array('_updateSites' => $this->_updateSites));
+					Factory::getApplication()->setUserState('eclabs.updateSites', $this->_updateSites);
+				}
+			}
+		}
+		else
+		{
+			$data = trim((string) $updateservers);
+
+			if ($data !== '')
+			{
+				// We have a single entry in the update server line, let us presume this is an extension line
+				$this->_logging(array(Text::_('PLG_EXTENSION_JOOMLA_UNKNOWN_SITE')));
+			}
+		}
+	}
+
+
 	/**
 	 * Получение информации по расширению от сервера обновлений
 	 *
-	 * @param   string  $context    Контекст вызова (не используется)
-	 * @param   string  $element_name   Имя расширения
-	 * @param   array   $update_info    Массив для хранения информации по расширению
-	 * @param   array   $user_data      Массив информации о пользователе сервера обновлений
+	 * @param   string  $context       Контекст вызова (не используется)
+	 * @param   string  $element_name  Имя расширения
+	 * @param   array   $update_info   Массив для хранения информации по расширению
+	 * @param   array   $user_data     Массив информации о пользователе сервера обновлений
 	 *
 	 * @return void
 	 *
+	 * @throws Exception
 	 * @since 1.0.0
 	 */
 	private function getECLUpdateInfo(string $context, string $element_name, array &$update_info, array &$user_data): void
@@ -69,17 +239,19 @@ class PlgSystemECLabs extends ECLPlugin
 					'message' => ECLUpdateInfoStatus::getEnumNameText(ECLUpdateInfoStatus::ECLUPDATEINFO_STATUS_ERROR_USERINFO_MISSING)
 				);
 
-				return ;
+				return;
 			}
 		}
-		$element                   = ECLExtension::getElement($element_name);
-		$update_info               = ECLExtension::checkUpdate($element, $user_data['ECL']['user'], $user_data['ECL']['password']);
-		$user_data['ECL']['token'] = $update_info['token'] ?? '';
+		$element                        = ECLExtension::getElement($element_name);
+		$update_info                    = ECLExtension::checkUpdate($element, $user_data['ECL']['user'], $user_data['ECL']['password']);
+		$user_data['ECL']['token']      = $update_info['token'] ?? '';
+		$user_data['ECL']['project_id'] = $update_info['project_id'] ?? '';
 		ECLExtension::setCustomData($element_name, $user_data['ECL']);
-		}
+	}
 
 	/**
 	 * Формирует блок версии для xml поля about расширения для текущего пользователя сервера обновлений.
+	 *
 	 * @param   string  $context
 	 * @param   array   $extension_info
 	 * @param   string  $extension_name
@@ -98,6 +270,7 @@ class PlgSystemECLabs extends ECLPlugin
 		if (!($context == "about" || $context == 'renderVersionBlock'))
 			return false;
 
+		ECLLanguage::loadLibLanguage();
 		//$update_info = array();
 		$this->getECLUpdateInfo('checkUpdate', $extension_name, $update_info, $user_data);
 		$this->_logging(array('update_info', $update_info));
@@ -150,7 +323,8 @@ class PlgSystemECLabs extends ECLPlugin
 			'name'    => (string) $extension_info['name'],
 			'version' => (string) $extension_info['version']
 		), JSON_UNESCAPED_UNICODE);
-		$html                 .= $this->_buildLayout($vars, 'authorize');
+
+		$html .= $this->_buildLayout($vars, 'authorize');
 
 		return true;
 	}
