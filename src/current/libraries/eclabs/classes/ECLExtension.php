@@ -11,8 +11,10 @@
 
 namespace ECLabs\Library;
 
+use Exception;
 use Joomla\CMS\Factory;
-use Joomla\CMS\Factory as JFactory;
+use Joomla\CMS\Language\Text;
+use Joomla\Database\ParameterType;
 
 
 /**
@@ -26,8 +28,8 @@ class ECLExtension
 	/**
 	 * URL сервера обновлений
 	 * @since 1.0.0
+	 * TODO Заменить на боевой URL
 	 */
-	// TODO Заменить на боевой URL
 	private const _ECL_UPDATE_SEVER_URL = 'https://dev.econsultlab.ru';
 
 	/**
@@ -109,7 +111,6 @@ class ECLExtension
 		self::_storeToken($extension, $data['token']);
 	}
 
-
 	/**
 	 * Сохраняет токен пользователя для доступа на сервер обновлений для данного расширения
 	 * в поле extra_query
@@ -146,7 +147,7 @@ class ECLExtension
 
 		$dbo->setQuery($query)->execute();
 
-		JFactory::getCache()->clean('_system');
+		Factory::getCache()->clean('_system');
 	}
 
 	/**
@@ -170,4 +171,155 @@ class ECLExtension
 		return $dbo->loadResult();
 	}
 
+	/**
+	 * Генерирует ключ на скачивание
+	 *
+	 * @param   string  $token
+	 * @param   string  $salt
+	 *
+	 * @return string
+	 *
+	 * @see   SWJProjects SWJProjectsHelperKeys::checkKey
+	 *
+	 * @since 1.0.0
+	 */
+	private static function _getXMLKey(string $token, string $salt): string
+	{
+		return md5($token . '_' . $salt);
+	}
+
+	/**
+	 * Генерирует параметр URL с ключем скачивания
+	 *
+	 * @param   string  $value
+	 *
+	 * @return string
+	 *
+	 * @since 1.0.0
+	 */
+	private static function _buildExtraQueryString(string $value): string
+	{
+		return "download_key=" . $value;
+	}
+
+	/**
+	 * Получает update_site_id из идентификатора расширения
+	 *
+	 * @param   int  $eid
+	 *
+	 * @return int
+	 *
+	 * @since 1.0.0
+	 */
+	public static function getUpdateSiteId(int $eid): int
+	{
+		$db    = Factory::getDbo();
+		$query = $db->getQuery(true);
+		$query->clear()
+			->select($db->quoteName('update_site_id'))
+			->from($db->quoteName('#__update_sites_extensions'))
+			->where(
+				[
+					$db->quoteName('extension_id') . ' = :extensionid',
+				]
+			)
+			->bind(':extensionid', $eid, ParameterType::INTEGER);
+		$db->setQuery($query);
+
+		return (int) $db->loadResult();
+	}
+
+	/**
+	 * Обновляет значения location и extra_query
+	 *
+	 * @param   int          $update_site_id
+	 * @param   string       $location
+	 * @param   string|null  $extra_query
+	 *
+	 *
+	 * @throws Exception
+	 * @since 1.0.0
+	 */
+	public static function updateECLLocationAndExtraQuery(int $update_site_id, string $location, ?string $extra_query): void
+	{
+		$db    = Factory::getDbo();
+		$query = $db->getQuery(true);
+		$query->update($db->quoteName('#__update_sites'))
+			->set($db->quoteName('location') . ' = ' . $db->quote($location))
+			->set($db->quoteName('extra_query') . ' = ' . $db->quote($extra_query))
+			->where(
+				[
+					$db->quoteName('update_site_id') . ' = :update_site_id',
+				]
+			)
+			->bind(':update_site_id', $update_site_id, ParameterType::INTEGER);
+		try
+		{
+			$db->setQuery($query)->execute();
+		}
+		catch (Exception $e)
+		{
+			Factory::getApplication()->enqueueMessage(Text::sprintf('JLIB_DATABASE_ERROR_FUNCTION_FAILED', $e->getCode(), $e->getMessage()), 'error');
+		}
+	}
+
+	/**
+	 * Генерирует параметры для формирования URL сервера обновлений
+	 *
+	 * @param   int          $eid
+	 * @param   string       $name
+	 * @param   string       $type
+	 * @param   string       $location
+	 * @param   bool         $enabled
+	 * @param   string|null  $extraQuery
+	 *
+	 * @return array|bool
+	 *
+	 * @since 1.0.0
+	 */
+	public static function generateXMLLocation(int $eid, string $name, string $type, string $location, bool $enabled, ?string $extraQuery = ''): array|bool
+	{
+		$user_info = self::getCustomData($name);
+		if (isset($user_info['ECL']))
+		{
+			// Платное расширение ECL и есть данные по токену
+			$hash       = self::_getXMLKey($user_info['ECL']['token'], $user_info['ECL']['project_id']);
+			$xmlkey     = self::_buildExtraQueryString($hash);
+			$extraQuery = self::_buildExtraQueryString($user_info['ECL']['token']);
+			$location   .= ('&' . $xmlkey);
+
+			return array(
+				'extension_id' => $eid,
+				'name'         => $name,
+				'location'     => $location,
+				'extra_query'  => $extraQuery
+			);
+		}
+
+		return false;
+	}
+
+	/**
+	 * Update an update site to download token info.
+	 *
+	 * @param   array  $updateSites  Update sites info array
+	 *
+	 * @return  void
+	 *
+	 * @throws Exception
+	 * @since   1.0.0
+	 */
+	public static function updateXMLLocation(array $updateSites): void
+	{
+		foreach ($updateSites as $updateSite)
+		{
+			$update_site_id = self::getUpdateSiteId($updateSite['extension_id']);
+			if ($update_site_id)
+			{
+				// extra_query не используется
+				self::updateECLLocationAndExtraQuery($update_site_id, $updateSite['location'], null);
+			}
+		}
+
+	}
 }
