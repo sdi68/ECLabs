@@ -47,8 +47,9 @@ class ECLVersion extends ECLRequest{
 
                     // Выводим сообщение о результате в модальном окне
                     let results_group = this.getElement("#ecl-authorize:not(.ecl-modal) .results_group");
-                    console.log(getEl("#ecl-authorize:not(.ecl-modal) .results_group"));
+                    console.log( this.getElement("#ecl-authorize:not(.ecl-modal) .results_group"));
                     let alert_container = this.getElement(".results-alert",results_group);
+                    alert_container.innerHTML ="";
                     let alert = Joomla.Text._("ECLUPDATEINFO_STATUS_SUCCESS_TEXT");
                     let alert_class = "alert alert-success";
                     if(typeof _data.response.update_info.error !== "undefined") {
@@ -59,6 +60,11 @@ class ECLVersion extends ECLRequest{
                     wrapper.innerHTML = '<div class="' + alert_class + ' alert-dismissible" role="alert">' + alert + '</div>'
                     results_group.classList.remove('d-none');
                     alert_container.appendChild(wrapper);
+                    // Выводим полученный токен
+                    if(typeof _data.response.update_info.token !== "undefined") {
+                        let fields_group = this.getElement("#ecl-authorize:not(.ecl-modal) .ecl-fields");
+                        this.getElement("#token", fields_group).value =_data.response.update_info.token;
+                    }
 
                     // Привязываем открытие модального окна
                     const _btn = Joomla.Text._('JSUBMIT');
