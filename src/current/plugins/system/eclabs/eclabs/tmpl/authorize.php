@@ -60,7 +60,7 @@ Text::script('ECLUPDATEINFO_STATUS_SUCCESS_TEXT');
                            value="<?php echo $vars->user_data['ECL']['password'] ?? ''; ?>">
                 </div>
                 <div class="input-group mb-3 flex-nowrap input-group-sm">
-                    <span class="input-group-text" id="basic-addon3">Токен</span>
+                    <span class="input-group-text" id="basic-addon3"><?php echo Text::_('PLG_SYSTEM_ECLABS_AUTHORISATION_TOKEN'); ?></span>
                     <input type="text" readonly="readonly" id="token" class="form-control"
                            placeholder=""
                            aria-label=""
