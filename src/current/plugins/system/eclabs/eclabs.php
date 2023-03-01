@@ -13,6 +13,7 @@
 defined('_JEXEC') or die;
 
 use ECLabs\Library\ECLExtension;
+use ECLabs\Library\ECLInput;
 use ECLabs\Library\ECLLanguage;
 use ECLabs\Library\ECLPlugin;
 use ECLabs\Library\ECLUpdateInfoStatus;
@@ -338,33 +339,17 @@ class PlgSystemECLabs extends ECLPlugin
 	 */
 	public function onAjaxEclabs()
 	{
-		$input    = Factory::getApplication()->getInput();
-		$action   = $input->get('action', '');
-		$alt_data = null; // Если при POST данные не передаются через REQUEST
-		if (empty($action))
-		{
-			$json     = file_get_contents('php://input');
-			$alt_data = json_decode($json, true);
-			$action   = $alt_data['action'] ?? '';
-		}
+		$input  = new ECLInput(true);
+		$action = $input->get('action', '');
 		$this->_logging(array('action', $action));
 		$out = array('ok' => '', 'response' => '');
 
 		switch ($action)
 		{
 			case "renderVersionBlock":
-				if (is_null($alt_data))
-				{
-					$extension_info = $input->get('extension_info', '');
-					$element_name   = $input->get('element_name', '');
-					$user_data      = $input->get('user_data', array('ECL' => array('user' => '', 'password' => '')));
-				}
-				else
-				{
-					$extension_info = $alt_data['extension_info'] ?? '';
-					$element_name   = $alt_data['element_name'] ?? '';
-					$user_data      = $alt_data['user_data'] ?? array('ECL' => array('user' => '', 'password' => ''));
-				}
+				$extension_info = $input->get('extension_info', '');
+				$element_name   = $input->get('element_name', '');
+				$user_data      = $input->get('user_data', array('ECL' => array('user' => '', 'password' => '')));
 				$this->_logging(array('element_name', $element_name));
 				$html        = "";
 				$update_info = array();
