@@ -20,14 +20,16 @@
     <property name = "ftp.clearFirst" value = "false" />
     <!-- Флаг что не пакет -->
     <property name="is_package" value="0"/>
+    <!--Расширение для временного файла, в котором сохраняется исходный до замены токена-->
+    <property name = "tmp_extension" value = "sdiold" />
 
     <target name ="Build project production" description="Сформировать продуктивную сборку пакета">
         <!--Тип сборки пакета development|production-->
         <property name = "build_type" value = "production" />
         <!--Каталог с релизами-->
-        <property name="releases" value="releases"/>
+        <property name="releases" value="releases/${pkg_version}/"/>
         <!--Папка сборки пакета текущей версии-->
-        <property name = "release_dir" value = "${releases}/${pkg_version}/" />
+        <property name = "release_dir" value = "${releases}/${packages}/" />
         <!--Удаляем предыдущие сборки-->
         <echo msg="Deleting old ${build_type} build."/>
         <!--Удаляем предыдущие сборки-->
@@ -48,6 +50,10 @@
             <property name = "source_dir" value = "src/current/libraries/${source}" />
             <property name = "ftp_dir" value = "${ftp.common_dir}/libraries/${source}/" />
             <property name = "manifest_dir" value = "${source_dir}/" />
+            <!--Производим замену токена-->
+            <property name = "_file" value = "${source_dir}/classes/ECLExtension.php" />
+            <property name = "_token" value = "@UPDATE_SERVER_URL@" />
+            <property name = "_value" value = "https://econsultlab.ru" />
         </phingcall>
 
         <phingcall target="_build_source_package" >
@@ -76,7 +82,7 @@
 
         <!-- Загружаем инструкции -->
         <phingcall target="_upload_instruction" >
-            <property name = "source_dir" value = "${releases}/${pkg_version}/doc/" />
+            <property name = "source_dir" value = "${releases}/doc/" />
             <property name = "ftp_dir" value = "${ftp.common_dir}doc/" />
         </phingcall>
     </target>
@@ -108,6 +114,11 @@
             <property name = "source_dir" value = "src/current/libraries/${source}" />
             <property name = "ftp_dir" value = "${ftp.common_dir}/" />
             <property name = "manifest_dir" value = "${source_dir}/" />
+            <!--Производим замену токена-->
+            <property name = "_file" value = "${source_dir}/classes/ECLExtension.php" />
+            <property name = "_token" value = "@UPDATE_SERVER_URL@" />
+            <property name = "_value" value = "https://dev.econsultlab.ru" />
+
         </phingcall>
 
         <phingcall target="_build_source_package" >
@@ -139,7 +150,22 @@
     <target name ="_build_source_package" description="Сформировать архив и переместить его в папку пакетов">
 
         <echo msg="Making the ${build_type} ${source} package."/>
-
+        <!--Если необходимо производим замену токена-->
+        <if>
+        <isset property = "_file" />
+        <then>
+        <phingcall target="_replace_token" >
+            <!--Путь к файлу с токеном-->
+            <property name = "file" value = "${_file}" />
+            <!--Токен для замены-->
+            <property name = "token" value = "${_token}" />
+            <!--Значение для замены токена-->
+            <property name = "value" value = "${_value}" />
+            <!--Расширение временного файла для сохранения исходного-->
+            <property name = "tmp_file_extension" value = "${tmp_extension}" />
+        </phingcall>
+        </then>
+        </if>
         <if>
             <equals arg1="${is_package}" arg2="1" />
             <then>
@@ -149,6 +175,8 @@
                     <fileset dir="${source_dir}">
                         <include name="**"/>
                         <exclude name="${manifest_prefix}${source}.xml"/>
+                        <!-- пропускаем временный файл -->
+                        <exclude name="**.${tmp_extension}"/>
                     </fileset>
                     <fileset dir="${release_dir}">
                         <include name="packages/**"/>
@@ -162,6 +190,8 @@
                     <fileset dir="${source_dir}">
                         <include name="**"/>
                         <exclude name="${manifest_prefix}${source}.xml"/>
+                        <!-- пропускаем временный файл -->
+                        <exclude name="**.${tmp_extension}"/>
                     </fileset>
                 </zip>
             </else>
@@ -191,9 +221,23 @@
             </fileset>
             <fileset dir="${manifest_dir}">
                 <include name="${manifest_prefix}${source}.xml"/>
+                <!-- пропускаем временный файл -->
+                <exclude name="**.${tmp_extension}"/>
             </fileset>
         </ftpdeploy>
         </else>
+        </if>
+        <!--Если была замена токена, восстанавливаем исходный файл-->
+        <if>
+        <isset property = "_file" />
+        <then>
+        <phingcall target="_restore_file" >
+            <!--Путь к файлу с токеном-->
+            <property name = "file" value = "${_file}" />
+            <!--Расширение временного файла для сохранения исходного-->
+            <property name = "tmp_file_extension" value = "${tmp_extension}" />
+        </phingcall>
+        </then>
         </if>
     </target>
 
@@ -205,7 +249,7 @@
             </then>
             <else>
                 <echo msg="FTP deploy instruction files."/>
-                <property name = "doc_dir" value = "${releases}/${pkg_version}/doc/" />
+                <property name = "doc_dir" value = "${releases}/doc/" />
                 <ftpdeploy
                         host="${ftp.host}"
                         port="${ftp.port}"
@@ -226,4 +270,27 @@
         </if>
     </target>
 
+    <!-- Ищет в указанном файле токен и заменяет его на указанное значение -->
+    <target name="_replace_token">
+        <!-- Копирует исходный файл во временный-->
+        <copy file="${file}" tofile="${file}.${tmp_file_extension}"
+              overwrite="true"/>
+        <echo msg=" Ищем токен ${token} в файле ${file} и меняем его на  ${value}"/>
+        <!--Ищем и заменяем токен-->
+        <reflexive file = "${file}">
+            <filterchain>
+                <replaceregexp>
+                    <regexp pattern="${token}" replace="${value}"/>
+                </replaceregexp>
+            </filterchain>
+        </reflexive>
+    </target>
+
+    <!--Восстанавливает исходный файл до замены токена из временного. Удаляет временный файл-->
+    <target name="_restore_file">
+        <!--Восстанавливает файл-->
+        <copy file="${file}.${tmp_file_extension}" tofile="${file}" overwrite="true"/>
+        <!--Удаляет временный файл-->
+        <delete quiet="false" file = "${file}.${tmp_file_extension}" />
+    </target>
 </project>

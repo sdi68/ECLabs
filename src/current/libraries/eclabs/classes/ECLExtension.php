@@ -3,7 +3,7 @@
  * @package         Econsult Labs Library
  * @version         1.0.0
  *
- * @author          ECL <info@econsultlab.ru>
+ * testeconsultlab.ru>
  * @link            https://econsultlab.ru
  * @copyright       Copyright © 2023 ECL All Rights Reserved
  * @license         http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
@@ -16,7 +16,7 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\Database\ParameterType;
 
-
+define('ECL_UPDATE_SERVER_URL','@UPDATE_SERVER_URL@');
 /**
  * Класс работы с расширениями
  * @package     ECLabs\Library
@@ -28,9 +28,8 @@ class ECLExtension
 	/**
 	 * URL сервера обновлений
 	 * @since 1.0.0
-	 * TODO Заменить на боевой URL
 	 */
-	private const _ECL_UPDATE_SEVER_URL = 'https://dev.econsultlab.ru';
+	private const _ECL_UPDATE_SERVER_URL = ECL_UPDATE_SERVER_URL;
 
 	/**
 	 * Получает информацию по обновлениям расширения для пользователя
@@ -48,7 +47,7 @@ class ECLExtension
 	{
 		$params = array('user' => $user_name, 'password' => $password, 'element' => $extension);
 		$params = ECLAuthorisation::encodeAuthorisationParams($params);
-		$link   = self::_ECL_UPDATE_SEVER_URL . '/index.php?option=com_swjprojects&view=token&params=' . $params;
+		$link   = self::_ECL_UPDATE_SERVER_URL . '/index.php?option=com_swjprojects&view=token&params=' . $params;
 		$data   = ECLHttp::get($link);
 		if (empty($data))
 		{
