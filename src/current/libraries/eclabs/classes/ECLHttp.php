@@ -17,6 +17,7 @@ use JFolder;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Http\HttpFactory;
 use Joomla\CMS\Language\Text;
+use Joomla\Registry\Registry;
 
 /**
  * Отправляет http запросы
@@ -79,6 +80,13 @@ class ECLHttp
 
 			$coptions[CURLOPT_HTTPHEADER] = array('Content-Type: application/json');
 			$options['transport.curl']    = $coptions;
+            switch (ECLVersion::getJoomlaVersion()){
+                case 4:
+                    break;
+                case 3:
+                default:
+                    $options = new Registry($options);
+            }
 			$http                         = HttpFactory::getHttp($options, ['curl']);
 			//TODO SDI не работает установка опций http->setOption('transport.curl', $options);
 

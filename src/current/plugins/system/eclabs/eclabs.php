@@ -373,6 +373,7 @@ class PlgSystemECLabs extends ECLPlugin
 	 */
 	protected final function _addMedia(): void
 	{
+        $js = "var ecl_jversion =".ECLVersion::getJoomlaVersion();
 		switch (ECLVersion::getJoomlaVersion())
 		{
 			case '4':
@@ -391,17 +392,21 @@ class PlgSystemECLabs extends ECLPlugin
 				$wa->useScript('plg_system_eclabs.version');
 
 				$wa->useScript('bootstrap.modal');
+                $wa->$wa->addInlineScript($js);
 				break;
 			default:
 				$doc = JFactory::getDocument();
-				$doc->addStyleSheet('/media/eclabs/css/about.css');
-				$doc->addStyleSheet('/media/eclabs/css/modal.css');
-				$doc->addStyleSheet('/media/eclabs/css/request.css');
+				$doc->addStyleSheet('/media/eclabs/css/about3.css');
+				$doc->addStyleSheet('/media/eclabs/css/ecl_modal3.css');
+				$doc->addStyleSheet('/media/eclabs/css/ecl_request.css');
+
 				$doc->addScript('/media/eclabs/js/ecl.js');
 				$doc->addScript('/media/eclabs/js/ecl_modal.js');
 				$doc->addScript('/media/eclabs/js/ecl_request.js');
+                $doc->addScript('/media/plg_system_eclabs/js/version.js');
 				JHtml::_('bootstrap.framework');
 				JHtml::_('bootstrap.loadCss', true);
+                $doc->addScriptDeclaration($js);
 		}
 	}
 }

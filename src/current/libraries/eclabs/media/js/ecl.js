@@ -12,7 +12,14 @@
  */
 class ECL {
     constructor() {
+        // Режим отладки
         this._debug_mode = false;
+        // Версия Joomla
+        this.jVersion = 4;
+        if(typeof ecl_jversion !== "undefined") {
+            this.jVersion = ecl_jversion;
+        }
+
     }
 
     /**
@@ -45,5 +52,13 @@ class ECL {
     getElement(selector, parent = document, single = true) {
 
         return single ? parent.querySelector(selector) : [...parent.querySelectorAll(selector)];
+    }
+
+    /**
+     * Getting current joomla version
+     * @returns int
+     */
+    getJVersion(){
+        return this.jVersion;
     }
 }

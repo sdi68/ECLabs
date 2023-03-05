@@ -1,0 +1,20 @@
+/*
+ * about3.css  01.03.2023, 17:56
+ * Created for project Joomla 3.x
+ * Subpackage ___
+ * www.econsultlab.ru
+ * mail: info@econsultlab.ru
+ * Released under the GNU General Public License
+ * Copyright (c) 2023 Econsult Lab.
+ */
+.about-wrap .ecl-version-container .btn-mini:hover {
+    background-position: 0 -18px;
+}
+
+.about-wrap .ecl-version-container .btn-mini [class^="icon-"] {
+    border-radius: 50%;
+    background-color: #fff;
+}
+
+
+

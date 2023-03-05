@@ -108,6 +108,8 @@ class ECLRequest extends ECL {
     _onSuccess(response, xhr) {
         //Проверяем пришли ли ответы
         this.debug('_onSuccess', 'response', response);
+        if (this.getJVersion() <= 4)
+            this._ajaxUnLock();
         if (typeof this._success_callback === "function")
             this._success_callback(response);
     }
@@ -119,12 +121,15 @@ class ECLRequest extends ECL {
      */
     _onError(xhr) {
         this.debug('_onError', 'xhr', xhr);
+        if (this.getJVersion() <= 4)
+            this._ajaxUnLock();
         if (typeof this._fail_callback === "function")
             this._fail_callback(xhr);
     }
 
     /**
-     * Вызывается всегда после выполнения запроса
+     * Вызывается всегда после выполнения запроса.
+     * Работает начиная с Joomla 4
      * @param xhr
      * @private
      */

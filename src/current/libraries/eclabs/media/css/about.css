@@ -72,3 +72,14 @@
 .about-wrap .ecl-version-container .btn-refresh {
     padding: 0.25rem 0.5rem;
 }
+
+/* bootstrap 2 Joomla 3 BOF */
+/*.about-wrap [class^="icon-"], .about-wrap [class*=" icon-"] {
+    background-image: none;
+    background-position: 0;
+}
+
+.about-wrap .ecl-version-container .btn-refresh:hover {
+    background-position: 0 -28px;
+}*/
+/* bootstrap 2 Joomla 3 EOF */

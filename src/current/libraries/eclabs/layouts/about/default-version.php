@@ -27,7 +27,7 @@ extract($displayData);
                     hideHeader: false,
                     saveBtnCaption: _btn
                 };
-                let eclm = new ECLModal();
+                let eclm = new ECLModal(true);
                 eclm.initialize(params);
             });
         </script>

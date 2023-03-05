@@ -217,13 +217,17 @@ class ECLExtension
 		$query = $db->getQuery(true);
 		$query->clear()
 			->select($db->quoteName('update_site_id'))
-			->from($db->quoteName('#__update_sites_extensions'))
-			->where(
+			->from($db->quoteName('#__update_sites_extensions'));
+        if(ECLVersion::getJoomlaVersion() <= 3 ) {
+            $query->where($db->quoteName('extension_id').'='.$db->quote($eid));
+        } else {
+            $query->where(
 				[
 					$db->quoteName('extension_id') . ' = :extensionid',
 				]
 			)
 			->bind(':extensionid', $eid, ParameterType::INTEGER);
+        }
 		$db->setQuery($query);
 
 		return (int) $db->loadResult();
@@ -246,13 +250,17 @@ class ECLExtension
 		$query = $db->getQuery(true);
 		$query->update($db->quoteName('#__update_sites'))
 			->set($db->quoteName('location') . ' = ' . $db->quote($location))
-			->set($db->quoteName('extra_query') . ' = ' . $db->quote($extra_query))
-			->where(
-				[
-					$db->quoteName('update_site_id') . ' = :update_site_id',
-				]
-			)
-			->bind(':update_site_id', $update_site_id, ParameterType::INTEGER);
+			->set($db->quoteName('extra_query') . ' = ' . $db->quote($extra_query));
+        if(ECLVersion::getJoomlaVersion() <= 3 ) {
+            $query->where($db->quoteName('update_site_id') . '='.$db->quote($update_site_id));
+        } else {
+            $query->where(
+                [
+                    $db->quoteName('update_site_id') . ' = :update_site_id',
+                ]
+            )
+                ->bind(':update_site_id', $update_site_id, ParameterType::INTEGER);
+        }
 		try
 		{
 			$db->setQuery($query)->execute();
@@ -277,7 +285,7 @@ class ECLExtension
 	 *
 	 * @since 1.0.0
 	 */
-	public static function generateXMLLocation(int $eid, string $name, string $type, string $location, bool $enabled, ?string $extraQuery = ''): array|bool
+	public static function generateXMLLocation(int $eid, string $name, string $type, string $location, bool $enabled, ?string $extraQuery = '')
 	{
 		$user_info = self::getCustomData($name);
 		if (isset($user_info['ECL']))

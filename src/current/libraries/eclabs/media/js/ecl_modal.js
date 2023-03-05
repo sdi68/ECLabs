@@ -69,14 +69,19 @@ class ECLModal extends ECL {
             if (!document.getElementById(this._wrapId)) {
                 this._buildHtmlWrap();
                 const eclModal = document.createRange().createContextualFragment(this._htmlWrap);
+                if(typeof bootstrap !== "undefined") {
+                    if (eclModal) {
+                        let bsModal = bootstrap.Modal.getInstance(eclModal);
 
-                if (eclModal) {
-                    let bsModal = bootstrap.Modal.getInstance(eclModal);
-
-                    if (bsModal) {
-                        bsModal.dispose();
-                    } // Append the modal before closing body tag
+                        if (bsModal) {
+                            bsModal.dispose();
+                        } // Append the modal before closing body tag
+                        document.body.appendChild(eclModal); // Modal was moved so it needs to be re initialised
+                    }
+                } else if (typeof jQuery !== "undefined") {
                     document.body.appendChild(eclModal); // Modal was moved so it needs to be re initialised
+                } else {
+                    return;
                 }
             }
             var _this = this;
@@ -143,28 +148,54 @@ class ECLModal extends ECL {
         _c.classList.remove(this._sourceHTMLblockClass);
         document.querySelector('#' + this._wrapId + ' .modal-body').innerHTML = _c.outerHTML;
 
-        if (window.bootstrap && window.bootstrap.Modal && !window.bootstrap.Modal.getInstance(modal)) {
-            Joomla.initialiseModal(modal, {
-                isJoomla: true
-            });
+        if(typeof bootstrap !== "undefined") {
+            if (window.bootstrap && window.bootstrap.Modal && !window.bootstrap.Modal.getInstance(modal)) {
+                Joomla.initialiseModal(modal, {
+                    isJoomla: true
+                });
+            }
+
+            // Событие открытия окна
+            if (typeof window[shown] === "function") {
+                modal.addEventListener('shown.bs.modal', function (e) {
+                    window[shown](e);
+                });
+            }
+
+            // Событие закрытия окна
+            if (typeof window[hidden] === "function") {
+                modal.addEventListener('hidden.bs.modal', function (e) {
+                    window[hidden](e);
+                });
+            }
+
+            // Отображение модального окна
+            window.bootstrap.Modal.getInstance(modal).show();
+        } else if(typeof jQuery !== "undefined") {
+
+           let _o = jQuery('#'+this._wrapId);
+
+            // Событие открытия окна
+            if (typeof window[shown] === "function") {
+                _o.on('shown', function (e) {
+                    window[shown](e);
+                });
+            }
+
+            // Событие закрытия окна
+            if (typeof window[hidden] === "function") {
+                _o.on('hidden', function (e) {
+                    window[hidden](e);
+                });
+            }
+
+           _o.modal('show');
+
+        } else {
+            return;
         }
 
-        // Событие открытия окна
-        if (typeof window[shown] === "function") {
-            modal.addEventListener('shown.bs.modal', function (e) {
-                window[shown](e);
-            });
-        }
 
-        // Событие закрытия окна
-        if (typeof window[hidden] === "function") {
-            modal.addEventListener('hidden.bs.modal', function (e) {
-                window[hidden](e);
-            });
-        }
-
-        // Отображение модального окна
-        window.bootstrap.Modal.getInstance(modal).show();
     }
 
     /**
@@ -172,17 +203,21 @@ class ECLModal extends ECL {
      * @private
      */
     _buildHtmlWrap() {
+        let _data_dismiss = 'data-bs-dismiss="modal"';
+        if(this.getJVersion() !== 4) {
+            _data_dismiss = 'data-dismiss="modal"';
+        }
         this._htmlWrap = '<div class="modal fade" id="' + this._wrapId + '" tabIndex="-1" aria-labelledby="' + this._wrapId + 'Label" aria-hidden="true">' +
             '<div class="modal-dialog ' + this._dialogClass + '">' +
             '<div class="modal-content">' +
             '<div class="modal-header ' + (this._hideHeader ? this._hiddenClass : '') + '">' +
             '<h5 class="modal-title" id="' + this._wrapId + 'Label"></h5>' +
-            '<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="' + Joomla.Text._('JCLOSE') + '"></button>' +
+            /*'<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="' + Joomla.Text._('JCLOSE') + '"></button>' + */
             '</div>' +
             '<div class="modal-body"></div>' +
             '<div class="modal-footer ' + (this._hideFooter ? this._hiddenClass : '') + '">' +
-            '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">' + Joomla.Text._('JCLOSE') + '</button>' +
-            '<button type="button" class="btn btn-primary" id="ecl-modal-send">' + this._saveBtnCaption + '</button>' +
+            '<a href="#" class="btn btn-secondary" '+ _data_dismiss +'>' + Joomla.Text._('JCLOSE') + '</button>' +
+            '<a type="button" class="btn btn-primary" id="ecl-modal-send">' + this._saveBtnCaption + '</a>' +
             '</div>' +
             '</div>' +
             '</div>' +

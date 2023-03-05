@@ -76,9 +76,9 @@ abstract class ECLPlugin extends CMSPlugin
 	{
 		$app = Factory::getApplication();
 
-		$core_file = $this->_plugin_path . '/' . $this->_name . '/tmpl/' . $layout . '.php';
+		$core_file = $this->_plugin_path . '/' . $this->_name . '/tmpl/' . $layout . '/'.$layout.'.php';
 		$override  = JPATH_BASE . '/' . 'templates' . '/' . $app->getTemplate() . '/html/plugins/' .
-			$this->_type . '/' . $this->_name . '/' . $layout . '.php';
+			$this->_type . '/' . $this->_name . '/' . $layout .'/'.$layout.'.php';
 
 		if (JFile::exists($override))
 		{
@@ -107,11 +107,7 @@ abstract class ECLPlugin extends CMSPlugin
 		ob_start();
 		$layout = $this->_buildLayoutPath($layout);
 		$this->_addMedia();
-		// Подключаем общий шаблон вывода выбора типа оплаты
-		if (isset($vars->common_layout) && !empty($vars->common_layout))
-		{
-			include $vars->common_layout;
-		}
+		// Подключаем шаблон
 		include $layout;
 		$html = ob_get_contents();
 		ob_end_clean();
