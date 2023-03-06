@@ -11,7 +11,6 @@
 	<authorUrl>https://econsultlab.ru</authorUrl>
 	<version>1.0.0</version>
 	<description>PKG_ECLABS_XML_DESCRIPTION</description>
-	<scriptfile>script.php</scriptfile>
 
 	<languages folder="language">
 		<language tag="en-GB">en-GB/en-GB.pkg_eclabs.sys.ini</language>
