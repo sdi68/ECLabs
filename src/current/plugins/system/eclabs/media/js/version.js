@@ -101,7 +101,8 @@ function showAuthorization(e) {
             extension_info: _extension_info
         };
         const _container_id = "version-"+_element_name;
-        let eclv = new ECLVersion(true);
+        let _debug_mode = typeof ecl_enable_log !== "undefined" ? ecl_enable_log : false;
+        let eclv = new ECLVersion(_debug_mode);
         eclv.renderVersionBlock(_request_data,_container_id);
     });
 }

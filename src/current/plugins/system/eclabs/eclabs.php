@@ -324,7 +324,6 @@ class PlgSystemECLabs extends ECLPlugin
 			'name'    => (string) $extension_info['name'],
 			'version' => (string) $extension_info['version']
 		), JSON_UNESCAPED_UNICODE);
-
 		$html .= $this->_buildLayout($vars, 'authorize');
 
 		return true;
@@ -373,7 +372,8 @@ class PlgSystemECLabs extends ECLPlugin
 	 */
 	protected final function _addMedia(): void
 	{
-        $js = "var ecl_jversion =".ECLVersion::getJoomlaVersion();
+        $js = "var ecl_jversion =".ECLVersion::getJoomlaVersion().";";
+		$js .="var ecl_enable_log=". $this->enabled_log .";";
 		switch (ECLVersion::getJoomlaVersion())
 		{
 			case '4':
@@ -392,7 +392,7 @@ class PlgSystemECLabs extends ECLPlugin
 				$wa->useScript('plg_system_eclabs.version');
 
 				$wa->useScript('bootstrap.modal');
-                $wa->$wa->addInlineScript($js);
+                $wa->addInlineScript($js);
 				break;
 			default:
 				$doc = JFactory::getDocument();
