@@ -75,14 +75,9 @@ fabric.properties
 /releases/
 /dev/
 /vendor/
+/src/archive/
 /composer.phar
 /composer.json
 /composer.lock
-
-/src/archive/
-!/src/current/
-
-
-!/build.xml
-
-/src/current/
+/.gitignore
+/build.xml
