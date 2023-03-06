@@ -43,15 +43,25 @@ abstract class ECLPlugin extends CMSPlugin
 	 */
 	protected $enabled_log = false;
 
+    /**
+     * Версия Joomla
+     * @var int
+     * @since 1.0.0
+     */
+    protected $jVersion = 3;
+
 	/**
 	 * @param $subject
 	 * @param $config
 	 *
 	 * @since 1.0.0
 	 */
+
 	public function __construct(&$subject, $config = array())
 	{
 		parent::__construct($subject, $config);
+
+        $this->jVersion = ECLVersion::getJoomlaVersion();
 	}
 
 
