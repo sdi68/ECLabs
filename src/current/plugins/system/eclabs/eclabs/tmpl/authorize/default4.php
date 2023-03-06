@@ -30,14 +30,12 @@ Text::script('JAPPLY');
 Text::script('JSUBMIT');
 Text::script('ECLUPDATEINFO_STATUS_SUCCESS_TEXT');
 ?>
-
-<?php if ($vars->version['error']): ?>
-    <button type="button" class="btn btn-info btn-refresh" data-eclmodal data-shown="showAuthorization"
-            data-title="<?php echo Text::_('PLG_SYSTEM_ECLABS_AUTHORISATION_TITLE'); ?>"
-            data-content_id="ecl-authorize">
-        <span class="icon-refresh" aria-hidden="true"></span>
-    </button>
-<?php endif; ?>
+<button type="button" class="btn btn-info btn-refresh" data-eclmodal data-shown="showAuthorization"
+        data-title="<?php echo Text::_('PLG_SYSTEM_ECLABS_AUTHORISATION_TITLE'); ?>"
+        title="<?php echo Text::_('PLG_SYSTEM_ECLABS_AUTHORISATION_TITLE'); ?>"
+        data-content_id="ecl-authorize">
+    <span class="icon-refresh" aria-hidden="true"></span>
+</button>
 
 <div id="ecl-authorize" class="ecl-modal">
     <div class="body-wrap container">

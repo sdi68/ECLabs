@@ -102,14 +102,15 @@ class PlgSystemECLabs extends ECLPlugin
 		}
 	}
 
-	/**
-	 * Формируем информацию для платных расширений ECL после установки
-	 *
-	 * @param   Installer  $installer
-	 * @param   int        $eid
-	 *
-	 * @since 1.0.0
-	 */
+    /**
+     * Формируем информацию для платных расширений ECL после установки
+     *
+     * @param Installer $installer
+     * @param int $eid
+     *
+     * @throws Exception
+     * @since 1.0.0
+     */
 	public function onExtensionAfterInstall(Installer $installer, int $eid)
 	{
 		$this->_logging(array('eid' => $eid, 'installer' => $installer));
@@ -123,14 +124,15 @@ class PlgSystemECLabs extends ECLPlugin
 		}
 	}
 
-	/**
-	 * Формируем информацию для платных расширений ECL после обновления или перестроения серверов обновлений
-	 *
-	 * @param   Installer  $installer
-	 * @param   int        $eid
-	 *
-	 * @since 1.0.0
-	 */
+    /**
+     * Формируем информацию для платных расширений ECL после обновления или перестроения серверов обновлений
+     *
+     * @param Installer $installer
+     * @param int $eid
+     *
+     * @throws Exception
+     * @since 1.0.0
+     */
 	public function onExtensionAfterUpdate(Installer $installer, int $eid)
 	{
 		$this->_logging(array('eid' => $eid, 'installer' => $installer));
@@ -285,7 +287,7 @@ class PlgSystemECLabs extends ECLPlugin
 			case !$update_info:
 				// Данные не получены от сервера
 				$version['error']                = Text::_("ECLABS_ABOUT_FIELD_ERROR_NOT_RESPONSE");
-				$vars->class                     = "alert-danger";
+				$vars->class                     = $this->jVersion <= 3 ? "alert-danger label-danger": "alert-danger";
 				$vars->text                      = $version['error'];
 				$update_info['error']['message'] = Text::_("ECLABS_ABOUT_FIELD_ERROR_NOT_RESPONSE");
 				break;
@@ -293,7 +295,7 @@ class PlgSystemECLabs extends ECLPlugin
 				// Получена ошибка от сервера обновлений
 				$version['error'] = $update_info['error']['message'];
 				$version['new']   = "";
-				$vars->class      = "alert-danger";
+				$vars->class      = $this->jVersion <= 3 ? "alert-danger label-danger": "alert-danger";;
 				$vars->text       = $version['error'];
 				break;
 			case  !empty($update_info['token']):
@@ -302,12 +304,12 @@ class PlgSystemECLabs extends ECLPlugin
 				if ($version['new'] == $version['current'])
 				{
 					$version['new'] = "";
-					$vars->class    = "alert-success";
+					$vars->class    = $this->jVersion <= 3 ? "alert-success label-success": "alert-success";
 					$vars->text     = Text::_('ECLABS_ABOUT_FIELD_USED_LAST_VERSION');
 				}
 				else
 				{
-					$vars->class = "alert-warning";
+					$vars->class = $this->jVersion <= 3 ? "alert-warning label-warning": "alert-warning";
 					$vars->text  = Text::_('ECLABS_ABOUT_FIELD_NEW_VERSION');
 				}
 				break;
