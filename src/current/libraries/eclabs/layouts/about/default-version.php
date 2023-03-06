@@ -27,7 +27,8 @@ extract($displayData);
                     hideHeader: false,
                     saveBtnCaption: _btn
                 };
-                let eclm = new ECLModal(true);
+                let _debug_mode = typeof ecl_enable_log !== "undefined" ? ecl_enable_log : false;
+                let eclm = new ECLModal(_debug_mode);
                 eclm.initialize(params);
             });
         </script>
