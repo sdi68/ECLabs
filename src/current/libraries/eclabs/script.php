@@ -17,7 +17,7 @@ use Joomla\Filesystem\Path;
  * Class ECLabsInstallerScript
  * @since 1.0.0
  */
-class ECLabsInstallerScript
+class libECLabsInstallerScript
 {
 
 	public function postflight($type, $parent)
@@ -65,6 +65,7 @@ class ECLabsInstallerScript
 
 		return $installer->copyFiles($copyFiles, true);
 	}
+
 
 
 	protected function deleteMedia()
