@@ -13,77 +13,79 @@
 use Joomla\Filesystem\Folder;
 use Joomla\Filesystem\Path;
 
-/**
- * Class ECLabsInstallerScript
- * @since 1.0.0
- */
-class libECLabsInstallerScript
+if (!class_exists('libECLabsInstallerScript'))
 {
-
-	public function postflight($type, $parent)
+	/**
+	 * Class ECLabsInstallerScript
+	 * @since 1.0.0
+	 */
+	class libECLabsInstallerScript
 	{
 
-		if ($type === 'install' || $type === 'update')
+		public function postflight($type, $parent)
 		{
-			$this->copyMedia($parent->getParent());
-		}
 
-		if ($type === 'uninstall')
-		{
-			$this->deleteMedia();
-		}
-
-		return true;
-	}
-
-
-	protected function copyMedia($installer)
-	{
-		$dest    = JPATH_ROOT . '/media/eclabs';
-		$path    = Path::clean(JPATH_ROOT . '/libraries/eclabs/fields');
-		$folders = Folder::folders($path);
-
-		$copyFiles = [];
-
-		if (!file_exists($dest))
-		{
-			Folder::create($dest);
-		}
-
-		foreach ($folders as $folder)
-		{
-			$path_current = $path . '/' . $folder . '/media';
-			if (file_exists($path_current))
+			if ($type === 'install' || $type === 'update')
 			{
-				$copyFiles[] = [
-					'src'  => $path_current,
-					'dest' => $dest . '/' . $folder,
-					'type' => 'folder'
-				];
+				$this->copyMedia($parent->getParent());
 			}
+
+			if ($type === 'uninstall')
+			{
+				$this->deleteMedia();
+			}
+
+			return true;
 		}
 
-		return $installer->copyFiles($copyFiles, true);
-	}
 
-
-
-	protected function deleteMedia()
-	{
-		$dest = JPATH_ROOT . '/media/eclabs';
-
-		if (file_exists($dest))
+		protected function copyMedia($installer)
 		{
-			try
+			$dest    = JPATH_ROOT . '/media/eclabs';
+			$path    = Path::clean(JPATH_ROOT . '/libraries/eclabs/fields');
+			$folders = Folder::folders($path);
+
+			$copyFiles = [];
+
+			if (!file_exists($dest))
 			{
-				return Folder::delete($dest);
+				Folder::create($dest);
 			}
-			catch (Exception $e)
+
+			foreach ($folders as $folder)
 			{
-				return false;
+				$path_current = $path . '/' . $folder . '/media';
+				if (file_exists($path_current))
+				{
+					$copyFiles[] = [
+						'src'  => $path_current,
+						'dest' => $dest . '/' . $folder,
+						'type' => 'folder'
+					];
+				}
 			}
+
+			return $installer->copyFiles($copyFiles, true);
 		}
 
-		return true;
+
+		protected function deleteMedia()
+		{
+			$dest = JPATH_ROOT . '/media/eclabs';
+
+			if (file_exists($dest))
+			{
+				try
+				{
+					return Folder::delete($dest);
+				}
+				catch (Exception $e)
+				{
+					return false;
+				}
+			}
+
+			return true;
+		}
 	}
 }
