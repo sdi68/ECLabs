@@ -9,29 +9,23 @@
  * @license         http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
-use Joomla\CMS\Language\Text;
-
 defined('_JEXEC') or die;
 extract($displayData);
 
 ?>
 <div id="<?php echo $version['container_id']; ?>" class="ecl-version-container">
-	<?php if ($field->free_update): ?>
-        <span><?php echo Text::_("JVERSION") . '&nbsp;' . $version['current']; ?></span>&nbsp;
-	<?php else: ?>
-		<?php echo $version['html'] ?? ''; ?>
-        <script type="text/javascript">
-            document.addEventListener("DOMContentLoaded", function () {
-                const _btn = Joomla.Text._('JSUBMIT');
-                let params = {
-                    hideHeader: false,
-                    saveBtnCaption: _btn
-                };
-                let _debug_mode = typeof ecl_enable_log !== "undefined" ? ecl_enable_log : false;
-                let eclm = new ECLModal(_debug_mode);
-                eclm.initialize(params);
-            });
-        </script>
-	<?php endif; ?>
+	<?php echo $version['html'] ?? ''; ?>
+    <script type="text/javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            const _btn = Joomla.Text._('JSUBMIT');
+            let params = {
+                hideHeader: false,
+                saveBtnCaption: _btn
+            };
+            let _debug_mode = typeof ecl_enable_log !== "undefined" ? ecl_enable_log : false;
+            let eclm = new ECLModal(_debug_mode);
+            eclm.initialize(params);
+        });
+    </script>
 </div>
 

@@ -212,6 +212,7 @@ class JFormFieldECL_About extends JFormField
 	 *
 	 * @return array
 	 *
+	 * @throws Exception
 	 * @since 1.0.0
 	 */
 	protected function getLayoutData()
@@ -225,20 +226,11 @@ class JFormFieldECL_About extends JFormField
 		$version['new']          = (string) $info->version;
 		$version['error']        = "";
 		$version['container_id'] = "version-" . $info->name;
-		if ($this->free_update)
-		{
-			$version['current'] = (string) $info->version;
-			$version['new']     = "";
-			$version['error']   = "";
-		}
-		else
-		{
-			PluginHelper::importPlugin('system');
-			$version['html'] = "";
-			$user_data       = array('ECL' => array('user' => '', 'password' => ''));
-			$update_info     = array();
-			$results         = Factory::getApplication()->triggerEvent('onRenderVersionBlock', array('about', (array) $info, $info->name, $user_data, &$update_info, &$version['html']));
-		}
+		PluginHelper::importPlugin('system');
+		$version['html'] = "";
+		$user_data       = array('ECL' => array('user' => '', 'password' => ''));
+		$update_info     = array();
+		$results         = Factory::getApplication()->triggerEvent('onRenderVersionBlock', array('about', (array) $info, $info->name, (bool) $this->free_update, $user_data, &$update_info, &$version['html']));
 
 		$options = array(
 			'options'   => array('class' => 'sdi-about-controls'),

@@ -258,6 +258,7 @@ class PlgSystemECLabs extends ECLPlugin
 	 * @param   string  $context
 	 * @param   array   $extension_info
 	 * @param   string  $extension_name
+	 * @param   bool    $is_free
 	 * @param   array   $user_data
 	 * @param   array   $update_info
 	 * @param   string  $html
@@ -267,23 +268,31 @@ class PlgSystemECLabs extends ECLPlugin
 	 * @throws Exception
 	 * @since 1.0.0
 	 */
-	public function onRenderVersionBlock(string $context, array $extension_info, string $extension_name, array $user_data, array &$update_info, string &$html): bool
+	public function onRenderVersionBlock(string $context, array $extension_info, string $extension_name, bool $is_free, array $user_data, array &$update_info, string &$html): bool
 	{
 		// TODO проверка контекста
 		if (!($context == "about" || $context == 'renderVersionBlock'))
 			return false;
 
 		ECLLanguage::loadLibLanguage();
-		//$update_info = array();
-		$this->getECLUpdateInfo('checkUpdate', $extension_name, $update_info, $user_data);
-		$this->_logging(array('update_info', $update_info));
 		$version            = array();
 		$version['current'] = (string) $extension_info['version'];
 		$version['new']     = (string) $extension_info['version'];
 		$version['error']   = "";
 		$vars               = new stdClass();
+		$vars->is_free = $is_free;
+		$this->getECLUpdateInfo('checkUpdate', $extension_name, $update_info, $user_data);
+		$this->_logging(array('update_info', $update_info));
+
 		switch (true)
 		{
+			case $is_free:
+				// TODO Как получить с сервера обновлений SWJProjects информацию о бесплатном расширении
+				$this->_logging(array('is free extension', $extension_name));
+				$version['new'] = "";
+				$vars->class    = $this->jVersion <= 3 ? "alert-success label-success": "alert-success";
+				$vars->text     = "FREE";
+				break;
 			case !$update_info:
 				// Данные не получены от сервера
 				$version['error']                = Text::_("ECLABS_ABOUT_FIELD_ERROR_NOT_RESPONSE");
