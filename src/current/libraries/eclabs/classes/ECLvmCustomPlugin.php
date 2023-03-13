@@ -197,8 +197,15 @@ abstract class ECLvmCustomPlugin extends vmCustomPlugin
 	protected function _itsMe(string $name, int $virtuemart_custom_id = null): bool
 	{
 		$ret = $name === $this->_name;
-		$ret &= (is_null($virtuemart_custom_id) ? $this->_virtuemart_custom_id : $virtuemart_custom_id) == $this->_virtuemart_custom_id;
+		//$ret &= (is_null($virtuemart_custom_id) ? $this->_virtuemart_custom_id : $virtuemart_custom_id) == $this->_virtuemart_custom_id;
 
+        if(is_null($virtuemart_custom_id)) {
+            $ret &= true;
+        } elseif (is_array($this->_virtuemart_custom_id)) {
+            $ret &= in_array($virtuemart_custom_id,$this->_virtuemart_custom_id);
+        } else {
+            $ret &= false;
+        }
 		return $ret;
 	}
 
@@ -220,6 +227,6 @@ abstract class ECLvmCustomPlugin extends vmCustomPlugin
 			->where($dbo->quoteName('custom_jplugin_id') . '=' . $dbo->quote($custom_jplugin_id));
 		$dbo->setQuery($query);
 
-		return $dbo->loadResult();
+		return $dbo->loadColumn();
 	}
 }
