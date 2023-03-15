@@ -31,4 +31,22 @@ class ECLLanguage
 	{
 		Factory::getLanguage()->load('eclabs', JPATH_ROOT);
 	}
+
+	/**
+	 * Load any extension language
+	 *
+	 * @param   string       $extension  Extension name
+	 * @param   string       $basePath   Base path to language files
+	 * @param   string|null  $lang       Language
+	 *
+	 * @return bool
+	 *
+	 * @since 1.0.0
+	 */
+	public static function loadExtraLanguageFiles(string $extension, string $basePath = JPATH_BASE, $lang = null): bool
+	{
+		$lang = Factory::getLanguage();
+
+		return $lang->load($extension, $basePath, $lang);
+	}
 }
