@@ -189,8 +189,8 @@ class PlgSystemECLabs extends ECLPlugin
 			foreach ($children as $child)
 			{
 				$attrs = $child->attributes();
-				$this->_logging(array($this->_eid, (string) $attrs['name'], (string) $attrs['type'], trim($child), true, $this->installer->extraQuery));
-				$tmp = ECLExtension::generateXMLLocation($this->_eid, (string) $attrs['name'], (string) $attrs['type'], trim($child), true, $this->installer->extraQuery);
+				$this->_logging(array($this->_eid, (string) $attrs['name'], (string) $attrs['type'], trim($child), true, $this->_installer->extraQuery));
+				$tmp = ECLExtension::generateXMLLocation($this->_eid, (string) $attrs['name'], (string) $attrs['type'], trim($child), true, $this->_installer->extraQuery);
 				if ($tmp !== false)
 				{
 					// Вернем значение location из манифеста
