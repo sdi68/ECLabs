@@ -12,7 +12,7 @@
 <extension type="plugin" group="system" method="upgrade">
     <name>PLG_SYSTEM_ECLABS</name>
     <author>Econsult labs</author>
-    <creationDate>2023-02</creationDate>
+    <creationDate>23.02.2023</creationDate>
     <copyright>(C) 2023 ECL.</copyright>
     <license>GNU General Public License version 2 or later; see LICENSE.txt</license>
     <authorEmail>info@econsultlab.ru</authorEmail>

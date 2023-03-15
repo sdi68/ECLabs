@@ -17,8 +17,7 @@ defined('_JEXEC') or die;
 
 /**
  * Абстрактный класс нумератора
- * @package pkg_swjprojects_payments
- * @subpackage  system/swjpayment
+ * @package ECLabs\Library
  * @version 1.0.0
  * @since 1.0.0
  */

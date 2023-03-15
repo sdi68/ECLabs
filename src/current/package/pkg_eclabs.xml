@@ -2,9 +2,9 @@
 
 <extension version="3.9" type="package" method="upgrade">
 	<name>PKG_ECLABS</name>
-	<packagename>ECLabs library</packagename>
+	<packagename>eclabs</packagename>
 	<author>Econsult labs</author>
-	<creationDate>2023-02</creationDate>
+	<creationDate>23.02.2023</creationDate>
 	<copyright>(C) 2023 ECL. All rights reserved.</copyright>
 	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
 	<authorEmail>info@econsultlab.ru</authorEmail>
