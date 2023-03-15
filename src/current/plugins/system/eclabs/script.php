@@ -73,6 +73,13 @@ if (!class_exists('plgSystemECLabsInstallerScript'))
 				->where($db->qn('element') . ' = ' . $db->q('eclabs'));
 			$pluginId = $db->setQuery($query)->loadResult();
 
+            // Включаем плагин
+            $query->clear()
+                ->update($db->qn('#__extensions'))
+                ->set($db->qn('enabled').'= 1')
+	            ->where($db->qn('extension_id') . ' = ' . $db->q($pluginId));
+            $db->setQuery($query)->execute();
+
 			$jversion = new Version;
 
 			?>
