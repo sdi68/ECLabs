@@ -31,14 +31,16 @@ extract($displayData);
         <div class="about-title">
 			<?php echo Text::_($info->name); ?>
         </div>
+        <?php if ($field->ext_page || $field->ext_doc): ?>
         <div class="about-links">
-			<?php if (!empty($field->ext_page)): ?>
+			<?php if ($field->ext_page): ?>
                 <a href="<?php echo $field->ext_page; ?>"><?php echo Text::_('ECLABS_ABOUT_FIELD_PAGE'); ?></a>
 			<?php endif; ?>
-			<?php if (!empty($field->ext_doc)): ?>
+			<?php if ($field->ext_doc): ?>
                 <a href="<?php echo $field->ext_doc; ?>"><?php echo Text::_('ECLABS_ABOUT_FIELD_DOC'); ?></a>
 			<?php endif; ?>
         </div>
+        <?php endif; ?>
 		<?php echo LayoutHelper::render('default-version', $displayData, __DIR__); ?>
         <div class="about-copyright">
 			<?php echo $info->copyright; ?>
