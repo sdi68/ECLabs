@@ -45,8 +45,8 @@ class ECLLanguage
 	 */
 	public static function loadExtraLanguageFiles(string $extension, string $basePath = JPATH_BASE, $lang = null): bool
 	{
-		$lang = Factory::getLanguage();
+		$language = Factory::getLanguage();
 
-		return $lang->load($extension, $basePath, $lang);
+		return $language->load($extension, $basePath, $lang);
 	}
 }
