@@ -34,7 +34,7 @@
     background-color: var(--about-bg-dark);
     color: var(--about-text-light);
     padding: 15px;
-    max-width: 600px;
+    max-width: 650px;
 }
 
 .about-wrap > .about-img {

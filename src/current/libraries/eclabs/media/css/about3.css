@@ -13,7 +13,7 @@
 
 .about-wrap .ecl-version-container .btn-mini [class^="icon-"] {
     border-radius: 50%;
-    background-color: #fff;
+    background-color: transparent;
 }
 
 

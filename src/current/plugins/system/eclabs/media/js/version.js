@@ -27,7 +27,7 @@ class ECLVersion extends ECLRequest{
             useOverlay: false,
             loaderContainerSelector: "#ecl-authorize:not(.ecl-modal) .ecl-spinner",
             spinnerSrc: "/media/eclabs/images/spinner_green.svg",
-            url:"index.php?option=com_ajax&plugin=eclabs&group=system&format=json",
+            url:"/index.php?option=com_ajax&plugin=eclabs&group=system&format=json",
             request_data:request_data,
             success_callback:this._render,
             fail_callback:null,
@@ -93,12 +93,14 @@ function showAuthorization(e) {
         let _password = getEl('#password', _inpParent, true).value;
         let _element_name = getEl('#element_name', _inpParent, true).value;
         let _extension_info = JSON.parse(getEl('#extension_info', _inpParent, true).value);
+        let _is_free = getEl('#is_free', _inpParent, true).value;
 
         let _request_data = {
             action: "renderVersionBlock",
             user_data: {ECL: {user: _user, password: _password}},
             element_name: _element_name,
-            extension_info: _extension_info
+            extension_info: _extension_info,
+            is_free: _is_free
         };
         const _container_id = "version-"+_element_name;
         let _debug_mode = typeof ecl_enable_log !== "undefined" ? ecl_enable_log : false;

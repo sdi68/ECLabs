@@ -30,6 +30,7 @@ if (!$vars->is_free)
 	Text::script('JAPPLY');
 	Text::script('JSUBMIT');
 	Text::script('ECLUPDATEINFO_STATUS_SUCCESS_TEXT');
+    Text::script('JVERSION');
 	?>
     <button type="button" class="btn btn-info btn-refresh" data-eclmodal data-shown="showAuthorization"
             data-title="<?php echo Text::_('PLG_SYSTEM_ECLABS_AUTHORISATION_TITLE'); ?>"
@@ -69,6 +70,7 @@ if (!$vars->is_free)
                     </div>
                     <input type="hidden" id="element_name" value="<?php echo $vars->element_name; ?>"/>
                     <input type="hidden" id="extension_info" value='<?php echo $vars->extension_info; ?>'/>
+                    <input type="hidden" id="is_free" value='<?php echo $vars->is_free ? 1:0; ?>'/>
                 </div>
                 <div class="ecl-spinner col-sm-3 text-center align-self-center"></div>
             </div>

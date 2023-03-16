@@ -290,13 +290,13 @@ class PlgSystemECLabs extends ECLPlugin
 				// TODO Как получить с сервера обновлений SWJProjects информацию о бесплатном расширении
 				$this->_logging(array('is free extension', $extension_name));
 				$version['new'] = "";
-				$vars->class    = $this->jVersion <= 3 ? "alert-success label-success": "alert-success";
+				$vars->class    = $this->jVersion <= 3 ? "label label-success": "alert-success";
 				$vars->text     = "FREE";
 				break;
 			case !$update_info:
 				// Данные не получены от сервера
 				$version['error']                = Text::_("ECLABS_ABOUT_FIELD_ERROR_NOT_RESPONSE");
-				$vars->class                     = $this->jVersion <= 3 ? "alert-danger label-danger": "alert-danger";
+				$vars->class                     = $this->jVersion <= 3 ? "label label-important": "alert-danger";
 				$vars->text                      = $version['error'];
 				$update_info['error']['message'] = Text::_("ECLABS_ABOUT_FIELD_ERROR_NOT_RESPONSE");
 				break;
@@ -304,7 +304,7 @@ class PlgSystemECLabs extends ECLPlugin
 				// Получена ошибка от сервера обновлений
 				$version['error'] = $update_info['error']['message'];
 				$version['new']   = "";
-				$vars->class      = $this->jVersion <= 3 ? "alert-danger label-danger": "alert-danger";;
+				$vars->class      = $this->jVersion <= 3 ? "label label-important": "alert-danger";;
 				$vars->text       = $version['error'];
 				break;
 			case  !empty($update_info['token']):
@@ -313,12 +313,12 @@ class PlgSystemECLabs extends ECLPlugin
 				if ($version['new'] == $version['current'])
 				{
 					$version['new'] = "";
-					$vars->class    = $this->jVersion <= 3 ? "alert-success label-success": "alert-success";
+					$vars->class    = $this->jVersion <= 3 ? "label label-success": "alert-success";
 					$vars->text     = Text::_('ECLABS_ABOUT_FIELD_USED_LAST_VERSION');
 				}
 				else
 				{
-					$vars->class = $this->jVersion <= 3 ? "alert-warning label-warning": "alert-warning";
+					$vars->class = $this->jVersion <= 3 ? "label label-warning": "alert-warning";
 					$vars->text  = Text::_('ECLABS_ABOUT_FIELD_NEW_VERSION');
 				}
 				break;
@@ -360,10 +360,11 @@ class PlgSystemECLabs extends ECLPlugin
 				$extension_info = $input->get('extension_info', '');
 				$element_name   = $input->get('element_name', '');
 				$user_data      = $input->get('user_data', array('ECL' => array('user' => '', 'password' => '')));
+                $is_free   = $input->get('is_free', 0);
 				$this->_logging(array('element_name', $element_name));
 				$html        = "";
 				$update_info = array();
-				$this->onRenderVersionBlock('renderVersionBlock', $extension_info, $element_name, $user_data, $update_info, $html);
+				$this->onRenderVersionBlock('renderVersionBlock', $extension_info, $element_name,$is_free, $user_data, $update_info, $html);
 				$out['response'] = array('extension' => $element_name, 'update_info' => $update_info, 'html' => $html);
 				$out['ok']       = true;
 				break;
@@ -416,7 +417,7 @@ class PlgSystemECLabs extends ECLPlugin
 				$doc->addScript('/media/eclabs/js/ecl_request.js');
                 $doc->addScript('/media/plg_system_eclabs/js/version.js');
 				JHtml::_('bootstrap.framework');
-				JHtml::_('bootstrap.loadCss', true);
+				//JHtml::_('bootstrap.loadCss', true);
                 $doc->addScriptDeclaration($js);
 		}
 	}
