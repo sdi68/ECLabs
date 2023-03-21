@@ -13,10 +13,15 @@
  */
 class ECLVersion extends ECLRequest{
     constructor(debug_mode=false) {
-        super();
+        const params = {
+            debug_mode: debug_mode,
+            loaderType: ECL_LOADER_TYPE_IMG,
+            containerSelector: "#ecl-authorize .ecl-spinner",
+            useOverlay:false,
+            spinnerSrc: "/media/eclabs/images/spinner_green.svg"
+        };
+        super(params);
         this._version_container_id='';
-        this.setDebugMode(debug_mode);
-
     }
 
     renderVersionBlock(request_data,container_id) {
@@ -24,16 +29,12 @@ class ECLVersion extends ECLRequest{
         this.debug('renderVersionBlock','container_id',container_id);
         const params = {
             debug_mode: this._debug_mode,
-            useOverlay: false,
-            loaderContainerSelector: "#ecl-authorize:not(.ecl-modal) .ecl-spinner",
-            spinnerSrc: "/media/eclabs/images/spinner_green.svg",
             url:"/index.php?option=com_ajax&plugin=eclabs&group=system&format=json",
             request_data:request_data,
             success_callback:this._render,
             fail_callback:null,
         };
         this.debug('renderVersionBlock','params',params);
-
         this.sendRequest(params);
     }
 
@@ -65,15 +66,8 @@ class ECLVersion extends ECLRequest{
                         let fields_group = this.getElement("#ecl-authorize:not(.ecl-modal) .ecl-fields");
                         this.getElement("#token", fields_group).value =_data.response.update_info.token;
                     }
-
                     // Привязываем открытие модального окна
-                    const _btn = Joomla.Text._('JSUBMIT');
-                    let params = {
-                        hideHeader:false,
-                        saveBtnCaption: _btn
-                    };
-                    let eclm = new ECLModal();
-                    eclm.initialize(params);
+                    ECLModal.bindModal('data-eclmodal');
                 }
             }
         }

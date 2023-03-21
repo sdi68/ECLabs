@@ -84,7 +84,7 @@ class PlgSystemECLabs extends ECLPlugin
 		$app = Factory::getApplication();
 		$doc = $app->getDocument();
 
-		// Если рендер не html то выходим
+		// Если рендер не html, то выходим
 		if (!($doc instanceof HtmlDocument))
 			return;
 
@@ -102,15 +102,15 @@ class PlgSystemECLabs extends ECLPlugin
 		}
 	}
 
-    /**
-     * Формируем информацию для платных расширений ECL после установки
-     *
-     * @param Installer $installer
-     * @param int $eid
-     *
-     * @throws Exception
-     * @since 1.0.0
-     */
+	/**
+	 * Формируем информацию для платных расширений ECL после установки
+	 *
+	 * @param   Installer  $installer
+	 * @param   int        $eid
+	 *
+	 * @throws Exception
+	 * @since 1.0.0
+	 */
 	public function onExtensionAfterInstall(Installer $installer, int $eid)
 	{
 		$this->_logging(array('eid' => $eid, 'installer' => $installer));
@@ -124,15 +124,15 @@ class PlgSystemECLabs extends ECLPlugin
 		}
 	}
 
-    /**
-     * Формируем информацию для платных расширений ECL после обновления или перестроения серверов обновлений
-     *
-     * @param Installer $installer
-     * @param int $eid
-     *
-     * @throws Exception
-     * @since 1.0.0
-     */
+	/**
+	 * Формируем информацию для платных расширений ECL после обновления или перестроения серверов обновлений
+	 *
+	 * @param   Installer  $installer
+	 * @param   int        $eid
+	 *
+	 * @throws Exception
+	 * @since 1.0.0
+	 */
 	public function onExtensionAfterUpdate(Installer $installer, int $eid)
 	{
 		$this->_logging(array('eid' => $eid, 'installer' => $installer));
@@ -280,7 +280,8 @@ class PlgSystemECLabs extends ECLPlugin
 		$version['new']     = (string) $extension_info['version'];
 		$version['error']   = "";
 		$vars               = new stdClass();
-		$vars->is_free = $is_free;
+		$vars->is_free      = $is_free;
+		$vars->debug_mode   = $this->enabled_log;
 		$this->getECLUpdateInfo('checkUpdate', $extension_name, $update_info, $user_data);
 		$this->_logging(array('update_info', $update_info));
 
@@ -290,13 +291,13 @@ class PlgSystemECLabs extends ECLPlugin
 				// TODO Как получить с сервера обновлений SWJProjects информацию о бесплатном расширении
 				$this->_logging(array('is free extension', $extension_name));
 				$version['new'] = "";
-				$vars->class    = $this->jVersion <= 3 ? "label label-success": "alert-success";
+				$vars->class    = $this->jVersion <= 3 ? "label label-success" : "alert-success";
 				$vars->text     = "FREE";
 				break;
 			case !$update_info:
 				// Данные не получены от сервера
 				$version['error']                = Text::_("ECLABS_ABOUT_FIELD_ERROR_NOT_RESPONSE");
-				$vars->class                     = $this->jVersion <= 3 ? "label label-important": "alert-danger";
+				$vars->class                     = $this->jVersion <= 3 ? "label label-important" : "alert-danger";
 				$vars->text                      = $version['error'];
 				$update_info['error']['message'] = Text::_("ECLABS_ABOUT_FIELD_ERROR_NOT_RESPONSE");
 				break;
@@ -304,8 +305,8 @@ class PlgSystemECLabs extends ECLPlugin
 				// Получена ошибка от сервера обновлений
 				$version['error'] = $update_info['error']['message'];
 				$version['new']   = "";
-				$vars->class      = $this->jVersion <= 3 ? "label label-important": "alert-danger";;
-				$vars->text       = $version['error'];
+				$vars->class      = $this->jVersion <= 3 ? "label label-important" : "alert-danger";;
+				$vars->text = $version['error'];
 				break;
 			case  !empty($update_info['token']):
 				// Получен токен
@@ -313,12 +314,12 @@ class PlgSystemECLabs extends ECLPlugin
 				if ($version['new'] == $version['current'])
 				{
 					$version['new'] = "";
-					$vars->class    = $this->jVersion <= 3 ? "label label-success": "alert-success";
+					$vars->class    = $this->jVersion <= 3 ? "label label-success" : "alert-success";
 					$vars->text     = Text::_('ECLABS_ABOUT_FIELD_USED_LAST_VERSION');
 				}
 				else
 				{
-					$vars->class = $this->jVersion <= 3 ? "label label-warning": "alert-warning";
+					$vars->class = $this->jVersion <= 3 ? "label label-warning" : "alert-warning";
 					$vars->text  = Text::_('ECLABS_ABOUT_FIELD_NEW_VERSION');
 				}
 				break;
@@ -335,7 +336,7 @@ class PlgSystemECLabs extends ECLPlugin
 			'name'    => (string) $extension_info['name'],
 			'version' => (string) $extension_info['version']
 		), JSON_UNESCAPED_UNICODE);
-		$html .= $this->_buildLayout($vars, 'authorize');
+		$html                 .= $this->_buildLayout($vars, 'authorize');
 
 		return true;
 	}
@@ -360,11 +361,11 @@ class PlgSystemECLabs extends ECLPlugin
 				$extension_info = $input->get('extension_info', '');
 				$element_name   = $input->get('element_name', '');
 				$user_data      = $input->get('user_data', array('ECL' => array('user' => '', 'password' => '')));
-                $is_free   = $input->get('is_free', 0);
+				$is_free        = $input->get('is_free', 0);
 				$this->_logging(array('element_name', $element_name));
 				$html        = "";
 				$update_info = array();
-				$this->onRenderVersionBlock('renderVersionBlock', $extension_info, $element_name,$is_free, $user_data, $update_info, $html);
+				$this->onRenderVersionBlock('renderVersionBlock', $extension_info, $element_name, $is_free, $user_data, $update_info, $html);
 				$out['response'] = array('extension' => $element_name, 'update_info' => $update_info, 'html' => $html);
 				$out['ok']       = true;
 				break;
@@ -384,8 +385,13 @@ class PlgSystemECLabs extends ECLPlugin
 	 */
 	protected final function _addMedia(): void
 	{
-        $js = "var ecl_jversion =".ECLVersion::getJoomlaVersion().";";
-		$js .="var ecl_enable_log=". $this->enabled_log .";";
+		$js = "var ecl_jversion =" . ECLVersion::getJoomlaVersion() . ";";
+		$js .= "var ecl_enable_log=" . $this->enabled_log . ";";
+
+		ECLLanguage::loadLibLanguage();
+		Text::script('JCLOSE');
+		Text::script('JAPPLY');
+		Text::script('JVERSION');
 		switch (ECLVersion::getJoomlaVersion())
 		{
 			case '4':
@@ -404,7 +410,7 @@ class PlgSystemECLabs extends ECLPlugin
 				$wa->useScript('plg_system_eclabs.version');
 
 				$wa->useScript('bootstrap.modal');
-                $wa->addInlineScript($js);
+				$wa->addInlineScript($js);
 				break;
 			default:
 				$doc = JFactory::getDocument();
@@ -414,11 +420,11 @@ class PlgSystemECLabs extends ECLPlugin
 
 				$doc->addScript('/media/eclabs/js/ecl.js');
 				$doc->addScript('/media/eclabs/js/ecl_modal.js');
+				$doc->addScript('/media/eclabs/js/ecl_loader.js');
 				$doc->addScript('/media/eclabs/js/ecl_request.js');
-                $doc->addScript('/media/plg_system_eclabs/js/version.js');
+				$doc->addScript('/media/plg_system_eclabs/js/version.js');
 				JHtml::_('bootstrap.framework');
-				//JHtml::_('bootstrap.loadCss', true);
-                $doc->addScriptDeclaration($js);
+				$doc->addScriptDeclaration($js);
 		}
 	}
 }

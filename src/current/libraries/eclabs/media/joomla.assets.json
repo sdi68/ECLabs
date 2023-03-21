@@ -16,23 +16,40 @@
       "uri": "eclabs/ecl.js"
     },
     {
-      "name": "eclabs.request",
+      "name": "eclabs.modal",
       "type": "script",
-      "uri": "eclabs/ecl_request.js",
+      "uri": "eclabs/ecl_modal.js",
       "dependencies": [
         "eclabs.ecl"
       ]
     },
     {
+      "name": "eclabs.loader",
+      "type": "script",
+      "uri": "eclabs/ecl_loader.js",
+      "dependencies": [
+        "eclabs.ecl",
+        "eclabs.modal"
+      ]
+    },
+
+    {
+      "name": "eclabs.request",
+      "type": "script",
+      "uri": "eclabs/ecl_request.js",
+      "dependencies": [
+        "eclabs.ecl",
+        "eclabs.loader",
+        "eclabs.modal"
+      ]
+    },
+
+    {
       "name": "eclabs.request",
       "type": "style",
       "uri": "eclabs/ecl_request.css"
     },
-    {
-      "name": "eclabs.modal",
-      "type": "script",
-      "uri": "eclabs/ecl_modal.js"
-    },
+
     {
       "name": "eclabs.modal",
       "type": "style",

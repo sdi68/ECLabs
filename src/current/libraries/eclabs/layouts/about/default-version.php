@@ -15,17 +15,5 @@ extract($displayData);
 ?>
 <div id="<?php echo $version['container_id']; ?>" class="ecl-version-container">
 	<?php echo $version['html'] ?? ''; ?>
-    <script type="text/javascript">
-        document.addEventListener("DOMContentLoaded", function () {
-            const _btn = Joomla.Text._('JSUBMIT');
-            let params = {
-                hideHeader: false,
-                saveBtnCaption: _btn
-            };
-            let _debug_mode = typeof ecl_enable_log !== "undefined" ? ecl_enable_log : false;
-            let eclm = new ECLModal(_debug_mode);
-            eclm.initialize(params);
-        });
-    </script>
 </div>
 
