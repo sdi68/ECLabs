@@ -11,11 +11,19 @@
  */
 class ECL {
     constructor(debug_mode = false) {
-        // Режим отладки
+        /**
+         * Флаг режима отладки
+         * @type {boolean}
+         * @protected
+         */
         this._debug_mode = debug_mode;
-        // Версия Joomla
+
+        /**
+         * Версия Joomla
+         * @type {number}
+         */
         this.jVersion = 4;
-        if (typeof this.ecl_jversion !== "undefined") {
+        if (typeof ecl_jversion !== "undefined") {
             this.jVersion = ecl_jversion;
         }
 
