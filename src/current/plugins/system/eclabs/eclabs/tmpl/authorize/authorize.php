@@ -1,12 +1,12 @@
 <?php
-/*
- * authorize.php  01.03.2023, 16:56
- * Created for project Joomla 3.x
- * Subpackage ___
- * www.econsultlab.ru
- * mail: info@econsultlab.ru
- * Released under the GNU General Public License
- * Copyright (c) 2023 Econsult Lab.
+/**
+ * @package         Econsult Labs Library
+ * @subpackage   Econsult Labs system plugin
+ * @version           1.0.0
+ * @author            ECL <info@econsultlab.ru>
+ * @link                 https://econsultlab.ru
+ * @copyright      Copyright © 2023 ECL All Rights Reserved
+ * @license           http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
 use ECLabs\Library\ECLLanguage;

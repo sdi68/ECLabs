@@ -1,13 +1,12 @@
 <?php defined('_JEXEC') or die;
 
 /**
- * @package         Econsult Labs Library
- * @version         1.0.0
- *
- * @author          ECL <info@econsultlab.ru>
- * @link            https://econsultlab.ru
- * @copyright       Copyright © 2023 ECL All Rights Reserved
- * @license         http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
+ * @package        Econsult Labs Library
+ * @version          1.0.0
+ * @author           ECL <info@econsultlab.ru>
+ * @link                https://econsultlab.ru
+ * @copyright      Copyright © 2023 ECL All Rights Reserved
+ * @license           http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
 use Joomla\Filesystem\Folder;
