@@ -79,4 +79,35 @@ class ECLTools
         file_put_contents($path, $entry, FILE_APPEND);
     }
 
+    /**
+     * Кодирует для передачи параметры
+     *
+     * @param   array  $params  Параметры
+     *
+     * @return string
+     *
+     * @since 1.0.0
+     */
+    public static function encodeParams(array $params, $unescape_unicode = false): string
+    {
+        if($unescape_unicode)
+            return base64_encode(json_encode($params, JSON_UNESCAPED_UNICODE));
+        else
+            return base64_encode(json_encode($params));
+    }
+
+    /**
+     * Декодирует после передачи параметры
+     *
+     * @param   string  $params  Кодированная строка параметров
+     *
+     * @return array
+     *
+     * @since 1.0.0
+     */
+    public static function decodeParams(string $params): array
+    {
+        return json_decode(base64_decode($params), true);
+    }
+
 }
