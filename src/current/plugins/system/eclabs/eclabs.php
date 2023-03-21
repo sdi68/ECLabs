@@ -413,8 +413,8 @@ class PlgSystemECLabs extends ECLPlugin
 				break;
 			default:
 				$doc = JFactory::getDocument();
-				$doc->addStyleSheet('/media/eclabs/css/about3.css');
-				$doc->addStyleSheet('/media/eclabs/css/ecl_modal3.css');
+				$doc->addStyleSheet('/media/eclabs/css/about.css');
+				$doc->addStyleSheet('/media/eclabs/css/ecl_modal.css');
 				$doc->addStyleSheet('/media/eclabs/css/ecl_request.css');
 
 				$doc->addScript('/media/eclabs/js/ecl.js');

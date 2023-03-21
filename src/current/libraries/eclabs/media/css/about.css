@@ -73,3 +73,13 @@
 .about-wrap .ecl-version-container .btn-refresh {
     padding: 0.25rem 0.5rem;
 }
+
+.about-wrap.version-3 .ecl-version-container .btn-mini:hover {
+    background-position: 0 -18px;
+}
+
+.about-wrap.version-3 .ecl-version-container .btn-mini [class^="icon-"] {
+    border-radius: 50%;
+    background-color: transparent;
+}
+

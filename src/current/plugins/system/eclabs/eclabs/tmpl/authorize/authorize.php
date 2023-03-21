@@ -19,42 +19,41 @@ use Joomla\CMS\Language\Text;
  */
 ECLLanguage::loadLibLanguage();
 
-if (!$vars->is_free)
-{
+if (!$vars->is_free) {
+    ob_start();
+    include 'default' . ECLVersion::getJoomlaVersion() . '.php';
+    $html = ob_get_contents();
+    ob_end_clean();
 
-	ob_start();
-	include 'default' . ECLVersion::getJoomlaVersion() . '.php';
-	$html = ob_get_contents();
-	ob_end_clean();
+    Text::script('JCLOSE');
+    Text::script('JAPPLY');
+    Text::script('JSUBMIT');
+    Text::script('ECLUPDATEINFO_STATUS_SUCCESS_TEXT');
+    Text::script('JVERSION');
+    $modal_params = array('debug_mode' => $vars->debug_mode,
+        'wrapId' => 'eclModal',
+        'dialogClass' => '',
+        'hideHeader' => false,
+        'hideFooter' => false,
+        'hiddenClass' => 'hidden',
+        'saveBtnCaption' => Text::_('JSUBMIT'),
+        'content' => $html,
+        'title' => Text::_('PLG_SYSTEM_ECLABS_AUTHORISATION_TITLE'),
+        'shown' => 'showAuthorization',
+        'hidden' => '');
 
-	Text::script('JCLOSE');
-	Text::script('JAPPLY');
-	Text::script('JSUBMIT');
-	Text::script('ECLUPDATEINFO_STATUS_SUCCESS_TEXT');
-	Text::script('JVERSION');
-	$modal_params = array('debug_mode'     => $vars->debug_mode,
-	                      'wrapId'         => 'eclModal',
-	                      'dialogClass'    => '',
-	                      'hideHeader'     => false,
-	                      'hideFooter'     => false,
-	                      'hiddenClass'    => 'hidden',
-	                      'saveBtnCaption' => Text::_('JSUBMIT'),
-	                      'content'        => $html,
-	                      'title'          => Text::_('PLG_SYSTEM_ECLABS_AUTHORISATION_TITLE'),
-	                      'shown'          => 'showAuthorization',
-	                      'hidden'         => '');
-
-	$modal_params = ECLTools::encodeParams($modal_params);
-
+    $modal_params = ECLTools::encodeParams($modal_params);
+}
 	?>
     <span><?php echo Text::_("JVERSION") . '&nbsp;' . $vars->version['current']; ?></span>&nbsp;
     <span class="<?php echo $vars->class; ?>">
     <?php echo $vars->text; ?>&nbsp;
-    <span id="new-<?php echo $vars->container_id; ?>">
-        <?php echo $vars->version['new']; ?>
+        <span id="new-<?php echo $vars->container_id; ?>">
+            <?php echo $vars->version['new']; ?>
+        </span>
     </span>
-</span>
 	<?php
+if (!$vars->is_free) {
 	if (ECLVersion::getJoomlaVersion() == '3'):
 		?>
         <a class="btn btn-mini button btn-info" data-eclmodal="<?php echo $modal_params; ?>">

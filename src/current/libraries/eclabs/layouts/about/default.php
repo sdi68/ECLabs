@@ -10,6 +10,7 @@
 
 defined('_JEXEC') or die;
 
+use ECLabs\Library\ECLVersion;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Layout\LayoutHelper;
 
@@ -22,7 +23,7 @@ use Joomla\CMS\Layout\LayoutHelper;
 extract($displayData);
 ?>
 
-<div class="about-wrap">
+<div class="about-wrap <?php echo ECLVersion::getJVersionClass(); ?>">
     <div class="about-img">
         <img src="<?php echo $field->ext_image; ?>"/>
     </div>
