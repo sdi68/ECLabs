@@ -7,58 +7,140 @@
  * @copyright       Copyright © 2023 ECL All Rights Reserved
  * @license         http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
+
 /**
  * http request class
  */
 class ECLRequest extends ECL {
-    constructor(debug_mode = false) {
-        super();
-        // Оверлэй при выполнении запроса
-        this._ajaxlockPane = document.getElementById("skm_LockPane");
-        // Элемент лоадера, во время выполнения запроса
-        this._ajaxLoader = document.getElementById("ajaxLoading");
-        // Режим отладки
-        this._debug_mode = debug_mode;
-        // Флаг использования оверлэя во время выполнения запроса
-        this._useOverlay = true;
-        // Селектор элемента, где располагается лоадер
-        this._loaderContainerSelector = "";
-        // Источник изображения спиннера лоадера
-        this._spinnerSrc = "";
-        // Метод запроса
+    /**
+     * Конструктор
+     * @param params Объект параметров
+     */
+    constructor(params) {
+        super(params.debug_mode ?? false);
+        /**
+         * Объект лоадера
+         * @type {ECLModalLoader|ECLSimpleLoader|null}
+         * @protected
+         */
+        this._loader = null;
+
+        /**
+         * Параметры по-умолчанию
+         * @type {object}
+         * @protected
+         */
+        this._defaultParams = {
+            debug_mode: false,
+            loaderType: ECL_LOADER_TYPE_IMG
+        }
+
+        this.setLoader(params);
+
+        /**
+         * Параметры запроса по-умолчанию
+         * @type {object}
+         * @protected
+         */
+        this._requestParams = {
+            // Метод запроса
+            method: "POST",
+            // Заголовок запроса
+            headers: {
+                'Cache-Control': 'no-cache',
+                'Content-Type': 'application/json'
+            },
+            // Полученные по запросу данные
+            url: '',
+            // Функция, вызываемая при удачном запросе
+            success_callback: null,
+            // Функция, вызываемая при ошибочном запросе
+            fail_callback: null,
+            request_data: null
+        };
+
+        /**
+         * Метод запроса
+         * @type {string}
+         * @protected
+         */
         this._method = "POST";
-        // Заголовок запроса
+
+        /**
+         * Заголовок запроса
+         * @type {object}
+         * @protected
+         */
         this._headers = {
             'Cache-Control': 'no-cache',
             'Content-Type': 'application/json'
         };
-        // URL запроса
+
+        /**
+         * URL запроса
+         * @type {string}
+         * @private
+         */
         this._url = "";
-        // Полученные по запросу данные
+
+        /**
+         * Полученные по запросу данные
+         * @type {object|null}
+         * @protected
+         */
         this._request_data = null;
-        // Функция, вызываемая при удачном запросе
+
+        /**
+         * Функция, вызываемая при удачном запросе
+         * @type {function|null}
+         * @protected
+         */
         this._success_callback = null;
-        // Функция, вызываемая при ошибочном запросе
+
+        /**
+         * Функция, вызываемая при ошибочном запросе
+         * @type {function|null}
+         * @protected
+         */
         this._fail_callback = null;
+    }
 
-        // Параметры по-умолчанию
-        this._default = {
-            debug_mode: false,
-            useOverlay: true,
-            loaderContainerSelector: "",
-            spinnerSrc: "/media/eclabs/images/loading.gif"
-        };
+    /**
+     * Устанавливает тип лоадера
+     * @param params Параметры лоадера
+     * @public
+     */
+    setLoader(params) {
+        let loaderType;
+        if (typeof params.loaderType !== "undefined") {
+            loaderType = params.loaderType;
+        } else {
+            loaderType = this._defaultParams.loaderType;
+        }
+        switch (loaderType) {
+            case ECL_LOADER_TYPE_MODAL:
+                this._loader = new ECLModalLoader(params);
+                break;
+            case ECL_LOADER_TYPE_IMG:
+            default:
+                this._loader = new ECLSimpleLoader(params);
+                break;
 
-        this.setDebugMode(this._debug_mode);
+        }
     }
 
     /**
      * Отправить запрос
      * @param params    Параметры запроса
      * @returns {boolean}
+     * @public
      */
     sendRequest(params) {
         this._initialize(params);
+
+        if (typeof params.content !== "undefined") {
+            this._loader.setContent(params.content);
+        }
 
         if (this._url === "" || typeof this._request_data !== "object") {
             this.debug('sendRequest', '_url', this._url);
@@ -108,7 +190,7 @@ class ECLRequest extends ECL {
     _onSuccess(response, xhr) {
         //Проверяем пришли ли ответы
         this.debug('_onSuccess', 'response', response);
-        if (this.getJVersion() <= 4)
+        if (this.jVersion <= 4)
             this._ajaxUnLock();
         if (typeof this._success_callback === "function")
             this._success_callback(response);
@@ -121,7 +203,7 @@ class ECLRequest extends ECL {
      */
     _onError(xhr) {
         this.debug('_onError', 'xhr', xhr);
-        if (this.getJVersion() <= 4)
+        if (this.jVersion <= 4)
             this._ajaxUnLock();
         if (typeof this._fail_callback === "function")
             this._fail_callback(xhr);
@@ -143,26 +225,6 @@ class ECLRequest extends ECL {
      * @private
      */
     _initialize(params) {
-        if (typeof params.debug_mode !== "undefined")
-            this._debug_mode = params.debug_mode;
-        else
-            this._debug_mode = this._default.debug_mode;
-
-        if (typeof params.useOverlay !== "undefined")
-            this._useOverlay = params.useOverlay;
-        else
-            this._useOverlay = this._default.useOverlay;
-
-        if (typeof params.loaderContainerSelector !== "undefined")
-            this._loaderContainerSelector = params.loaderContainerSelector;
-        else
-            this._loaderContainerSelector = this._default.loaderContainerSelector;
-
-        if (typeof params.spinnerSrc !== "undefined")
-            this._spinnerSrc = params.spinnerSrc;
-        else
-            this._spinnerSrc = this._default.spinnerSrc;
-
         if (typeof params.url !== "undefined")
             this._url = params.url;
 
@@ -175,44 +237,6 @@ class ECLRequest extends ECL {
         if (typeof params.fail_callback === "function")
             this._fail_callback = params.fail_callback;
 
-        if (this._ajaxLoader === null) {
-            this._buildAJAXLoader();
-        }
-    }
-
-    /**
-     * Построение оверлэя и лоадера
-     * @private
-     */
-    _buildAJAXLoader() {
-        const _loader = document.createElement('div');
-        _loader.id = "ajaxLoading";
-        const _img = document.createElement('img');
-        _img.setAttribute('src', this._spinnerSrc);
-        _loader.appendChild(_img);
-
-        if (this._useOverlay) {
-            // Используется overlay
-            const _lockPane = document.createElement('div');
-            _lockPane.id = "ecl_LockPane";
-            _lockPane.classList.add('LockOff');
-            _loader.appendChild(_lockPane);
-        }
-
-        let _loaderContainer = document.getElementsByTagName("body")[0];
-        if (this._loaderContainerSelector) {
-            _loaderContainer = document.querySelector(this._loaderContainerSelector);
-            if (typeof _loaderContainer !== "undefined") {
-                _loader.classList.add('ecl-embedded');
-            } else {
-                _loaderContainer = document.getElementsByTagName("body")[0];
-            }
-        }
-        _loaderContainer.appendChild(_loader);
-
-        this._ajaxlockPane = document.getElementById("ecl_LockPane");
-        this._ajaxLoader = document.getElementById("ajaxLoading");
-        this._ajaxLoader.style.display = 'none';
     }
 
     /**
@@ -220,13 +244,7 @@ class ECLRequest extends ECL {
      * @private
      */
     _ajaxLock() {
-        if (this._useOverlay) {
-            if (this._ajaxlockPane.classList.contains('LockOff'))
-                this._ajaxlockPane.classList.remove('LockOff');
-            if (!this._ajaxlockPane.classList.contains('LockOn'))
-                this._ajaxlockPane.classList.add('LockOn');
-        }
-        this._ajaxLoader.style.display = '';
+        this._loader.show();
     }
 
     /**
@@ -234,12 +252,6 @@ class ECLRequest extends ECL {
      * @private
      */
     _ajaxUnLock() {
-        if (this._useOverlay) {
-            if (!this._ajaxlockPane.classList.contains('LockOff'))
-                this._ajaxlockPane.classList.add('LockOff');
-            if (this._ajaxlockPane.classList.contains('LockOn'))
-                this._ajaxlockPane.classList.remove('LockOn');
-        }
-        this._ajaxLoader.style.display = 'none';
+        this._loader.hide();
     }
 }

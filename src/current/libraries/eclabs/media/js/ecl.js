@@ -11,12 +11,12 @@
  * Common js class
  */
 class ECL {
-    constructor() {
+    constructor(debug_mode = false) {
         // Режим отладки
-        this._debug_mode = false;
+        this._debug_mode = debug_mode;
         // Версия Joomla
         this.jVersion = 4;
-        if(typeof ecl_jversion !== "undefined") {
+        if (typeof this.ecl_jversion !== "undefined") {
             this.jVersion = ecl_jversion;
         }
 
@@ -25,6 +25,7 @@ class ECL {
     /**
      * Set debug mode
      * @param debug_mode    on/off debug mode
+     * @public
      */
     setDebugMode(debug_mode = false) {
         this._debug_mode = debug_mode;
@@ -35,6 +36,7 @@ class ECL {
      * @param method   Method name
      * @param name  Variable name
      * @param value Variable value
+     * @public
      */
     debug(method = '', name = '', value) {
         if (this._debug_mode) {
@@ -47,6 +49,7 @@ class ECL {
      * @param selector  Selector
      * @param parent    Parent element
      * @param single    Single or array
+     * @public
      * @returns {*|*[]}
      */
     getElement(selector, parent = document, single = true) {
@@ -56,9 +59,19 @@ class ECL {
 
     /**
      * Getting current joomla version
+     * @public
      * @returns int
      */
-    getJVersion(){
+    getJVersion() {
         return this.jVersion;
+    }
+
+    /**
+     * Getting class name, assigned with current Joomla version
+     * @public
+     * @returns string
+     */
+    getJVersionClass() {
+        return 'version-' + this.jVersion;
     }
 }

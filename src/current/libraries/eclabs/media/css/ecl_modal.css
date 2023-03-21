@@ -11,3 +11,23 @@
 .ecl-modal {
     display: none;
 }
+
+#eclModal.version-3 {
+    max-width: 400px;
+    margin: 0;
+    /* центрируем окно по горизонтали */
+    left:50%;
+    transform: translateX(-50%);
+}
+
+#eclModal.version-3 .row {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+    align-items: center;
+    margin-left:-15px;
+}
+
+#eclModal.version-3 .results_group {
+    margin-left:0;
+}

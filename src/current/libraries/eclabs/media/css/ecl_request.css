@@ -10,7 +10,7 @@
 
 /* блокировка экрана при работе AJAX BOF */
 #ajaxLoading {
-    position: absolute;
+    position: fixed;
     top: 50%;
     left: 0;
     right: 0;
