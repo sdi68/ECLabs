@@ -48,10 +48,20 @@ class ECLVersion
 	 *
 	 * @return string
 	 *
-	 * @since version
+	 * @since 1.0.0
 	 */
 	public static function getJoomlaVersionSuffix(string $suffix = ""): string
 	{
 		return $suffix . self::getJoomlaVersion();
+	}
+
+	/**
+	 * Getting class name, assigned with current Joomla version
+	 * @public
+	 * @returns string
+	 * @since 1.0.0
+	 */
+	public static function getJVersionClass() {
+		return self::getJoomlaVersionSuffix('version-');
 	}
 }
