@@ -33,7 +33,7 @@
     background-color: var(--about-bg-dark);
     color: var(--about-text-light);
     padding: 15px;
-    max-width: 650px;
+    max-width: 800px;
 }
 
 .about-wrap > .about-img {
@@ -72,6 +72,12 @@
 
 .about-wrap .ecl-version-container .btn-refresh {
     padding: 0.25rem 0.5rem;
+}
+
+/** JOOMLA 3 **/
+
+.about-wrap.version-3 {
+    max-width: 650px;
 }
 
 .about-wrap.version-3 .ecl-version-container .btn-mini:hover {
