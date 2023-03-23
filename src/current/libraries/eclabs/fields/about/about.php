@@ -11,6 +11,7 @@
 defined('_JEXEC') or die;
 
 use ECLabs\Library\ECLLanguage;
+use ECLabs\Library\ECLTools;
 use ECLabs\Library\ECLVersion;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Factory as JFactory;
@@ -229,8 +230,7 @@ class JFormFieldECL_About extends JFormField
 		$version['html'] = "";
 		$user_data       = array('ECL' => array('user' => '', 'password' => ''));
 		$update_info     = array();
-		$results         = Factory::getApplication()->triggerEvent('onRenderVersionBlock', array('about', (array) $info, $info->name, (bool) $this->free_update, $user_data, &$update_info, &$version['html']));
-
+		$results = ECLTools::triggerEvent('onRenderVersionBlock', array('about', (array) $info, $info->name, (bool) $this->free_update, $user_data, &$update_info, &$version['html']));
 		$options = array(
 			'options'   => array('class' => 'sdi-about-controls'),
 			'info'      => $info,
