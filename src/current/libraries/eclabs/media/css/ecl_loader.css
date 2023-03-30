@@ -1,0 +1,10 @@
+.version-4 .body-wrap .col-sm-9:before {
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+    content: "";
+}
+.version-4 .body-wrap .col-sm-9 > * {
+    display: inline-block;
+    vertical-align: middle;
+}
