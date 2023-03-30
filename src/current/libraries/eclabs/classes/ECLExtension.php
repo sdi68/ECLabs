@@ -1,7 +1,7 @@
 <?php
 /**
  * @package        Econsult Labs Library
- * @version          1.0.0
+ * @version          1.0.1
  * @author           ECL <info@econsultlab.ru>
  * @link                https://econsultlab.ru
  * @copyright      Copyright © 2023 ECL All Rights Reserved
