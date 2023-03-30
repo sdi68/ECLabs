@@ -344,7 +344,7 @@ class ECLModalLoader extends ECLLoader {
         this._eclmodal = null;
 
         /**
-         * Флаг ,что нужно скрывать лоадер автоматически
+         * Флаг, что нужно скрывать лоадер автоматически
          * @type {boolean}
          * @private
          */
@@ -429,7 +429,7 @@ class ECLModalLoader extends ECLLoader {
         let _columnClass = "span";
         let _hiddenClass = "hidden";
         switch (this.jVersion) {
-            case '4':
+            case 4:
                 _containerClass = "container";
                 _columnClass = "col-sm-";
                 _hiddenClass = "d-none";
@@ -487,7 +487,7 @@ class ECLModalLoader extends ECLLoader {
         if (_btns) {
             _btns.forEach(function (btn) {
                 if (enabled)
-                    btn.removeAttributeNode('disabled');
+                    btn.removeAttribute('disabled');
                 else
                     btn.setAttribute('disabled', 'disabled');
             });
