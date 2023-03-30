@@ -32,7 +32,6 @@
         "eclabs.modal"
       ]
     },
-
     {
       "name": "eclabs.request",
       "type": "script",
@@ -43,17 +42,32 @@
         "eclabs.modal"
       ]
     },
-
     {
-      "name": "eclabs.request",
-      "type": "style",
-      "uri": "eclabs/ecl_request.css"
+      "name": "eclabs.phonemask",
+      "type": "script",
+      "uri": "eclabs/ecl_phonemask.js",
+      "dependencies": [
+        "eclabs.ecl"
+      ]
     },
-
     {
       "name": "eclabs.modal",
       "type": "style",
       "uri": "eclabs/ecl_modal.css"
+    },
+    {
+      "name": "eclabs.loader",
+      "type": "style",
+      "uri": "eclabs/ecl_loader.css"
+    },
+    {
+      "name": "eclabs.request",
+      "type": "style",
+      "uri": "eclabs/ecl_request.css",
+      "dependencies": [
+        "eclabs.loader",
+        "eclabs.modal"
+      ]
     }
   ]
 }
