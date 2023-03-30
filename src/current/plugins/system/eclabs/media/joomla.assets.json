@@ -8,7 +8,10 @@
     {
       "name": "plg_system_eclabs.version",
       "type": "script",
-      "uri": "plg_system_eclabs/version.js"
+      "uri": "plg_system_eclabs/version.js",
+      "dependencies": [
+        "eclabs.request"
+      ]
     }
   ]
 }
