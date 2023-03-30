@@ -1,12 +1,12 @@
 <?php
 /**
- * @package         Econsult Labs Library
- * @subpackage   Econsult Labs system plugin
- * @version           1.0.0
- * @author            ECL <info@econsultlab.ru>
+ * @package              Econsult Labs Library
+ * @subpackage           Econsult Labs system plugin
+ * @version              1.0.0
+ * @author               ECL <info@econsultlab.ru>
  * @link                 https://econsultlab.ru
- * @copyright      Copyright © 2023 ECL All Rights Reserved
- * @license           http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
+ * @copyright            Copyright © 2023 ECL All Rights Reserved
+ * @license              http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
 defined('_JEXEC') or die;
@@ -86,6 +86,25 @@ class PlgSystemECLabs extends ECLPlugin
 		// Если рендер не html, то выходим
 		if (!($doc instanceof HtmlDocument))
 			return;
+
+		// Инициализируем общие скрипты библиотеки ECL
+		$js = "var ecl_jversion =" . ECLVersion::getJoomlaVersion() . ";";
+		$js .= "var ecl_enable_log=" . $this->enabled_log . ";";
+
+		ECLLanguage::loadLibLanguage();
+		Text::script('JCLOSE');
+		Text::script('JAPPLY');
+		Text::script('JVERSION');
+		switch (ECLVersion::getJoomlaVersion())
+		{
+			case '4':
+				/** @var Joomla\CMS\WebAsset\WebAssetManager $wa */
+				$wa = Factory::getApplication()->getDocument()->getWebAssetManager();
+				$wa->addInlineScript($js);
+				break;
+			default:
+				$doc->addScriptDeclaration($js);
+		}
 
 		// Если не admin - то выходим
 		if (!$app->isClient('administrator'))
@@ -397,11 +416,14 @@ class PlgSystemECLabs extends ECLPlugin
 				/** @var Joomla\CMS\WebAsset\WebAssetManager $wa */
 				$wa = Factory::getApplication()->getDocument()->getWebAssetManager();
 				$wr = $wa->getRegistry();
-				$wr->addRegistryFile('/media/plg_system_eclabs/joomla.assets.json');
 				$wr->addRegistryFile('/media/eclabs/joomla.assets.json');
+				$wr->addRegistryFile('/media/plg_system_eclabs/joomla.assets.json');
 
 				$wa->useStyle('eclabs.request');
 				$wa->useScript('eclabs.request');
+
+				$wa->useStyle('eclabs.loader');
+				$wa->useScript('eclabs.loader');
 
 				$wa->useStyle('eclabs.modal');
 				$wa->useScript('eclabs.modal');
@@ -416,6 +438,7 @@ class PlgSystemECLabs extends ECLPlugin
 				$doc->addStyleSheet('/media/eclabs/css/about.css');
 				$doc->addStyleSheet('/media/eclabs/css/ecl_modal.css');
 				$doc->addStyleSheet('/media/eclabs/css/ecl_request.css');
+				$doc->addStyleSheet('/media/eclabs/css/ecl_loader.css');
 
 				$doc->addScript('/media/eclabs/js/ecl.js');
 				$doc->addScript('/media/eclabs/js/ecl_modal.js');
