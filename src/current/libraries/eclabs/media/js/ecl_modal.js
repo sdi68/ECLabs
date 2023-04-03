@@ -290,7 +290,7 @@ class ECLModal extends ECL {
 
             // Отображение модального окна
             this._modal = window.bootstrap.Modal.getInstance(modal);
-        } else if (typeof jQuery !== "undefined") {
+        } else if (this.checkJQuery()/*typeof jQuery !== "undefined"*/) {
 
             this._modal = jQuery('#' + this._wrapId);
 
@@ -329,11 +329,11 @@ class ECLModal extends ECL {
         this.debug("show", "this._modal", this._modal);
         if (this._modal !== null) {
             switch (true) {
-                case typeof jQuery !== "undefined":
-                    this._modal.modal('show');
-                    break;
                 case typeof bootstrap !== "undefined":
                     this._modal.show();
+                    break;
+                case this.checkJQuery()://typeof jQuery !== "undefined":
+                    this._modal.modal('show');
                     break;
                 default:
                     this.debug("show", "Открытие окна не возможно",);
@@ -348,7 +348,7 @@ class ECLModal extends ECL {
         this.debug("hide", "this._modal", this._modal);
         if (this._modal !== null) {
             switch (true) {
-                case typeof jQuery !== "undefined":
+                case this.checkJQuery()://typeof jQuery !== "undefined":
                     this._modal.modal('hide');
                     break;
                 case typeof bootstrap !== "undefined":

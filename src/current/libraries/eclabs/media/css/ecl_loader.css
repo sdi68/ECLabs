@@ -7,13 +7,13 @@
  * @license           http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
-.version-4 .body-wrap .col-sm-9:before {
+.version-4 .body-wrap .loader-content:before {
     display: inline-block;
     height: 100%;
     vertical-align: middle;
     content: "";
 }
-.version-4 .body-wrap .col-sm-9 > * {
+.version-4 .body-wrap .loader-content > * {
     display: inline-block;
     vertical-align: middle;
 }

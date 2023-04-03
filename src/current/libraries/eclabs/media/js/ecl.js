@@ -81,4 +81,13 @@ class ECL {
     getJVersionClass() {
         return 'version-' + this.jVersion;
     }
+
+    /**
+     * Check when jQuery is loaded
+     * @public
+     * @returns boolean
+     */
+    checkJQuery(){
+        return !!window.jQuery;
+    }
 }

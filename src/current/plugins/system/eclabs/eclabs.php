@@ -431,6 +431,8 @@ class PlgSystemECLabs extends ECLPlugin
 				$wa->useScript('plg_system_eclabs.version');
 
 				$wa->useScript('bootstrap.modal');
+                $wa->useStyle('bootstrap.css');
+                
 				$wa->addInlineScript($js);
 				break;
 			default:

@@ -440,7 +440,7 @@ class ECLModalLoader extends ECLLoader {
 
         this._modalBODY = "<div id = \"" + this._modalBodyID + "\" class=\"body-wrap " + _containerClass + "\">\n" +
             "\t<div class=\"row\">\n" +
-            "\t\t<div class=\"" + _columnClass + "9 " + this._contentSelector + "\">" + this._content + "</div>\n" +
+            "\t\t<div class=\"loader-content " + _columnClass + "9 " + this._contentSelector + "\">" + this._content + "</div>\n" +
             "\t\t<div class=\"" + this._spinnerParentClass + " " + _columnClass + "3 text-center align-self-center\">" +
             "\t\t\t<img src = \"" + this._spinnerSrc + "\" />" +
             "\t\t</div>\n" +
