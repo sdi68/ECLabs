@@ -2,7 +2,7 @@
 
 /**
  * @package        Econsult Labs Library
- * @version          1.0.1
+ * @version          1.0.3
  * @author           ECL <info@econsultlab.ru>
  * @link                https://econsultlab.ru
  * @copyright      Copyright © 2023 ECL All Rights Reserved

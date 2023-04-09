@@ -2,7 +2,7 @@
 
 /**
  * @package        Econsult Labs Library
- * @version          1.0.1
+ * @version          1.0.3
  * @author           ECL <info@econsultlab.ru>
  * @link                https://econsultlab.ru
  * @copyright      Copyright © 2023 ECL All Rights Reserved
@@ -34,7 +34,7 @@ class ECLLanguage
 	/**
 	 * Load any extension language
 	 *
-	 * @param   string       $extension  Extension name
+	 * @param   string       $extension  Extension name (what is the name of language file, for example, plg_shop-connectors_virtuemart)
 	 * @param   string       $basePath   Base path to language files
 	 * @param   string|null  $lang       Language
 	 *
