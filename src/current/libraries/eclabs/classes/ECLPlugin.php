@@ -11,6 +11,7 @@
 namespace ECLabs\Library;
 
 defined('_JEXEC') or die;
+defined('DS') or define('DS', DIRECTORY_SEPARATOR);
 
 use Exception;
 use JFile;
@@ -137,4 +138,23 @@ abstract class ECLPlugin extends CMSPlugin
 	{
 		ECLTools::Storelog($this->_name, $data, $this->enabled_log);
 	}
+
+    /**
+     * Получает Id плагина
+     *
+     * @return mixed|null
+     *
+     * @since 1.0.1
+     */
+    protected final function _getId(){
+        $folder = str_replace(DS.$this->_name,'',str_replace(JPATH_PLUGINS.DS,'',$this->_plugin_path));
+        $db = Factory::getDbo();
+        $query = $db->getQuery(true);
+        $query->select($db->quoteName('extension_id'))
+            ->from($db->qn('#__extensions'))
+            ->where($db->quoteName('type') . ' = ' . $db->quote('plugin'))
+            ->where($db->quoteName('folder') . ' = ' . $db->quote($folder))
+            ->where($db->quoteName('element') . ' = ' . $db->quote($this->_name));
+        return $db->setQuery($query)->loadResult();
+    }
 }
