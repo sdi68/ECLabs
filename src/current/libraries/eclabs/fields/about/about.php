@@ -30,7 +30,7 @@ require_once JPATH_LIBRARIES . '/eclabs/classes/autoload.php';
 class JFormFieldECL_About extends JFormField
 {
 	/**
-	 * Feld type name
+	 * Field type name
 	 * @var string
 	 * @since 1.0.0
 	 */
