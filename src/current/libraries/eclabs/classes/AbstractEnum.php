@@ -104,12 +104,19 @@ abstract class AbstractEnum
 
     /**
      * Получает перевод наименования нумератора по значению
-     * @param string $value
+     * @param string $value     Значение нумератора
+     * @param string $unknown   Текст для отсутствующего значения
      * @return string
      * @since 1.0.0
      */
-    public static function getEnumNameText(string $value): string
+    public static function getEnumNameText(string $value, string $unknown = "ECL_UNKNOWN_ENUM"): string
     {
-        return Text::_(self::getEnumName($value) . '_TEXT');
+        //return Text::_(self::getEnumName($value)? . '_TEXT');
+        $text = self::getEnumName($value);
+        if(!$text) {
+            return $unknown;
+        } else {
+            return Text::_($text . '_TEXT');
+        }
     }
 }
