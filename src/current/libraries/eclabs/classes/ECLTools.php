@@ -69,17 +69,16 @@ class ECLTools
 		$entry = Factory::getDate()->format('[Y-m-d H:i:s]') . ' - ' . json_encode($data) . "\n";
 
 		// Compute the log file's path.
-		static $path;
-		if (!$path)
-		{
-			$config = new JConfig();
-			$path   = $config->log_path . '/' . $name . '.php';
-			if (!file_exists($path))
+        static $paths = array();
+        if(!isset($paths[$name])) {
+                $config = new JConfig();
+                $path[$name] = $config->log_path . '/' . $name . '.php';
+			if (!file_exists($path[$name]))
 			{
-				file_put_contents($path, "<?php die('Forbidden.'); ?>\n\n");
+                file_put_contents($path[$name], "<?php die('Forbidden.'); ?>\n\n");
 			}
-		}
-		file_put_contents($path, $entry, FILE_APPEND);
+        }
+        file_put_contents($path[$name], $entry, FILE_APPEND);
 	}
 
 	/**

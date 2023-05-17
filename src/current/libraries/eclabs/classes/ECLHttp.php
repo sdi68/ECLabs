@@ -160,8 +160,17 @@ class ECLHttp
 		$coptions[CURLOPT_HTTPHEADER]     = array('Content-Type: application/json');
 		$coptions[CURLOPT_RETURNTRANSFER] = true;
 		$coptions[CURLOPT_POST]           = 1;
-		$options['transport.curl']        = $coptions;
+
 		//TODO SDI не работает установка опций http->setOption('transport.curl', $options);
+        switch(ECLVersion::getJoomlaVersion()){
+            case '3':
+                $options = new Registry();
+                $options->set('transport.curl',$coptions);
+                break;
+            case '4':
+            default:
+            $options['transport.curl']        = $coptions;
+        }
 		$http = HttpFactory::getHttp($options, ['curl']);
 		try
 		{
