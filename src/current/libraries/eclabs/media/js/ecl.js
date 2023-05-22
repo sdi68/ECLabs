@@ -87,7 +87,18 @@ class ECL {
      * @public
      * @returns boolean
      */
-    checkJQuery(){
+    checkJQuery() {
         return !!window.jQuery;
+    }
+
+    /**
+     * Remove all events from the DOM element
+     * @public
+     * @param element   DOM Element
+     */
+    removeAllEvents(element) {
+        if (element) {
+            element.replaceWith(element.cloneNode(true));
+        }
     }
 }
