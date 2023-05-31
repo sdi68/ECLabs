@@ -66,3 +66,4 @@ if (!$vars->is_free) {
 	<?php endif; ?>
 	<?php
 }
+?>

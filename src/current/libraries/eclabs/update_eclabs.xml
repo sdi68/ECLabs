@@ -9,13 +9,13 @@
 
 <updates>
     <update>
-        <name>Econsult Labs Library v. 1.0.7</name>
-        <description>Обновление библиотеки Econsult Labs Library до версии 1.0.7</description>
+        <name>Econsult Labs Library v. 1.0.8</name>
+        <description>Обновление библиотеки Econsult Labs Library до версии 1.0.8</description>
         <element>eclabs</element>
         <type>library</type>
-        <version>1.0.7</version>
+        <version>1.0.8</version>
         <client>0</client>
-        <infourl title="Econsult Labs Library update то v. 1.0.7">
+        <infourl title="Econsult Labs Library update то v. 1.0.8">
             https://econsultlab.ru/
         </infourl>
         <downloads>
@@ -29,6 +29,6 @@
         <maintainer>ECL</maintainer>
         <maintainerurl>https://econsultlab.ru</maintainerurl>
         <targetplatform name="joomla" version="3.[6789]|10 | 4"/>
-        <php_minimum>7.4</php_minimum>
+        <php_minimum>8.0</php_minimum>
     </update>
 </updates>

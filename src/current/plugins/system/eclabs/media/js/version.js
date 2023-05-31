@@ -1,13 +1,14 @@
 /*
  * @package         Econsult Labs Library
  * @subpackage   Econsult Labs system plugin
- * @version           1.0.1
+ * @version           1.0.2
  * @author            ECL <info@econsultlab.ru>
  * @link                 https://econsultlab.ru
  * @copyright      Copyright © 2023 ECL All Rights Reserved
  * @license           http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 /**
+ *
  * Обработка по AJAX информации о расширении и генерация блока версии для xml поля about
  */
 class ECLVersion extends ECLRequest{
@@ -23,6 +24,11 @@ class ECLVersion extends ECLRequest{
         this._version_container_id='';
     }
 
+    /**
+     * Вывод блока версии
+     * @param request_data  Данные запроса
+     * @param container_id  Идентификатор контейнера блока
+     */
     renderVersionBlock(request_data,container_id) {
         this._version_container_id = container_id;
         this.debug('renderVersionBlock','container_id',container_id);
@@ -37,6 +43,11 @@ class ECLVersion extends ECLRequest{
         this.sendRequest(params);
     }
 
+    /**
+     * Вывод блока
+     * @param response  Полученные данные
+     * @private
+     */
     _render(response){
         this.debug('renderVersionBlock','response',response);
         if (response) {
@@ -56,7 +67,7 @@ class ECLVersion extends ECLRequest{
                         alert = _data.response.update_info.error.message;
                         alert_class = "alert alert-danger";
                     }
-                    var wrapper = document.createElement('div')
+                    let wrapper = document.createElement('div');
                     wrapper.innerHTML = '<div class="' + alert_class + ' alert-dismissible" role="alert">' + alert + '</div>'
                     results_group.classList.remove('d-none');
                     alert_container.appendChild(wrapper);
@@ -79,8 +90,10 @@ const getEl = (selector, parent = document, single = true) => single ? parent.qu
 function showAuthorization(e) {
     let element = document.querySelector('#' + e.target.id + ' #ecl-modal-send');
     console.log('element', element);
+    element.removeAttribute('disabled');
     element.addEventListener('click', function (e) {
         e.preventDefault();
+        e.currentTarget.setAttribute('disabled', 'disabled');
         const _inpParent = getEl('.ecl-fields', e.currentTarget.parentElement.parentElement, true);
         let _user = getEl('#user', _inpParent, true).value;
         let _password = getEl('#password', _inpParent, true).value;
@@ -88,16 +101,40 @@ function showAuthorization(e) {
         let _extension_info = JSON.parse(getEl('#extension_info', _inpParent, true).value);
         let _is_free = getEl('#is_free', _inpParent, true).value;
 
+        let _has_token = getEl("#has_token",_inpParent, true).getProperty("checked",false);
+        let _token = getEl("#token",_inpParent, true).value;
+
         let _request_data = {
             action: "renderVersionBlock",
-            user_data: {ECL: {user: _user, password: _password}},
+            user_data: {ECL: {user: _user, password: _password,has_token:_has_token,token:_token}},
             element_name: _element_name,
             extension_info: _extension_info,
-            is_free: _is_free
+            is_free: _is_free,
         };
         const _container_id = "version-"+_element_name;
         let _debug_mode = typeof ecl_enable_log !== "undefined" ? ecl_enable_log : false;
         let eclv = new ECLVersion(_debug_mode);
         eclv.renderVersionBlock(_request_data,_container_id);
     });
+
+    // Add version 1.0.2
+    let hasToken = getEl("#has_token",document, true);
+    console.log('hasToken', hasToken);
+    const _checked =  hasToken.getProperty("checked",false);
+    const _inpParent = getEl('.ecl-fields', hasToken.parentElement.parentElement.parentElement.parentElement, true);
+    setReadOnly(_inpParent,_checked);
+
+    hasToken.addEventListener('change', function (e) {
+        e.preventDefault();
+        const _inpParent = getEl('.ecl-fields', e.currentTarget.parentElement.parentElement.parentElement.parentElement, true);
+        const _checked =  e.currentTarget.getProperty("checked",false);
+        console.log('_checked', _checked);
+        setReadOnly(_inpParent,_checked);
+    });
+
+    function setReadOnly(parent, isReadOnly = false) {
+        getEl('#user', parent, true).setProperty("readonly",isReadOnly);
+        getEl('#password', parent, true).setProperty("readonly",isReadOnly);
+        getEl('#token', parent, true).setProperty("readonly",!isReadOnly);
+    }
 }

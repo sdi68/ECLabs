@@ -2,7 +2,7 @@
 /**
  * @package         Econsult Labs Library
  * @subpackage   Econsult Labs system plugin
- * @version           1.0.1
+ * @version           1.0.2
  * @author            ECL <info@econsultlab.ru>
  * @link                 https://econsultlab.ru
  * @copyright      Copyright © 2023 ECL All Rights Reserved
@@ -249,22 +249,33 @@ class PlgSystemECLabs extends ECLPlugin
 	private function getECLUpdateInfo(string $context, string $element_name, array &$update_info, array &$user_data): void
 	{
 		// TODO проверка контекста на данный момент не нужна
-		if (empty($user_data['ECL']['user']) || empty($user_data['ECL']['password']))
-		{
-			// Нет данных пользователя или токена
-			$user_data = ECLExtension::getCustomData($element_name);
-			if (empty($user_data['ECL']['user']) || empty($user_data['ECL']['password']))
-			{
-				$update_info['error'] = array(
-					'code'    => ECLUpdateInfoStatus::ECLUPDATEINFO_STATUS_ERROR_USERINFO_MISSING,
-					'message' => ECLUpdateInfoStatus::getEnumNameText(ECLUpdateInfoStatus::ECLUPDATEINFO_STATUS_ERROR_USERINFO_MISSING)
-				);
+        if(($user_data['ECL']['has_token'] ?? false) && empty($user_data['ECL']['token']) &&
+            (empty($user_data['ECL']['user']) || empty($user_data['ECL']['password']))) {
+            // Данных для авторизации не введено. Получим их из БД
+            $user_data = ECLExtension::getCustomData($element_name);
+        }
 
-				return;
-			}
-		}
+        switch (true) {
+            case((($user_data['ECL']['has_token'] ?? false) && $user_data['ECL']['token'])) || ($user_data['ECL']['user'] && $user_data['ECL']['password']):
+                break;
+            case ($user_data['ECL']['has_token'] ?? false) && empty($user_data['ECL']['token']):
+                $update_info['error'] = array(
+                    'code'    => ECLUpdateInfoStatus::ECLUPDATEINFO_STATUS_ERROR_MISSING_TOKEN,
+                    'message' => ECLUpdateInfoStatus::getEnumNameText(ECLUpdateInfoStatus::ECLUPDATEINFO_STATUS_ERROR_MISSING_TOKEN)
+                );
+                return;
+            case empty($user_data['ECL']['user']) || empty($user_data['ECL']['password']):
+                $update_info['error'] = array(
+                    'code' => ECLUpdateInfoStatus::ECLUPDATEINFO_STATUS_ERROR_USERINFO_MISSING,
+                    'message' => ECLUpdateInfoStatus::getEnumNameText(ECLUpdateInfoStatus::ECLUPDATEINFO_STATUS_ERROR_USERINFO_MISSING)
+                );
+                return;
+        }
+
 		$element                        = ECLExtension::getElement($element_name);
-		$update_info                    = ECLExtension::checkUpdate($element, $user_data['ECL']['user'], $user_data['ECL']['password']);
+
+        $this->_logging(array("Before sending ECLExtension::getUpdateFromServer params - user_data" => $user_data));
+        $update_info                    = ECLExtension::getUpdateFromServer($element, $user_data);
 		$user_data['ECL']['token']      = $update_info['token'] ?? '';
 		$user_data['ECL']['project_id'] = $update_info['project_id'] ?? '';
 		ECLExtension::setCustomData($element_name, $user_data['ECL']);
@@ -378,7 +389,7 @@ class PlgSystemECLabs extends ECLPlugin
 			case "renderVersionBlock":
 				$extension_info = $input->get('extension_info', '');
 				$element_name   = $input->get('element_name', '');
-				$user_data      = $input->get('user_data', array('ECL' => array('user' => '', 'password' => '')));
+				$user_data      = $input->get('user_data', array('ECL' => array('user' => '', 'password' => '','has_token' =>false,'token'=>'' )));
 				$is_free        = $input->get('is_free', 0);
 				$this->_logging(array('element_name', $element_name));
 				$html        = "";
@@ -429,6 +440,7 @@ class PlgSystemECLabs extends ECLPlugin
 				$wa->useScript('eclabs.modal');
 
 				$wa->useScript('plg_system_eclabs.version');
+				$wa->useStyle('plg_system_eclabs.eclabs');
 
 				$wa->useScript('bootstrap.modal');
                 $wa->useStyle('bootstrap.css');
@@ -441,6 +453,7 @@ class PlgSystemECLabs extends ECLPlugin
 				$doc->addStyleSheet('/media/eclabs/css/ecl_modal.css');
 				$doc->addStyleSheet('/media/eclabs/css/ecl_request.css');
 				$doc->addStyleSheet('/media/eclabs/css/ecl_loader.css');
+				$doc->addStyleSheet('/media/plg_system_eclabs/css/eclabs.css');
 
 				$doc->addScript('/media/eclabs/js/ecl.js');
 				$doc->addScript('/media/eclabs/js/ecl_modal.js');

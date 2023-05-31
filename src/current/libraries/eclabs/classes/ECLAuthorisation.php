@@ -1,11 +1,11 @@
 <?php
 /**
- * @package        Econsult Labs Library
- * @version          1.0.3
- * @author           ECL <info@econsultlab.ru>
+ * @package             Econsult Labs Library
+ * @version             1.0.8
+ * @author              ECL <info@econsultlab.ru>
  * @link                https://econsultlab.ru
- * @copyright      Copyright © 2023 ECL All Rights Reserved
- * @license           http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
+ * @copyright           Copyright © 2023 ECL All Rights Reserved
+ * @license             http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
 namespace ECLabs\Library;
@@ -32,7 +32,15 @@ class ECLAuthorisation
 	 */
 	public static function encodeAuthorisationParams(array $params): string
 	{
-		$params['password'] = self::_encrypt($params['password']);
+		// since version 1.0.8
+		if (isset($params['password']))
+		{
+			$params['password'] = self::_encrypt($params['password']);
+		}
+		elseif (isset($params['user_data']['password']))
+		{
+			$params['user_data']['password'] = self::_encrypt($params['user_data']['password']);
+		}
 
 		return base64_encode(json_encode($params, JSON_UNESCAPED_UNICODE));
 	}

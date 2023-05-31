@@ -3,7 +3,7 @@
 /**
  * @package         Econsult Labs Library
  * @subpackage   Econsult Labs system plugin
- * @version           1.0.1
+ * @version           1.0.2
  * @author            ECL <info@econsultlab.ru>
  * @link                 https://econsultlab.ru
  * @copyright      Copyright © 2023 ECL All Rights Reserved
@@ -127,6 +127,7 @@ if (!class_exists('plgSystemECLabsInstallerScript'))
 
             <h3>the System ECLabs Plugin v1.0.1 Changelog</h3>
             <ul class="version-history">
+                <li><span class="version-upgraded">1.0.2</span> Add only token extension authorisation.</li>
                 <li><span class="version-fixed">1.0.1</span> Bug fix.</li>
                 <li><span class="version-new">NEW</span> First version.</li>
             </ul>

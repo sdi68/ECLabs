@@ -2,7 +2,7 @@
 <!--
   ~ @package         Econsult Labs Library
   ~ @subpackage   Econsult Labs system plugin
-  ~ @version           1.0.1
+  ~ @version           1.0.2
   ~ @author            ECL <info@econsultlab.ru>
   ~ @link                 https://econsultlab.ru
   ~ @copyright      Copyright © 2023 ECL All Rights Reserved
@@ -16,7 +16,7 @@
     <license>GNU General Public License version 2 or later; see LICENSE.txt</license>
     <authorEmail>info@econsultlab.ru</authorEmail>
     <authorUrl>https://econsultlab.ru</authorUrl>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <description>PLG_SYSTEM_ECLABS_XML_DESCRIPTION</description>
 
     <!-- Scripts to run on installation -->

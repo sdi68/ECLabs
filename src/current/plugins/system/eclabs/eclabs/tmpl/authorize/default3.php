@@ -2,7 +2,7 @@
 /**
  * @package         Econsult Labs Library
  * @subpackage   Econsult Labs system plugin
- * @version           1.0.1
+ * @version           1.0.2
  * @author            ECL <info@econsultlab.ru>
  * @link                 https://econsultlab.ru
  * @copyright      Copyright © 2023 ECL All Rights Reserved
@@ -50,6 +50,23 @@ use Joomla\CMS\Language\Text;
                                aria-label="<?php echo Text::_('JGLOBAL_PASSWORD'); ?>"
                                aria-describedby="basic-addon2"
                                value="<?php echo $vars->user_data['ECL']['password'] ?? ''; ?>">
+                    </div>
+                </div>
+                <div class="control-group horizontal">
+                    <div class="control-label">
+                        <label id="hasToken-lbl" for="has_token" class="hasPopover"
+                               title="" data-content="<?php echo Text::_('PLG_SYSTEM_ECLABS_HAS_TOKEN'); ?>"
+                               data-original-title="<?php echo Text::_('PLG_SYSTEM_ECLABS_HAS_TOKEN'); ?>">
+                            <?php echo Text::_('PLG_SYSTEM_ECLABS_HAS_TOKEN'); ?>
+                        </label>
+                    </div>
+                    <div class="controls">
+                        <input type="checkbox" id="has_token" class="form-control"
+                               placeholder="<?php echo Text::_('PLG_SYSTEM_ECLABS_HAS_TOKEN'); ?>"
+                               aria-label="<?php echo Text::_('PLG_SYSTEM_ECLABS_HAS_TOKEN'); ?>"
+                               aria-describedby="basic-addon2"
+                               <?php  echo isset($vars->user_data['ECL']['has_token']) && $vars->user_data['ECL']['has_token'] ? 'checked': ''; ?>
+                               value="">
                     </div>
                 </div>
                 <div class="control-group">

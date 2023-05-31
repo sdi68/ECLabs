@@ -1,7 +1,7 @@
 <?php
 /**
  * @package        Econsult Labs Library
- * @version          1.0.3
+ * @version          1.0.8
  * @author           ECL <info@econsultlab.ru>
  * @link                https://econsultlab.ru
  * @copyright      Copyright © 2023 ECL All Rights Reserved
@@ -11,6 +11,7 @@
 namespace ECLabs\Library;
 
 use Exception;
+use JLog;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\Database\ParameterType;
@@ -32,15 +33,16 @@ class ECLExtension
 
 	/**
 	 * Получает информацию по обновлениям расширения для пользователя
-	 *
 	 * @param   string  $extension  Наименование расширения
 	 * @param   string  $user_name  Имя пользователя
 	 * @param   string  $password   Пароль пользователя
 	 *
 	 * @return false|mixed
 	 *
-	 * @throws \Exception
-	 * @since 1.0.0
+	 * @throws Exception
+	 * @see  getUpdateFromServer
+	 * @deprecated since version 1.0.8
+     * @since 1.0.0
 	 */
 	public static function checkUpdate(string $extension, string $user_name, string $password)
 	{
@@ -55,6 +57,35 @@ class ECLExtension
 
 		return $data;
 	}
+
+    /**
+     * Получает информацию по обновлениям расширения
+     *
+     * @param   string  $extension  Наименование расширения
+     * @param   array  $user_data  Данные пользователя расширения (имя и пароль или токен)
+     *
+     * @return false|mixed
+     *
+     * @throws Exception
+     * @since 1.0.8
+     */
+    public static function getUpdateFromServer(string $extension, array $user_data)
+    {
+        $params = array('user_data' => $user_data['ECL'], 'element' => $extension);
+        $params = ECLAuthorisation::encodeAuthorisationParams($params);
+        $link   = self::_ECL_UPDATE_SERVER_URL . '/index.php?option=com_swjprojects&view=token&params=' . $params;
+        try {
+            $data = ECLHttp::get($link);
+        } catch (Exception $e) {
+            JLog::add($e,JLog::ERROR, "ECLExtension::getUpdateFromServer");
+            return false;
+        }
+        if (empty($data))
+        {
+            return false;
+        }
+        return $data;
+    }
 
 	/**
 	 * Получает параметры пользователя из поля custom_data для данного расширения

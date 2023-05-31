@@ -1,0 +1,23 @@
+/*
+ * @package         Econsult Labs Library
+ * @subpackage   Econsult Labs system plugin
+ * @version           1.0.2
+ * @author            ECL <info@econsultlab.ru>
+ * @link                 https://econsultlab.ru
+ * @copyright      Copyright © 2023 ECL All Rights Reserved
+ * @license           http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
+ */
+#ecl-authorize .horizontal {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    align-items: center;
+}
+#ecl-authorize .horizontal label {
+    margin-bottom: 0;
+    margin-left: 15px;
+}
+#ecl-authorize .horizontal input {
+    margin-top: 0;
+}
+
