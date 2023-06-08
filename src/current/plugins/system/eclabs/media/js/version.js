@@ -89,7 +89,7 @@ const getEl = (selector, parent = document, single = true) => single ? parent.qu
 
 function showAuthorization(e) {
     let element = document.querySelector('#' + e.target.id + ' #ecl-modal-send');
-    console.log('element', element);
+    //console.log('element', element);
     element.removeAttribute('disabled');
     element.addEventListener('click', function (e) {
         e.preventDefault();
@@ -100,8 +100,7 @@ function showAuthorization(e) {
         let _element_name = getEl('#element_name', _inpParent, true).value;
         let _extension_info = JSON.parse(getEl('#extension_info', _inpParent, true).value);
         let _is_free = getEl('#is_free', _inpParent, true).value;
-
-        let _has_token = getEl("#has_token",_inpParent, true).getProperty("checked",false);
+        let _has_token = !!getEl("#has_token",_inpParent, true).checked;
         let _token = getEl("#token",_inpParent, true).value;
 
         let _request_data = {
@@ -117,24 +116,29 @@ function showAuthorization(e) {
         eclv.renderVersionBlock(_request_data,_container_id);
     });
 
-    // Add version 1.0.2
     let hasToken = getEl("#has_token",document, true);
-    console.log('hasToken', hasToken);
-    const _checked =  hasToken.getProperty("checked",false);
+    //console.log('hasToken', hasToken);
+    const _checked =  !!hasToken.checked;
     const _inpParent = getEl('.ecl-fields', hasToken.parentElement.parentElement.parentElement.parentElement, true);
     setReadOnly(_inpParent,_checked);
 
     hasToken.addEventListener('change', function (e) {
         e.preventDefault();
         const _inpParent = getEl('.ecl-fields', e.currentTarget.parentElement.parentElement.parentElement.parentElement, true);
-        const _checked =  e.currentTarget.getProperty("checked",false);
-        console.log('_checked', _checked);
+        const _checked =  e.currentTarget.checked;
+        //console.log('_checked', _checked);
         setReadOnly(_inpParent,_checked);
     });
 
     function setReadOnly(parent, isReadOnly = false) {
-        getEl('#user', parent, true).setProperty("readonly",isReadOnly);
-        getEl('#password', parent, true).setProperty("readonly",isReadOnly);
-        getEl('#token', parent, true).setProperty("readonly",!isReadOnly);
+        if(isReadOnly) {
+            getEl('#user', parent, true).setAttribute("readonly","readonly");
+            getEl('#password', parent, true).setAttribute("readonly","readonly");
+            getEl('#token', parent, true).removeAttribute("readonly");
+        } else {
+            getEl('#user', parent, true).removeAttribute("readonly");
+            getEl('#password', parent, true).removeAttribute("readonly");
+            getEl('#token', parent, true).setAttribute("readonly","readonly");
+        }
     }
 }

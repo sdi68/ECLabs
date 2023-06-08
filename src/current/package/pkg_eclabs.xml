@@ -11,6 +11,7 @@
 	<authorUrl>https://econsultlab.ru</authorUrl>
 	<version>1.0.3</version>
 	<description>PKG_ECLABS_XML_DESCRIPTION</description>
+	<ecltype>free</ecltype>
 
 	<languages folder="language">
 		<language tag="en-GB">en-GB/en-GB.pkg_eclabs.sys.ini</language>

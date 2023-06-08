@@ -1,0 +1,6 @@
+{
+  "require": {
+    "php": ">=7.4",
+    "simplehtmldom/simplehtmldom": "2.0-RC2"
+  }
+}

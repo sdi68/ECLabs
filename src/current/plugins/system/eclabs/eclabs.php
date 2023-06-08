@@ -2,7 +2,7 @@
 /**
  * @package         Econsult Labs Library
  * @subpackage   Econsult Labs system plugin
- * @version           1.0.2
+ * @version           1.0.3
  * @author            ECL <info@econsultlab.ru>
  * @link                 https://econsultlab.ru
  * @copyright      Copyright © 2023 ECL All Rights Reserved
@@ -22,8 +22,13 @@ use Joomla\CMS\Event\Table\BeforeStoreEvent;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Installer\Installer;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\MVC\Model\BaseDatabaseModel;
 use Joomla\Component\Installer\Administrator\Model\InstallModel;
 use Joomla\Database\ParameterType;
+
+if (!class_exists('simple_html_dom'))
+	include_once JPATH_LIBRARIES . '/eclabs/vendor/simplehtmldom/simplehtmldom/simple_html_dom.php';
+
 
 require_once JPATH_LIBRARIES . '/eclabs/classes/autoload.php';
 
@@ -88,29 +93,47 @@ class PlgSystemECLabs extends ECLPlugin
 			return;
 
 		// Инициализируем общие скрипты библиотеки ECL
-		$js = "var ecl_jversion =" . ECLVersion::getJoomlaVersion() . ";";
-		$js .= "var ecl_enable_log=" . $this->enabled_log . ";";
-
-		ECLLanguage::loadLibLanguage();
-		Text::script('JCLOSE');
-		Text::script('JAPPLY');
-		Text::script('JVERSION');
-		switch (ECLVersion::getJoomlaVersion())
-		{
-			case '4':
-				/** @var Joomla\CMS\WebAsset\WebAssetManager $wa */
-				$wa = Factory::getApplication()->getDocument()->getWebAssetManager();
-				$wa->addInlineScript($js);
-				break;
-			default:
-				$doc->addScriptDeclaration($js);
-		}
+//		$js = "var ecl_jversion =" . ECLVersion::getJoomlaVersion() . ";";
+//		$js .= "var ecl_enable_log=" . $this->enabled_log . ";";
+//
+//		ECLLanguage::loadLibLanguage();
+//		Text::script('JCLOSE');
+//		Text::script('JAPPLY');
+//		Text::script('JVERSION');
+//		switch (ECLVersion::getJoomlaVersion())
+//		{
+//			case '4':
+//				/** @var Joomla\CMS\WebAsset\WebAssetManager $wa */
+//				$wa = Factory::getApplication()->getDocument()->getWebAssetManager();
+//				$wa->addInlineScript($js);
+//                $wa->addStyle('plg_system_eclabs.eclabs');
+//				break;
+//			default:
+//				$doc->addScriptDeclaration($js);
+//                $doc->addStyleSheet('/media/plg_system_eclabs/css/eclabs.css');
+//                $doc->addScript('/media/plg_system_eclabs/js/version.js');
+//		}
 
 		// Если не admin - то выходим
 		if (!$app->isClient('administrator'))
 			return;
+        $input = $app->input;
+        $option = $input->get("option","");
+        if($option !== "com_installer")
+            return;
+        $this->_addMedia();
+        switch (ECLVersion::getJoomlaVersion())
+		{
+			case '4':
+				/** @var Joomla\CMS\WebAsset\WebAssetManager $wa */
+				$wa = Factory::getApplication()->getDocument()->getWebAssetManager();
+                $wa->useStyle('plg_system_eclabs.eclabs');
+				break;
+			default:
+                $doc->addStyleSheet('/media/plg_system_eclabs/css/eclabs.css');
+		}
 
-		$this->_updateSites = Factory::getApplication()->getUserState('eclabs.updateSites', false);
+        $this->_updateSites = Factory::getApplication()->getUserState('eclabs.updateSites', false);
 		$this->_logging(array('eclabs.updateSites' => $this->_updateSites));
 		if (is_array($this->_updateSites))
 		{
@@ -119,6 +142,92 @@ class PlgSystemECLabs extends ECLPlugin
 			Factory::getApplication()->setUserState('eclabs.updateSites', null);
 		}
 	}
+
+    /**
+     * onAfterRender.
+     *
+     * @return  void
+     *
+     * @throws Exception
+     * @since   1.0.1
+     */
+    public function onAfterRender(){
+        $app = Factory::getApplication();
+        $doc = $app->getDocument();
+
+        // Если рендер не html, то выходим
+        if (!($doc instanceof HtmlDocument))
+            return;
+        // Если не admin - то выходим
+        if (!$app->isClient('administrator'))
+            return;
+
+        // Страница обновлений
+        $input = $app->input;
+        $option = $input->get("option","");
+        if($option !== "com_installer")
+            return;
+
+        // Вывод блока авторизации в списке обновлений
+        /** @var InstallerModelUpdate $model */
+        $model = BaseDatabaseModel::getInstance('Update', 'InstallerModel');
+        $items = $model->getItems();
+        $ecl_apps = new stdClass();
+        foreach ($items as $item) {
+            $ecltype = ECLExtension::checkECLType($item->extension_id);
+            if($ecltype) {
+                $item->ecltype = $ecltype;
+                $item->version = $item->current_version;
+                $item->name = $item->element;
+                $key = $item->update_id;
+                $ecl_apps->$key = $item;
+            }
+        }
+        // Преобразуем в массив
+        $ecl_apps = json_decode(json_encode($ecl_apps),true);
+        $buffer = $app->getBody();
+        $html   = new simple_html_dom();
+        $html->load($buffer);
+        $table = null;
+        $td_id = null;
+        switch (ECLVersion::getJoomlaVersion())
+        {
+            case '4':
+                break;
+            default:
+                $table = $html->find('#installer-update .table',0);
+                if($table) {
+                    foreach ($table->find('tr[class*=row]') as $tr){
+                        $td_id = $tr->find('td',0);
+                        if($td_id) {
+                            $i = $td_id->first_child();
+                            if($i && $i->tag == "input") {
+                                $update_id = $i->attr['value'];
+                                if(isset($ecl_apps[$update_id])) {
+                                    // Выводим
+                                    $version_block = "";
+                                    $user_data       = array('ECL' => array('user' => '', 'password' => '', 'has_token' => false,'token'=>''));
+                                    $update_info     = array();
+                                    $this->onRenderVersionBlock('renderVersionBlock',
+                                        $ecl_apps[$update_id],
+                                        $ecl_apps[$update_id]['name'],
+                                        !($ecl_apps[$update_id]['ecltype'] === "payed"),
+                                        $user_data,
+                                        $update_info,
+                                        $version_block);
+                                    $td_name = $td_id->next_sibling();
+                                    $td_name->class .= " sdi-extension-name-container";
+                                    $text = $td_name->first_child()->first_child();
+                                    $text->outertext .= ('<div id = "version-'.$ecl_apps[$update_id]['name'].'" class = "sdi-version-container">'.$version_block.'</div>');
+                                }
+                            }
+                        }
+                    }
+                }
+        }
+        $html->save();
+        $app->setBody((string) $html);
+    }
 
 	/**
 	 * Формируем информацию для платных расширений ECL после установки
@@ -131,7 +240,7 @@ class PlgSystemECLabs extends ECLPlugin
 	 */
 	public function onExtensionAfterInstall(Installer $installer, int $eid)
 	{
-		$this->_logging(array('eid' => $eid, 'installer' => $installer));
+		$this->_logging(array('onExtensionAfterInstall' =>'','eid' => $eid, 'installer' => $installer));
 		if ($eid)
 		{
 			$this->_installer = $installer;
@@ -141,6 +250,11 @@ class PlgSystemECLabs extends ECLPlugin
 			$this->_processUpdateSites();
 		}
 	}
+
+    public function onExtensionBeforeUpdate($type,$manifest):bool {
+        $this->_logging(array('onExtensionBeforeUpdate' =>'','type' => $type, 'manifest' => $manifest));
+        return true;
+    }
 
 	/**
 	 * Формируем информацию для платных расширений ECL после обновления или перестроения серверов обновлений
@@ -153,7 +267,7 @@ class PlgSystemECLabs extends ECLPlugin
 	 */
 	public function onExtensionAfterUpdate(Installer $installer, int $eid)
 	{
-		$this->_logging(array('eid' => $eid, 'installer' => $installer));
+		$this->_logging(array('onExtensionAfterUpdate' =>'','eid' => $eid, 'installer' => $installer));
 		if ($eid)
 		{
 			$this->_installer = $installer;
@@ -207,7 +321,7 @@ class PlgSystemECLabs extends ECLPlugin
 			foreach ($children as $child)
 			{
 				$attrs = $child->attributes();
-				$this->_logging(array($this->_eid, (string) $attrs['name'], (string) $attrs['type'], trim($child), true, $this->_installer->extraQuery));
+				$this->_logging(array('_processUpdateSites'=>'',$this->_eid, (string) $attrs['name'], (string) $attrs['type'], trim($child), true, $this->_installer->extraQuery));
 				$tmp = ECLExtension::generateXMLLocation($this->_eid, (string) $attrs['name'], (string) $attrs['type'], trim($child), true, $this->_installer->extraQuery);
 				if ($tmp !== false)
 				{
@@ -215,7 +329,7 @@ class PlgSystemECLabs extends ECLPlugin
 					// extra_query не используется
 					$this->_updateLocationAndExtraQuery(trim($child), null);
 					$this->_updateSites[] = $tmp;
-					$this->_logging(array('_updateSites' => $this->_updateSites));
+					$this->_logging(array('_processUpdateSites'=>'','_updateSites' => $this->_updateSites));
 					Factory::getApplication()->setUserState('eclabs.updateSites', $this->_updateSites);
 				}
 			}
@@ -227,7 +341,7 @@ class PlgSystemECLabs extends ECLPlugin
 			if ($data !== '')
 			{
 				// We have a single entry in the update server line, let us presume this is an extension line
-				$this->_logging(array(Text::_('PLG_EXTENSION_JOOMLA_UNKNOWN_SITE')));
+				$this->_logging(array('_processUpdateSites',Text::_('PLG_EXTENSION_JOOMLA_UNKNOWN_SITE')));
 			}
 		}
 	}
@@ -249,25 +363,27 @@ class PlgSystemECLabs extends ECLPlugin
 	private function getECLUpdateInfo(string $context, string $element_name, array &$update_info, array &$user_data): void
 	{
 		// TODO проверка контекста на данный момент не нужна
-        if(($user_data['ECL']['has_token'] ?? false) && empty($user_data['ECL']['token']) &&
-            (empty($user_data['ECL']['user']) || empty($user_data['ECL']['password']))) {
+        if((($user_data['ECL']['has_token'] ?? false) && empty($user_data['ECL']['token']) &&
+            (empty($user_data['ECL']['user']) || empty($user_data['ECL']['password']))) ||
+        (!($user_data['ECL']['has_token'] ?? false)) && (empty($user_data['ECL']['user']) || empty($user_data['ECL']['password']))) {
             // Данных для авторизации не введено. Получим их из БД
             $user_data = ECLExtension::getCustomData($element_name);
         }
 
         switch (true) {
+            case(!isset($user_data['ECL'])):
+            case (empty($user_data['ECL']['user']) || empty($user_data['ECL']['password'])) && !($user_data['ECL']['has_token'] ?? false):
+                $update_info['error'] = array(
+                    'code' => ECLUpdateInfoStatus::ECLUPDATEINFO_STATUS_ERROR_USERINFO_MISSING,
+                    'message' => ECLUpdateInfoStatus::getEnumNameText(ECLUpdateInfoStatus::ECLUPDATEINFO_STATUS_ERROR_USERINFO_MISSING)
+                );
+                return;
             case((($user_data['ECL']['has_token'] ?? false) && $user_data['ECL']['token'])) || ($user_data['ECL']['user'] && $user_data['ECL']['password']):
                 break;
             case ($user_data['ECL']['has_token'] ?? false) && empty($user_data['ECL']['token']):
                 $update_info['error'] = array(
                     'code'    => ECLUpdateInfoStatus::ECLUPDATEINFO_STATUS_ERROR_MISSING_TOKEN,
                     'message' => ECLUpdateInfoStatus::getEnumNameText(ECLUpdateInfoStatus::ECLUPDATEINFO_STATUS_ERROR_MISSING_TOKEN)
-                );
-                return;
-            case empty($user_data['ECL']['user']) || empty($user_data['ECL']['password']):
-                $update_info['error'] = array(
-                    'code' => ECLUpdateInfoStatus::ECLUPDATEINFO_STATUS_ERROR_USERINFO_MISSING,
-                    'message' => ECLUpdateInfoStatus::getEnumNameText(ECLUpdateInfoStatus::ECLUPDATEINFO_STATUS_ERROR_USERINFO_MISSING)
                 );
                 return;
         }
@@ -309,6 +425,7 @@ class PlgSystemECLabs extends ECLPlugin
 		$version['new']     = (string) $extension_info['version'];
 		$version['error']   = "";
 		$vars               = new stdClass();
+        $vars->show_auth_btn = true; // Показать или нет кнопку авторизации
 		$vars->is_free      = $is_free;
 		$vars->debug_mode   = $this->enabled_log;
 		$this->getECLUpdateInfo('checkUpdate', $extension_name, $update_info, $user_data);
@@ -322,6 +439,7 @@ class PlgSystemECLabs extends ECLPlugin
 				$version['new'] = "";
 				$vars->class    = $this->jVersion <= 3 ? "label label-success" : "alert-success";
 				$vars->text     = "FREE";
+                $vars->version_tooltip = "Для получения обновлений не требуется регистрация на https://econsultlab.ru";
 				break;
 			case !$update_info:
 				// Данные не получены от сервера
@@ -329,17 +447,21 @@ class PlgSystemECLabs extends ECLPlugin
 				$vars->class                     = $this->jVersion <= 3 ? "label label-important" : "alert-danger";
 				$vars->text                      = $version['error'];
 				$update_info['error']['message'] = Text::_("ECLABS_ABOUT_FIELD_ERROR_NOT_RESPONSE");
-				break;
+                $vars->version_tooltip = Text::_("PLG_SYSTEM_ECLABS_AUTHORISATION_NEED_TOOLTIP");
+                break;
 			case !empty($update_info['error']) && $update_info['error'] !== ECLUpdateInfoStatus::ECLUPDATEINFO_STATUS_SUCCESS :
 				// Получена ошибка от сервера обновлений
 				$version['error'] = $update_info['error']['message'];
 				$version['new']   = "";
 				$vars->class      = $this->jVersion <= 3 ? "label label-important" : "alert-danger";;
 				$vars->text = $version['error'];
+                $vars->version_tooltip = Text::_("PLG_SYSTEM_ECLABS_AUTHORISATION_NEED_TOOLTIP");
 				break;
 			case  !empty($update_info['token']):
 				// Получен токен
 				$version['new'] = $update_info['last_version'] ?? $version['current'];
+                $vars->show_auth_btn = false;
+                $vars->version_tooltip = Text::_("PLG_SYSTEM_ECLABS_AUTHORISATION_SUCCESS_TOOLTIP");
 				if ($version['new'] == $version['current'])
 				{
 					$version['new'] = "";
@@ -354,9 +476,12 @@ class PlgSystemECLabs extends ECLPlugin
 				break;
 			default:
 				$version['new'] = "";
+                $vars->version_tooltip = "";
 				break;
 		}
-
+        if($vars->version_tooltip) {
+            $vars->class .= " hasTooltip";
+        }
 		$vars->version        = $version;
 		$vars->container_id   = "version-" . $extension_info['name'];
 		$vars->user_data      = $user_data;
@@ -421,6 +546,13 @@ class PlgSystemECLabs extends ECLPlugin
 		Text::script('JCLOSE');
 		Text::script('JAPPLY');
 		Text::script('JVERSION');
+        Text::script('ECLUPDATEINFO_STATUS_SUCCESS_TEXT');
+        Text::script('ECLUPDATEINFO_STATUS_ERROR_AUTHORIZATION_TEXT');
+        Text::script('ECLUPDATEINFO_STATUS_ERROR_MISSING_VERSION_TEXT');
+        Text::script('ECLUPDATEINFO_STATUS_ERROR_MISSING_EXTENSION_TEXT');
+        Text::script('ECLUPDATEINFO_STATUS_ERROR_USERINFO_MISSING_TEXT');
+        Text::script('ECLUPDATEINFO_STATUS_ERROR_MISSING_TOKEN_TEXT');
+
 		switch (ECLVersion::getJoomlaVersion())
 		{
 			case '4':
@@ -440,11 +572,10 @@ class PlgSystemECLabs extends ECLPlugin
 				$wa->useScript('eclabs.modal');
 
 				$wa->useScript('plg_system_eclabs.version');
-				$wa->useStyle('plg_system_eclabs.eclabs');
 
 				$wa->useScript('bootstrap.modal');
                 $wa->useStyle('bootstrap.css');
-                
+
 				$wa->addInlineScript($js);
 				break;
 			default:
@@ -453,7 +584,6 @@ class PlgSystemECLabs extends ECLPlugin
 				$doc->addStyleSheet('/media/eclabs/css/ecl_modal.css');
 				$doc->addStyleSheet('/media/eclabs/css/ecl_request.css');
 				$doc->addStyleSheet('/media/eclabs/css/ecl_loader.css');
-				$doc->addStyleSheet('/media/plg_system_eclabs/css/eclabs.css');
 
 				$doc->addScript('/media/eclabs/js/ecl.js');
 				$doc->addScript('/media/eclabs/js/ecl_modal.js');

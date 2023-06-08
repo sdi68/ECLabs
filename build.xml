@@ -13,7 +13,7 @@
     <!--Каталог сборок, входящих в пакет-->
     <property name="packages" value="packages"/>
     <!--Версия пакета-->
-    <property name="pkg_version" value="1_0_0"/>
+    <property name="pkg_version" value="1_0_3"/>
     <!--Префикс файла манифеста по-умолчанию-->
     <property name = "manifest_prefix" value = "update_" />
     <!--Очищаем директорию на FTP перед копирование сборки и манифеста-->
@@ -46,7 +46,7 @@
         <phingcall target="_build_source_package" >
             <property name = "source" value = "eclabs" />
             <property name = "prefix" value = "lib_" />
-            <property name = "version" value = "1_0_0" />
+            <property name = "version" value = "1_0_9" />
             <property name = "source_dir" value = "src/current/libraries/${source}" />
             <property name = "ftp_dir" value = "${ftp.common_dir}/libraries/${source}/" />
             <property name = "manifest_dir" value = "${source_dir}/" />
@@ -59,7 +59,7 @@
         <phingcall target="_build_source_package" >
             <property name = "source" value = "eclabs" />
             <property name = "prefix" value = "plg_" />
-            <property name = "version" value = "" />
+            <property name = "version" value = "1_0_3" />
             <property name = "source_dir" value = "src/current/plugins/system/${source}" />
             <property name = "ftp_dir" value = "${ftp.common_dir}plugins/system/${source}/" />
             <property name = "manifest_dir" value = "${source_dir}/" />
@@ -71,7 +71,7 @@
             <property name = "is_package" value = "true" />
             <property name = "source" value = "eclabs" />
             <property name = "prefix" value = "pkg_" />
-            <property name = "version" value = "" />
+            <property name = "version" value = "1_0_3" />
             <!-- <property name = "source_dir" value = "${releases}" /> -->
             <property name = "source_dir" value = "src/current/package/" />
             <property name = "ftp_dir" value = "${ftp.common_dir}" />
@@ -110,7 +110,7 @@
         <phingcall target="_build_source_package" >
             <property name = "source" value = "eclabs" />
             <property name = "prefix" value = "lib_" />
-            <property name = "version" value = "1_0_0" />
+            <property name = "version" value = "1_0_9" />
             <property name = "source_dir" value = "src/current/libraries/${source}" />
             <property name = "ftp_dir" value = "${ftp.common_dir}/" />
             <property name = "manifest_dir" value = "${source_dir}/" />
@@ -124,7 +124,7 @@
         <phingcall target="_build_source_package" >
             <property name = "source" value = "eclabs" />
             <property name = "prefix" value = "plg_" />
-            <property name = "version" value = "" />
+            <property name = "version" value = "1_0_3" />
             <property name = "source_dir" value = "src/current/plugins/system/${source}" />
             <property name = "ftp_dir" value = "${ftp.common_dir}plugins/system/${source}/" />
             <property name = "manifest_dir" value = "${source_dir}/" />
@@ -136,7 +136,7 @@
             <property name = "is_package" value = "true" />
             <property name = "source" value = "eclabs" />
             <property name = "prefix" value = "pkg_" />
-            <property name = "version" value = "" />
+            <property name = "version" value = "1_0_3" />
             <!-- <property name = "source_dir" value = "${releases}" /> -->
             <property name = "source_dir" value = "src/current/package/" />
             <property name = "ftp_dir" value = "${ftp.common_dir}" />

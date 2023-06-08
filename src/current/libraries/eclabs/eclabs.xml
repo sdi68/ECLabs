@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
   ~ @package        Econsult Labs Library
-  ~ @version          1.0.3
+  ~ @version          1.0.9
   ~ @author           ECL <info@econsultlab.ru>
   ~ @link                https://econsultlab.ru
   ~ @copyright      Copyright © 2023 ECL All Rights Reserved
@@ -11,13 +11,14 @@
 <extension version="3.9" type="library" method="upgrade">
 	<name>ECLabs Library</name>
 	<description>Econsult Labs Library - используется с расширениями от Econsult Labs</description>
-	<version>1.0.8</version>
+	<version>1.0.9</version>
 	<creationDate>24.05.2023</creationDate>
 	<author>Econsult Labs</author>
 	<authorEmail>info@econsultlab.ru</authorEmail>
 	<authorUrl>https://econsultlab.ru</authorUrl>
 	<copyright>Copyright © 2023 ECL - All Rights Reserved</copyright>
 	<license>https://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
+	<ecltype>free</ecltype>
 
 	<libraryname>eclabs</libraryname>
 	<scriptfile>script.php</scriptfile>
@@ -40,6 +41,7 @@
 		<folder>helpers</folder>
 		<folder>layouts</folder>
 		<folder>classes</folder>
+		<folder>vendor</folder>
 	</files>
 
 	<media folder="media" destination="eclabs">

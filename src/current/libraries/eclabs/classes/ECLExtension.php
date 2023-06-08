@@ -13,8 +13,10 @@ namespace ECLabs\Library;
 use Exception;
 use JLog;
 use Joomla\CMS\Factory;
+use Joomla\CMS\Filesystem\File;
 use Joomla\CMS\Language\Text;
 use Joomla\Database\ParameterType;
+use SimpleXMLElement;
 
 define('ECL_UPDATE_SERVER_URL','@UPDATE_SERVER_URL@');
 /**
@@ -359,4 +361,76 @@ class ECLExtension
 		}
 
 	}
+
+    /**
+     * Get type of ECL extension, like as paid or free.
+     * Тне type contains in manifest file in tag "ecltype"
+     * For example:
+     * <ecltype>payed</ecltype>
+     * or
+     * <ecltype>free</ecltype>
+     *
+     * @param int $extension_id Id extension
+     *
+     * @return SimpleXMLElement|string
+     * @throws Exception
+     * @since 1.0.8
+     */
+    public static function checkECLType($extension_id)
+    {
+        $dbo   = Factory::getDbo();
+        $query = $dbo->getQuery(true);
+        $query->select($dbo->quoteName('element'))
+            ->select($dbo->quoteName('type'))
+            ->select($dbo->quoteName('folder'))
+	        ->select($dbo->quoteName('client_id'))
+            ->from($dbo->quoteName('#__extensions'))
+            ->where($dbo->quoteName('extension_id') . ' = ' . $dbo->quote($extension_id));
+        $dbo->setQuery($query);
+        $info =  $dbo->loadAssoc();
+        if($info) {
+            switch($info['type']) {
+                case "component":
+                    $m_path = JPATH_ADMINISTRATOR.'/components/'.$info['element'].'/'.str_replace('com_','',$info['element']).'.xml';
+                    break;
+                case "plugin":
+                    $m_path = JPATH_PLUGINS.'/'.$info['folder'].'/'.$info['element'].'/'.$info['element'].'.xml';
+                    break;
+                case "package":
+                    $m_path = JPATH_MANIFESTS.'/packages/'.$info['element'].'.xml';
+                    break;
+                case "library":
+                    $m_path = JPATH_MANIFESTS.'/libraries/'.$info['element'].'.xml';
+                    break;
+	            case "module":
+			            $m_path = ($info['client_id'] ? JPATH_SITE : JPATH_ADMINISTRATOR).'/modules/'.$info['element'].'/'.$info['element'].'.xml';
+		            break;
+	            case "language":
+					// TODO: где файл манифеста языка?
+		            return "";
+		            break;
+	            case "template":
+					if ($info['client_id']) {
+						$m_path = JPATH_THEMES.'/'.$info['element'].'/templateDetails.xml';
+					} else {
+						$m_path = JPATH_ADMINISTRATOR.'/templates/'.$info['element'].'/templateDetails.xml';
+					}
+		            break;
+	            case "file":
+		            $m_path = JPATH_MANIFESTS.'/files/'.$info['element'].'.xml';
+		            break;
+                default:
+                    return "";
+            }
+            if(File::exists($m_path)) {
+                $xml = new SimpleXMLElement($m_path, null, true);
+                foreach ($xml->children() as $item) {
+                    if($item->getName() === "ecltype") {
+                        return (string)$item;
+                    }
+                }
+            }
+        }
+        return "";
+    }
 }

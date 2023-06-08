@@ -44,19 +44,20 @@ if (!$vars->is_free) {
 
     $modal_params = ECLTools::encodeParams($modal_params);
 }
+$lb_tooltip = $vars->version_tooltip ? 'data-original-title="'.$vars->version_tooltip.'"' :"";
 	?>
-    <span><?php echo Text::_("JVERSION") . '&nbsp;' . $vars->version['current']; ?></span>&nbsp;
-    <span class="<?php echo $vars->class; ?>">
+    <span><?php echo Text::_("JVERSION") . '&nbsp;' . $vars->version['current']; ?>&nbsp;</span>
+    <span class="<?php echo $vars->class; ?>" <?php echo $lb_tooltip ?> >
     <?php echo $vars->text; ?>&nbsp;
         <span id="new-<?php echo $vars->container_id; ?>">
             <?php echo $vars->version['new']; ?>
         </span>
     </span>
 	<?php
-if (!$vars->is_free) {
+if (!$vars->is_free && $vars->show_auth_btn) {
 	if (ECLVersion::getJoomlaVersion() == '3'):
 		?>
-        <a class="btn btn-mini button btn-info" data-eclmodal="<?php echo $modal_params; ?>">
+        <a class="btn btn-mini button btn-info hasTooltip" data-original-title="<?php echo Text::_("PLG_SYSTEM_ECLABS_AUTHORISATION_BTN_TOOLTIP");?>" data-eclmodal="<?php echo $modal_params; ?>">
             <span class="icon-refresh" aria-hidden="true"></span>
         </a>
 	<?php else: ?>

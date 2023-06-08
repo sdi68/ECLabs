@@ -21,3 +21,16 @@
     margin-top: 0;
 }
 
+.sdi-extension-name-container > label {
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+.sdi-extension-name-container > label .sdi-version-container{
+    margin-top: 5px;
+}
+
+.sdi-extension-name-container > label .sdi-version-container >span:nth-of-type(1){
+    display: none;
+}
