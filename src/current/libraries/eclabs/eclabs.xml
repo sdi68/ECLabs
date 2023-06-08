@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
   ~ @package        Econsult Labs Library
-  ~ @version          1.0.9
+  ~ @version          1.0.10
   ~ @author           ECL <info@econsultlab.ru>
   ~ @link                https://econsultlab.ru
   ~ @copyright      Copyright © 2023 ECL All Rights Reserved
@@ -11,8 +11,8 @@
 <extension version="3.9" type="library" method="upgrade">
 	<name>ECLabs Library</name>
 	<description>Econsult Labs Library - используется с расширениями от Econsult Labs</description>
-	<version>1.0.9</version>
-	<creationDate>24.05.2023</creationDate>
+	<version>1.0.10</version>
+	<creationDate>08.06.2023</creationDate>
 	<author>Econsult Labs</author>
 	<authorEmail>info@econsultlab.ru</authorEmail>
 	<authorUrl>https://econsultlab.ru</authorUrl>

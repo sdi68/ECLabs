@@ -1,7 +1,7 @@
 <?php
 /**
  * @package        Econsult Labs Library
- * @version          1.0.3
+ * @version          1.0.10
  * @author           ECL <info@econsultlab.ru>
  * @link                https://econsultlab.ru
  * @copyright      Copyright © 2023 ECL All Rights Reserved
@@ -14,9 +14,11 @@ defined('_JEXEC') or die;
 defined('DS') or define('DS', DIRECTORY_SEPARATOR);
 
 use Exception;
-use JFile;
 use Joomla\CMS\Factory;
+use Joomla\CMS\Filesystem\File;
 use Joomla\CMS\Plugin\CMSPlugin;
+use Joomla\Event\Event;
+use Joomla\Event\SubscriberInterface;
 
 require_once JPATH_LIBRARIES . '/eclabs/classes/autoload.php';
 
@@ -26,7 +28,7 @@ require_once JPATH_LIBRARIES . '/eclabs/classes/autoload.php';
  *
  * @since       1.0.0
  */
-abstract class ECLPlugin extends CMSPlugin
+abstract class ECLPlugin extends CMSPlugin implements SubscriberInterface
 {
 	/**
 	 * Путь до файла плагина коннектора
@@ -90,7 +92,7 @@ abstract class ECLPlugin extends CMSPlugin
 		$override  = JPATH_BASE . '/' . 'templates' . '/' . $app->getTemplate() . '/html/plugins/' .
 			$this->_type . '/' . $this->_name . '/' . $layout .'/'.$layout.'.php';
 
-		if (JFile::exists($override))
+		if (File::exists($override))
 		{
 			return $override;
 		}
@@ -157,4 +159,26 @@ abstract class ECLPlugin extends CMSPlugin
             ->where($db->quoteName('element') . ' = ' . $db->quote($this->_name));
         return $db->setQuery($query)->loadResult();
     }
+
+	/**
+	 * Запускает обработчик события по имени для Joomla 4
+	 *
+	 * @param   string  $fn_name    Имя функции обработчика
+	 * @param   Event   $event  Событие
+	 *
+	 * @return mixed|true
+	 *
+	 * @since 1.0.10
+	 */
+	protected final function _runEventHandler(string $fn_name, Event $event) {
+		$args = $event->getArguments();
+		if(is_array($args))
+		{
+			if(isset($args['result']))
+				unset($args['result']);
+
+			return call_user_func_array(array($this, $fn_name), $args);
+		}
+		return true;
+	}
 }
