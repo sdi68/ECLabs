@@ -1,0 +1,51 @@
+/*
+ * @package         Econsult Labs Library
+ * @subpackage   Econsult Labs system plugin
+ * @version           1.0.4
+ * @author            ECL <info@econsultlab.ru>
+ * @link                 https://econsultlab.ru
+ * @copyright      Copyright © 2023 ECL All Rights Reserved
+ * @license           http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
+ */
+#ecl-authorize .horizontal {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+#ecl-authorize .horizontal label {
+    margin-bottom: 0;
+    margin-left: 15px;
+}
+
+#ecl-authorize .horizontal input {
+    margin-top: 0;
+}
+
+.sdi-extension-name-container > label {
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+.sdi-extension-name-container .sdi-version-container {
+    margin-top: 5px;
+    display: inline-flex;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+    align-items: center;
+    border: 1px solid var(--border);
+    padding: 3px;
+}
+
+.sdi-extension-name-container .sdi-version-container > span:nth-of-type(1) {
+    display: none;
+}
+
+.sdi-extension-name-container .sdi-version-container > button {
+    line-height: 1;
+    margin-left: 5px;
+}
+

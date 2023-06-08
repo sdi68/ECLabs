@@ -17,6 +17,11 @@
       "name": "plg_system_eclabs.eclabs",
       "type": "style",
       "uri": "plg_system_eclabs/eclabs.css"
+    },
+    {
+      "name": "plg_system_eclabs.eclabs4",
+      "type": "style",
+      "uri": "plg_system_eclabs/eclabs4.css"
     }
   ]
 }

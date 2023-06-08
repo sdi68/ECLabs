@@ -1,12 +1,12 @@
 <?php
 /**
- * @package         Econsult Labs Library
- * @subpackage   Econsult Labs system plugin
- * @version           1.0.2
- * @author            ECL <info@econsultlab.ru>
+ * @package              Econsult Labs Library
+ * @subpackage           Econsult Labs system plugin
+ * @version              1.0.2
+ * @author               ECL <info@econsultlab.ru>
  * @link                 https://econsultlab.ru
- * @copyright      Copyright © 2023 ECL All Rights Reserved
- * @license           http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
+ * @copyright            Copyright © 2023 ECL All Rights Reserved
+ * @license              http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
 /**
@@ -57,7 +57,7 @@ use Joomla\CMS\Language\Text;
                         <label id="hasToken-lbl" for="has_token" class="hasPopover"
                                title="" data-content="<?php echo Text::_('PLG_SYSTEM_ECLABS_HAS_TOKEN'); ?>"
                                data-original-title="<?php echo Text::_('PLG_SYSTEM_ECLABS_HAS_TOKEN'); ?>">
-                            <?php echo Text::_('PLG_SYSTEM_ECLABS_HAS_TOKEN'); ?>
+							<?php echo Text::_('PLG_SYSTEM_ECLABS_HAS_TOKEN'); ?>
                         </label>
                     </div>
                     <div class="controls">
@@ -65,7 +65,7 @@ use Joomla\CMS\Language\Text;
                                placeholder="<?php echo Text::_('PLG_SYSTEM_ECLABS_HAS_TOKEN'); ?>"
                                aria-label="<?php echo Text::_('PLG_SYSTEM_ECLABS_HAS_TOKEN'); ?>"
                                aria-describedby="basic-addon2"
-                               <?php  echo isset($vars->user_data['ECL']['has_token']) && $vars->user_data['ECL']['has_token'] ? 'checked': ''; ?>
+							<?php echo isset($vars->user_data['ECL']['has_token']) && $vars->user_data['ECL']['has_token'] ? 'checked' : ''; ?>
                                value="">
                     </div>
                 </div>
