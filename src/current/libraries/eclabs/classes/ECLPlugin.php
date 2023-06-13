@@ -1,7 +1,7 @@
 <?php
 /**
  * @package        Econsult Labs Library
- * @version          1.0.11
+ * @version          1.0.12
  * @author           ECL <info@econsultlab.ru>
  * @link                https://econsultlab.ru
  * @copyright      Copyright © 2023 ECL All Rights Reserved
@@ -14,24 +14,22 @@ defined('_JEXEC') or die;
 defined('DS') or define('DS', DIRECTORY_SEPARATOR);
 
 use Exception;
-use JLoader;
+use JLog;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Filesystem\File;
 use Joomla\CMS\Plugin\CMSPlugin;
 use Joomla\Event\Event;
 
-if(!class_exists('SubscriberInterface')) {
-    if(ECLVersion::getJoomlaVersion() < 4) {
-        // Регистрируем заглушку для Joomla3 (интерфейс не используется)
-        require_once JPATH_LIBRARIES . '/eclabs/classes/J4Stubs/SubscriberInterface.php';
-    }
-    else {
-        // Регистрируем интерфейс для Joomla 4 (вместо use)
-        JLoader::register('SubscriberInterface', JPATH_LIBRARIES . '/vendor/joomla/event/src/SubscriberInterface.php', true);
-    }
-}
-
 require_once JPATH_LIBRARIES . '/eclabs/classes/autoload.php';
+
+try
+{
+	ECLAutoLoader::registerStub('SubscriberInterface', JPATH_LIBRARIES . '/vendor/joomla/event/src/SubscriberInterface.php');
+}
+catch (Exception $e)
+{
+	JLog::add($e->getMessage(),JLog::ERROR,"ECLPlugin");
+}
 
 /**
  * Абстрактный класс плагина

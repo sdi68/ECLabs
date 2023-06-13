@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
   ~ @package        Econsult Labs Library
-  ~ @version          1.0.11
+  ~ @version          1.0.12
   ~ @author           ECL <info@econsultlab.ru>
   ~ @link                https://econsultlab.ru
   ~ @copyright      Copyright © 2023 ECL All Rights Reserved
@@ -9,45 +9,45 @@
   -->
 
 <extension version="3.9" type="library" method="upgrade">
-	<name>ECLabs Library</name>
-	<description>Econsult Labs Library - используется с расширениями от Econsult Labs</description>
-	<version>1.0.11</version>
-	<creationDate>13.06.2023</creationDate>
-	<author>Econsult Labs</author>
-	<authorEmail>info@econsultlab.ru</authorEmail>
-	<authorUrl>https://econsultlab.ru</authorUrl>
-	<copyright>Copyright © 2023 ECL - All Rights Reserved</copyright>
-	<license>https://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
-	<ecltype>free</ecltype>
+    <name>ECLabs Library</name>
+    <description>Econsult Labs Library - используется с расширениями от Econsult Labs</description>
+    <version>1.0.12</version>
+    <creationDate>13.06.2023</creationDate>
+    <author>Econsult Labs</author>
+    <authorEmail>info@econsultlab.ru</authorEmail>
+    <authorUrl>https://econsultlab.ru</authorUrl>
+    <copyright>Copyright © 2023 ECL - All Rights Reserved</copyright>
+    <license>https://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
+    <ecltype>free</ecltype>
 
-	<libraryname>eclabs</libraryname>
-	<scriptfile>script.php</scriptfile>
+    <libraryname>eclabs</libraryname>
+    <scriptfile>script.php</scriptfile>
 
-	<!-- Language files -->
-	<languages folder="language">
-		<language tag="ru-RU">ru-RU/ru-RU.eclabs.ini</language>
-		<language tag="en-GB">en-GB/en-GB.eclabs.ini</language>
-	</languages>
+    <!-- Language files -->
+    <languages folder="language">
+        <language tag="ru-RU">ru-RU/ru-RU.eclabs.ini</language>
+        <language tag="en-GB">en-GB/en-GB.eclabs.ini</language>
+    </languages>
 
-	<updateservers>
-		<server type="extension" priority="1" name="Econsult Labs Library">
-			https://econsultlab.ru/uploads/joomla/packages/eclabs/libraries/eclabs/update_eclabs.xml
-		</server>
-	</updateservers>
+    <updateservers>
+        <server type="extension" priority="1" name="Econsult Labs Library">
+            https://econsultlab.ru/uploads/joomla/packages/eclabs/libraries/eclabs/update_eclabs.xml
+        </server>
+    </updateservers>
 
-	<files>
-		<file>eclabs.xml</file>
-		<folder>fields</folder>
-		<folder>helpers</folder>
-		<folder>layouts</folder>
-		<folder>classes</folder>
-		<folder>vendor</folder>
-	</files>
+    <files>
+        <file>eclabs.xml</file>
+        <folder>fields</folder>
+        <folder>helpers</folder>
+        <folder>layouts</folder>
+        <folder>classes</folder>
+        <folder>vendor</folder>
+    </files>
 
-	<media folder="media" destination="eclabs">
-		<folder>css</folder>
-		<folder>images</folder>
-		<folder>js</folder>
-		<file>joomla.assets.json</file>
-	</media>
+    <media folder="media" destination="eclabs">
+        <folder>css</folder>
+        <folder>images</folder>
+        <folder>js</folder>
+        <file>joomla.assets.json</file>
+    </media>
 </extension>
