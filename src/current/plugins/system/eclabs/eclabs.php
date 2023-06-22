@@ -659,7 +659,8 @@ class PlgSystemECLabs extends ECLPlugin
 	 */
 	public static function getSubscribedEvents(): array
 	{
-		return array(
+		return array_merge(parent::getSubscribedEvents(),
+			array(
 			'onAfterRender'           => 'onAfterRender',
 			'onBeforeRender'          => 'onBeforeRender',
 			'onExtensionAfterInstall' => 'onExtensionAfterInstall4',
@@ -667,7 +668,7 @@ class PlgSystemECLabs extends ECLPlugin
 			'onExtensionAfterUpdate'  => 'onExtensionAfterUpdate4',
 			'onRenderVersionBlock'    => 'onRenderVersionBlock4',
 			'onAjaxEclabs'            => 'onAjaxEclabs'
-		);
+		));
 	}
 
 	/**
