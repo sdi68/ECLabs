@@ -24,7 +24,7 @@ require_once JPATH_LIBRARIES . '/eclabs/classes/autoload.php';
 
 try
 {
-	ECLAutoLoader::registerStub('SubscriberInterface', JPATH_LIBRARIES . '/vendor/joomla/event/src/SubscriberInterface.php');
+	ECLAutoLoader::registerJoomla3Stub('SubscriberInterface', 'Joomla\Event','interface',JPATH_LIBRARIES . '/vendor/joomla/event/src/');
 }
 catch (Exception $e)
 {
@@ -37,7 +37,7 @@ catch (Exception $e)
  *
  * @since       1.0.0
  */
-abstract class ECLPlugin extends CMSPlugin implements SubscriberInterface
+abstract class ECLPlugin extends CMSPlugin implements \Joomla\Event\SubscriberInterface
 {
 	/**
 	 * Путь до файла плагина коннектора
@@ -189,5 +189,17 @@ abstract class ECLPlugin extends CMSPlugin implements SubscriberInterface
 			return call_user_func_array(array($this, $fn_name), $args);
 		}
 		return true;
+	}
+
+	/**
+	 * Подписка на события для Joomla 4
+	 *
+	 * @return string[]
+	 *
+	 * @since 1.0.12
+	 */
+	public static function getSubscribedEvents(): array
+	{
+		return array();
 	}
 }

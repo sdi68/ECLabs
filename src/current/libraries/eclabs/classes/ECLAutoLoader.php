@@ -79,37 +79,48 @@ class ECLAutoLoader
 	}
 
 	/**
-	 * Регистрация класса с использованием заглушки для Joomla3, если класс у нее отсутствует
+	 * Регистрация класса, интерфейса, трайта  с использованием заглушки для Joomla3, если они у нее отсутствует
 	 * Заглушки находятся в папке "J4Stubs"
 	 *
-	 * @param   string  $className  Наименование класса
-	 * @param   string  $patch_j4   Путь к файлу класса в Joomla 4
+	 * @param   string  $stub_name  Имя класса "заглушки"
+	 * @param   string  $name_space4    Пространство имен Joomla4 класса
+	 * @param   string  $type   Тип (class, interface, trait)
+	 * @param   string  $patch_j4  Путь к пространству имен Joomla4 (корень)
 	 *
 	 *
 	 * @throws Exception
 	 * @since 1.0.12
 	 */
-	public static function registerStub(string $className, string $patch_j4)
+	public static function registerJoomla3Stub(string $stub_name, string $name_space4, string $type, string $patch_j4)
 	{
-		if (!class_exists($className))
-		{
+		$fn_name = "";
+		switch ($type) {
+			case 'class':
+				$fn_name = "class_exists";
+				break;
+			case 'interface':
+				$fn_name = "interface_exists";
+				break;
+			case 'trait':
+				$fn_name = "trait_exists";
+				break;
+			default:
+				throw new Exception(Text::sprintf('ECLABS_ERROR_UNSUPPORTED_STUBS_TYPE', $type));
+		}
+
+		if(!$fn_name($stub_name)) {
 			if (ECLVersion::getJoomlaVersion() < 4)
 			{
-				// Регистрируем заглушку для Joomla3 (интерфейс не используется)
-				$path = JPATH_LIBRARIES . '/eclabs/classes/J4Stubs/' . $className . '.php';
-				if (File::exists($path))
+				// Регистрируем заглушку для Joomla3
+				$patch_j3 = __DIR__.'/J4Stubs/'.str_replace('\\', '/', $name_space4).'/src/' .$stub_name. '.php';
+				if (File::exists($patch_j3))
 				{
-					require_once $path;
+					require_once $patch_j3;
+				} else {
+					throw new Exception(Text::sprintf('ECLABS_ERROR_CLASS_FILE_NOT_EXIST', $patch_j3));
 				}
-				else
-				{
-					throw new Exception(Text::sprintf('ECLABS_ERROR_CLASS_FILE_NOT_EXIST', $path));
-				}
-			}
-			else
-			{
-				// Регистрируем интерфейс для Joomla 4 (вместо use)
-				JLoader::register($className, $patch_j4, true);
+			} else {
+				JLoader::registerNamespace($name_space4,$patch_j4,true,true);
 			}
 		}
 	}
