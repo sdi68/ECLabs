@@ -175,7 +175,7 @@ abstract class ECLPlugin extends CMSPlugin implements \Joomla\Event\SubscriberIn
 	 * @param   string  $fn_name    Имя функции обработчика
 	 * @param   Event   $event  Событие
 	 *
-	 * @return mixed|true
+	 * @return Event|true
 	 *
 	 * @since 1.0.10
 	 */
@@ -186,7 +186,20 @@ abstract class ECLPlugin extends CMSPlugin implements \Joomla\Event\SubscriberIn
 			if(isset($args['result']))
 				unset($args['result']);
 
-			return call_user_func_array(array($this, $fn_name), $args);
+			//return call_user_func_array(array($this, $fn_name), $args);
+			$ret = call_user_func_array(array($this, $fn_name), $args);
+			if(!$event->hasArgument('result')) {
+				$event->addArgument('result',array());
+			}
+			$result = $event->getArgument('result',null);
+			if(is_array($result))
+			{
+				$result[] = $ret;
+				$event->setArgument('result', $result);
+
+				return $event;
+			}
+
 		}
 		return true;
 	}
