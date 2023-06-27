@@ -15,6 +15,7 @@ use ECLabs\Library\ECLExtension;
 use ECLabs\Library\ECLInput;
 use ECLabs\Library\ECLLanguage;
 use ECLabs\Library\ECLPlugin;
+use ECLabs\Library\ECLTools;
 use ECLabs\Library\ECLUpdateInfoStatus;
 use ECLabs\Library\ECLVersion;
 use Joomla\CMS\Document\HtmlDocument;
@@ -253,6 +254,33 @@ class PlgSystemECLabs extends ECLPlugin
 		}
 		$html->save();
 		$app->setBody((string) $html);
+	}
+
+	/**
+	 * onAfterRoute.
+	 *
+	 * @return  void
+	 *
+	 * @throws Exception
+	 * @since   1.0.5
+	 */
+	public function onAfterRoute()
+	{
+		// TODO сделать в версии 1.0.5
+		$input  = $input  = new ECLInput();
+		$option = $input->get('option', '');
+		$view   = $input->get('view', '');
+		$task   = $input->get('task', '');
+		$layout = $input->get('layout', '');
+		// Если была установка или обновление joomla, расширений,
+		// то проверяем переопределения
+		if (($option == 'com_joomlaupdate' && $task == 'update.install') ||
+			($option == 'com_installer' && $task == 'install.install') ||
+			($option == 'com_installer' && $task == 'update.update') ||
+			($option == 'com_joomlaupdate' && $layout == 'complete'))
+		{
+			ECLTools::triggerEvent('onCheckOverrides', array());
+		}
 	}
 
 	/**
@@ -667,7 +695,8 @@ class PlgSystemECLabs extends ECLPlugin
 			'onExtensionBeforeUpdate' => 'onExtensionBeforeUpdate4',
 			'onExtensionAfterUpdate'  => 'onExtensionAfterUpdate4',
 			'onRenderVersionBlock'    => 'onRenderVersionBlock4',
-			'onAjaxEclabs'            => 'onAjaxEclabs'
+			'onAjaxEclabs'            => 'onAjaxEclabs',
+			'onAfterRoute'            => 'onAfterRoute'
 		));
 	}
 
