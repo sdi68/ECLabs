@@ -1,6 +1,6 @@
 <!--
   ~ @package        Econsult Labs Library
-  ~ @version          1.0.12
+  ~ @version          1.0.14
   ~ @author           ECL <info@econsultlab.ru>
   ~ @link                https://econsultlab.ru
   ~ @copyright      Copyright © 2023 ECL All Rights Reserved
@@ -9,13 +9,13 @@
 
 <updates>
     <update>
-        <name>Econsult Labs Library v. 1.0.12</name>
-        <description>Обновление библиотеки Econsult Labs Library до версии 1.0.12</description>
+        <name>Econsult Labs Library v. 1.0.14</name>
+        <description>Обновление библиотеки Econsult Labs Library до версии 1.0.14</description>
         <element>eclabs</element>
         <type>library</type>
-        <version>1.0.12</version>
+        <version>1.0.14</version>
         <client>0</client>
-        <infourl title="Econsult Labs Library update то v. 1.0.12">
+        <infourl title="Econsult Labs Library update то v. 1.0.14">
             https://econsultlab.ru/
         </infourl>
         <downloads>
