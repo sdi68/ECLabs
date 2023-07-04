@@ -30,3 +30,24 @@
 #eclModal.version-3 .results_group {
     margin-left:0;
 }
+
+@media (max-width: 767px) {
+    #eclModal.version-3 {
+        min-width:250px;
+        width: 85%;
+    }
+
+    #eclModal.version-3 .row {
+        margin-left:0;
+    }
+
+    #eclModal.version-3 #modal-loader .loader-content.ecl-fields {
+        width:75%;
+    }
+    #eclModal.version-3 #modal-loader  .ecl-spinner {
+        width:25%;
+    }
+    #eclModal.version-3 #modal-loader  .ecl-spinner > img{
+        max-width: 100%;
+    }
+}
