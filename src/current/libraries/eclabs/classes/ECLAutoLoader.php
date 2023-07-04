@@ -80,7 +80,12 @@ class ECLAutoLoader
 
 	/**
 	 * Регистрация класса, интерфейса, трайта  с использованием заглушки для Joomla3, если они у нее отсутствует
-	 * Заглушки находятся в папке "J4Stubs"
+	 * Заглушки находятся в папке "J4Stubs".
+	 *
+	 * Пример: для \Joomla\Event\SubsbscribeInterface cоздаем заглушку по такому пути: J4Stubs/Joomla/Event/src/
+	 * Папки пути с заглавной буквы.
+	 *
+	 * Имя файла SubscribeInterface.php.
 	 *
 	 * @param   string  $stub_name  Имя класса "заглушки"
 	 * @param   string  $name_space4    Пространство имен Joomla4 класса
