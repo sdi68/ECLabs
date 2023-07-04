@@ -11,9 +11,9 @@
 namespace ECLabs\Library;
 
 use Exception;
-use JFile;
-use JFolder;
 use Joomla\CMS\Factory;
+use Joomla\CMS\Filesystem\File;
+use Joomla\CMS\Filesystem\Folder;
 use Joomla\CMS\Http\HttpFactory;
 use Joomla\CMS\Language\Text;
 use Joomla\Registry\Registry;
@@ -49,7 +49,7 @@ class ECLHttp
 
 		if (!$force && is_numeric($cache) && $cache > 0)
 		{
-			if (JFile::exists($cacheFile) && time() - filemtime($cacheFile) < $cache)
+			if (File::exists($cacheFile) && time() - filemtime($cacheFile) < $cache)
 			{
 				$result = file_get_contents($cacheFile);
 			}
@@ -93,7 +93,7 @@ class ECLHttp
 			{
 				$result = $http->get($link, $headers, $timeout);
 			}
-			catch (\Exception $e)
+			catch (Exception $e)
 			{
 				$result = null;
 			}
@@ -103,12 +103,12 @@ class ECLHttp
 				$result = $result->body;
 
 				// Cache results.
-				if (is_numeric($cache) && $cache > 0 && JFolder::create(dirname($cacheFile)))
+				if (is_numeric($cache) && $cache > 0 && Folder::create(dirname($cacheFile)))
 				{
-					JFile::write($cacheFile, $result);
+					File::write($cacheFile, $result);
 				}
 			}
-			elseif (JFile::exists($cacheFile))
+			elseif (File::exists($cacheFile))
 			{
 				$result = file_get_contents($cacheFile);
 
@@ -127,16 +127,16 @@ class ECLHttp
 	/**
 	 * Send HTTP request using POST method.
 	 *
-	 * @param   string  $link     The URL to send request to.
-	 * @param   array   $data     Data to post.
-	 * @param   mixed   $cookies  Whether to send current cookies data along with request.
-	 * @param   int     $timeout  Read timeout in seconds.
+	 * @param   string        $link     The URL to send request to.
+	 * @param   String|array  $data     Data to post array or json.
+	 * @param   mixed         $cookies  Whether to send current cookies data along with request.
+	 * @param   int           $timeout  Read timeout in seconds.
 	 *
 	 * @return  mixed
 	 * @throws Exception
 	 * @since 1.0.0
 	 */
-	public static function post(string $link, array $data = array(), $cookies = false, int $timeout = 3)
+	public static function post(string $link, Array|String $data = "", $cookies = false, int $timeout = 3): mixed
 	{
 		// Prepare request headers.
 		$headers = array();
@@ -166,17 +166,20 @@ class ECLHttp
             case '3':
                 $options = new Registry();
                 $options->set('transport.curl',$coptions);
+                $http = HttpFactory::getHttp(null, ['curl']);
+                $http->setOption('transport.curl', $coptions);
                 break;
             case '4':
             default:
             $options['transport.curl']        = $coptions;
+            $http = HttpFactory::getHttp($options, ['curl']);
         }
-		$http = HttpFactory::getHttp($options, ['curl']);
+		//$http = HttpFactory::getHttp($options, ['curl']);
 		try
 		{
 			$result = $http->post($link, $data, $headers, $timeout);
 		}
-		catch (\Exception $e)
+		catch (Exception $e)
 		{
 			$result = null;
 		}
