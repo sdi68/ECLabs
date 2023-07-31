@@ -155,6 +155,7 @@ class ECLRequest extends ECL {
             method: this._method,
             headers: this._headers,
             data: JSON.stringify(this._request_data),
+            perform:true,
             onBefore: function (xhr) {
                 return _this._onBefore(xhr);
             },
