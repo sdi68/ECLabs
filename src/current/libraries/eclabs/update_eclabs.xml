@@ -9,13 +9,13 @@
 
 <updates>
     <update>
-        <name>Econsult Labs Library v. 1.0.15</name>
-        <description>Обновление библиотеки Econsult Labs Library до версии 1.0.15</description>
+        <name>Econsult Labs Library v. 1.0.16</name>
+        <description>Обновление библиотеки Econsult Labs Library до версии 1.0.16</description>
         <element>eclabs</element>
         <type>library</type>
-        <version>1.0.15</version>
+        <version>1.0.16</version>
         <client>0</client>
-        <infourl title="Econsult Labs Library update то v. 1.0.15">
+        <infourl title="Econsult Labs Library update то v. 1.0.16">
             https://econsultlab.ru/
         </infourl>
         <downloads>

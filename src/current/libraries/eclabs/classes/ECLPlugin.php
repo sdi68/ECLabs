@@ -15,8 +15,6 @@ defined('DS') or define('DS', DIRECTORY_SEPARATOR);
 
 use Exception;
 use JLog;
-use Joomla\CMS\Factory;
-use Joomla\CMS\Filesystem\File;
 use Joomla\CMS\Plugin\CMSPlugin;
 use Joomla\Event\Event;
 

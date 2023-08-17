@@ -9,7 +9,9 @@
 
 namespace ECLabs\Library\Traits;
 
+use ECLabs\Library\ECLTools;
 use ECLabs\Library\ECLVersion;
+use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Filesystem\File;
 use Joomla\Event\Event;
@@ -181,9 +183,11 @@ trait ECLPlugin
      *
      * @return string[]
      *
-     * @since 1.0.12
+     * @since 1.0.16
      */
-    public abstract static function getSubscribedEvents(): array;
+    public static function getSubscribedEvents(): array{
+		return array();
+    }
 
 
 }
