@@ -11,7 +11,7 @@
 <extension version="3.9" type="library" method="upgrade">
     <name>ECLabs Library</name>
     <description>Econsult Labs Library - используется с расширениями от Econsult Labs</description>
-    <version>1.0.16</version>
+    <version>1.0.17</version>
     <creationDate>04.07.2023</creationDate>
     <author>Econsult Labs</author>
     <authorEmail>info@econsultlab.ru</authorEmail>
