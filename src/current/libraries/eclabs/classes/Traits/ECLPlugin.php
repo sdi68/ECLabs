@@ -35,15 +35,14 @@ trait ECLPlugin
 
     /**
      * Версия Joomla
-     * @var int
+     * @var string
      * @since 1.0.0
      */
-    protected $jVersion = 3;
+    protected $jVersion = "3";
 
-    /**
-     * @param int $jVersion
-     * @since 1.0.0
-     */
+	/**
+	 * @since 1.0.0
+	 */
     private function _setJVersion(): void
     {
         $this->jVersion = ECLVersion::getJoomlaVersion();
