@@ -380,189 +380,192 @@ abstract class ECLvmPSPlugin extends vmPSPlugin implements \Joomla\Event\Subscri
      */
     public static function getSubscribedEvents(): array
     {
-        return [
-            'plgVmOnShowOrderFEShipment' => 'plgVmOnShowOrderFEShipment4',
-            'plgVmConfirmedOrder' => 'plgVmConfirmedOrder4',
-            'plgVmOnShowOrderBEShipment' => 'plgVmOnShowOrderBEShipment4',
-            'plgVmOnProductDisplayShipment' => 'plgVmOnProductDisplayShipment4',
-            'plgVmOnStoreInstallShipmentPluginTable' => 'plgVmOnStoreInstallShipmentPluginTable4',
-	        'plgVmOnSelectCheckShipment' => 'plgVmOnSelectCheckShipment4',
-	        'plgVmDisplayListFEShipment' => 'plgVmDisplayListFEShipment4',
-	        'plgVmOnSelectedCalculatePriceShipment' => 'plgVmOnSelectedCalculatePriceShipment4',
-	        'plgVmOnCheckAutomaticSelectedShipment' => 'plgVmOnCheckAutomaticSelectedShipment4',
-	        'plgVmOnCheckoutCheckDataShipment' => 'plgVmOnCheckoutCheckDataShipment4',
-	        'plgVmonShowOrderPrint' => 'plgVmonShowOrderPrint4',
-	        'plgVmDeclarePluginParamsShipment' => 'plgVmDeclarePluginParamsShipment4',
-	        'plgVmDeclarePluginParamsShipmentVM3' => 'plgVmDeclarePluginParamsShipmentVM3_4',
-	        'plgVmSetOnTablePluginShipment' => 'plgVmSetOnTablePluginShipment4'
-        ];
+		return array();
+		//TODO Зарезервировано на будущее
+
+//        return [
+//            'plgVmOnShowOrderFEShipment' => 'plgVmOnShowOrderFEShipment4',
+//            'plgVmConfirmedOrder' => 'plgVmConfirmedOrder4',
+//            'plgVmOnShowOrderBEShipment' => 'plgVmOnShowOrderBEShipment4',
+//            'plgVmOnProductDisplayShipment' => 'plgVmOnProductDisplayShipment4',
+//            'plgVmOnStoreInstallShipmentPluginTable' => 'plgVmOnStoreInstallShipmentPluginTable4',
+//	        'plgVmOnSelectCheckShipment' => 'plgVmOnSelectCheckShipment4',
+//	        'plgVmDisplayListFEShipment' => 'plgVmDisplayListFEShipment4',
+//	        'plgVmOnSelectedCalculatePriceShipment' => 'plgVmOnSelectedCalculatePriceShipment4',
+//	        'plgVmOnCheckAutomaticSelectedShipment' => 'plgVmOnCheckAutomaticSelectedShipment4',
+//	        'plgVmOnCheckoutCheckDataShipment' => 'plgVmOnCheckoutCheckDataShipment4',
+//	        'plgVmonShowOrderPrint' => 'plgVmonShowOrderPrint4',
+//	        'plgVmDeclarePluginParamsShipment' => 'plgVmDeclarePluginParamsShipment4',
+//	        'plgVmDeclarePluginParamsShipmentVM3' => 'plgVmDeclarePluginParamsShipmentVM3_4',
+//	        'plgVmSetOnTablePluginShipment' => 'plgVmSetOnTablePluginShipment4'
+//        ];
     }
 
-    /**
-     * Обертка для обработки события plgVmOnShowOrderFEShipment для Joomla 4
-     * @param Event $event
-     *
-     * @return Event|true
-     * @since 1.0.15
-     */
-    public function plgVmOnShowOrderFEShipment4(Event $event)
-    {
-        return $this->_runEventHandler("plgVmOnShowOrderFEShipment", $event);
-    }
-
-    /**
-     * Обертка для обработки события plgVmConfirmedOrder для Joomla 4
-     * @param Event $event
-     *
-     * @return Event|true
-     * @since 1.0.15
-     */
-    public function plgVmConfirmedOrder4(Event $event)
-    {
-        return $this->_runEventHandler("plgVmConfirmedOrder", $event);
-    }
-
-    /**
-     * Обертка для обработки события plgVmOnShowOrderBEShipment для Joomla 4
-     * @param Event $event
-     *
-     * @return Event|true
-     * @since 1.0.15
-     */
-    public function plgVmOnShowOrderBEShipment4(Event $event)
-    {
-        return $this->_runEventHandler("plgVmOnShowOrderBEShipment", $event);
-    }
-
-    /**
-     * Обертка для обработки события plgVmOnProductDisplayShipment для Joomla 4
-     * @param Event $event
-     *
-     * @return Event|true
-     * @since 1.0.15
-     */
-    public function plgVmOnProductDisplayShipment4(Event $event)
-    {
-        return $this->_runEventHandler("plgVmOnProductDisplayShipment", $event);
-    }
-
-    /**
-     * Обертка для обработки события plgVmOnStoreInstallShipmentPluginTable для Joomla 4
-     * @param Event $event
-     *
-     * @return Event|true
-     * @since 1.0.15
-     */
-    public function plgVmOnStoreInstallShipmentPluginTable4(Event $event)
-    {
-        return $this->_runEventHandler("plgVmOnStoreInstallShipmentPluginTable", $event);
-    }
-
-    /**
-     * Обертка для обработки события plgVmOnSelectCheckShipment для Joomla 4
-     * @param Event $event
-     *
-     * @return Event|true
-     * @since 1.0.15
-     */
-    public function plgVmOnSelectCheckShipment4(Event $event)
-    {
-        return $this->_runEventHandler("plgVmOnSelectCheckShipment", $event);
-    }
-
-    /**
-     * Обертка для обработки события plgVmDisplayListFEShipment для Joomla 4
-     * @param Event $event
-     *
-     * @return Event|true
-     * @since 1.0.15
-     */
-    public function plgVmDisplayListFEShipment4(Event $event)
-    {
-        return $this->_runEventHandler("plgVmDisplayListFEShipment", $event);
-    }
-
-    /**
-     * Обертка для обработки события plgVmOnSelectedCalculatePriceShipment для Joomla 4
-     * @param Event $event
-     *
-     * @return Event|true
-     * @since 1.0.15
-     */
-    public function plgVmOnSelectedCalculatePriceShipment4(Event $event)
-    {
-        return $this->_runEventHandler("plgVmOnSelectedCalculatePriceShipment", $event);
-    }
-
-    /**
-     * Обертка для обработки события plgVmOnCheckAutomaticSelectedShipment для Joomla 4
-     * @param Event $event
-     *
-     * @return Event|true
-     * @since 1.0.15
-     */
-    public function plgVmOnCheckAutomaticSelectedShipment4(Event $event)
-    {
-        return $this->_runEventHandler("plgVmOnCheckAutomaticSelectedShipment", $event);
-    }
-
-    /**
-     * Обертка для обработки события plgVmOnCheckoutCheckDataShipment для Joomla 4
-     * @param Event $event
-     *
-     * @return Event|true
-     * @since 1.0.15
-     */
-    public function plgVmOnCheckoutCheckDataShipment4(Event $event)
-    {
-        return $this->_runEventHandler("plgVmOnCheckoutCheckDataShipment", $event);
-    }
-
-    /**
-     * Обертка для обработки события plgVmonShowOrderPrint для Joomla 4
-     * @param Event $event
-     *
-     * @return Event|true
-     * @since 1.0.15
-     */
-    public function plgVmonShowOrderPrint4(Event $event)
-    {
-        return $this->_runEventHandler("plgVmonShowOrderPrint", $event);
-    }
-
-    /**
-     * Обертка для обработки события plgVmDeclarePluginParamsShipment для Joomla 4
-     * @param Event $event
-     *
-     * @return Event|true
-     * @since 1.0.15
-     */
-    public function plgVmDeclarePluginParamsShipment4(Event $event)
-    {
-        return $this->_runEventHandler("plgVmDeclarePluginParamsShipment", $event);
-    }
-
-    /**
-     * Обертка для обработки события plgVmDeclarePluginParamsShipmentVM3 для Joomla 4
-     * @param Event $event
-     *
-     * @return Event|true
-     * @since 1.0.15
-     */
-    public function plgVmDeclarePluginParamsShipmentVM3_4(Event $event)
-    {
-        return $this->_runEventHandler("plgVmDeclarePluginParamsShipmentVM3", $event);
-    }
-
-    /**
-     * Обертка для обработки события plgVmSetOnTablePluginShipment для Joomla 4
-     * @param Event $event
-     *
-     * @return Event|true
-     * @since 1.0.15
-     */
-    public function plgVmSetOnTablePluginShipment4(Event $event)
-    {
-        return $this->_runEventHandler("plgVmSetOnTablePluginShipment", $event);
-    }
+//    /**
+//     * Обертка для обработки события plgVmOnShowOrderFEShipment для Joomla 4
+//     * @param Event $event
+//     *
+//     * @return Event|true
+//     * @since 1.0.15
+//     */
+//    public function plgVmOnShowOrderFEShipment4(Event $event)
+//    {
+//        return $this->_runEventHandler("plgVmOnShowOrderFEShipment", $event);
+//    }
+//
+//    /**
+//     * Обертка для обработки события plgVmConfirmedOrder для Joomla 4
+//     * @param Event $event
+//     *
+//     * @return Event|true
+//     * @since 1.0.15
+//     */
+//    public function plgVmConfirmedOrder4(Event $event)
+//    {
+//        return $this->_runEventHandler("plgVmConfirmedOrder", $event);
+//    }
+//
+//    /**
+//     * Обертка для обработки события plgVmOnShowOrderBEShipment для Joomla 4
+//     * @param Event $event
+//     *
+//     * @return Event|true
+//     * @since 1.0.15
+//     */
+//    public function plgVmOnShowOrderBEShipment4(Event $event)
+//    {
+//        return $this->_runEventHandler("plgVmOnShowOrderBEShipment", $event);
+//    }
+//
+//    /**
+//     * Обертка для обработки события plgVmOnProductDisplayShipment для Joomla 4
+//     * @param Event $event
+//     *
+//     * @return Event|true
+//     * @since 1.0.15
+//     */
+//    public function plgVmOnProductDisplayShipment4(Event $event)
+//    {
+//        return $this->_runEventHandler("plgVmOnProductDisplayShipment", $event);
+//    }
+//
+//    /**
+//     * Обертка для обработки события plgVmOnStoreInstallShipmentPluginTable для Joomla 4
+//     * @param Event $event
+//     *
+//     * @return Event|true
+//     * @since 1.0.15
+//     */
+//    public function plgVmOnStoreInstallShipmentPluginTable4(Event $event)
+//    {
+//        return $this->_runEventHandler("plgVmOnStoreInstallShipmentPluginTable", $event);
+//    }
+//
+//    /**
+//     * Обертка для обработки события plgVmOnSelectCheckShipment для Joomla 4
+//     * @param Event $event
+//     *
+//     * @return Event|true
+//     * @since 1.0.15
+//     */
+//    public function plgVmOnSelectCheckShipment4(Event $event)
+//    {
+//        return $this->_runEventHandler("plgVmOnSelectCheckShipment", $event);
+//    }
+//
+//    /**
+//     * Обертка для обработки события plgVmDisplayListFEShipment для Joomla 4
+//     * @param Event $event
+//     *
+//     * @return Event|true
+//     * @since 1.0.15
+//     */
+//    public function plgVmDisplayListFEShipment4(Event $event)
+//    {
+//        return $this->_runEventHandler("plgVmDisplayListFEShipment", $event);
+//    }
+//
+//    /**
+//     * Обертка для обработки события plgVmOnSelectedCalculatePriceShipment для Joomla 4
+//     * @param Event $event
+//     *
+//     * @return Event|true
+//     * @since 1.0.15
+//     */
+//    public function plgVmOnSelectedCalculatePriceShipment4(Event $event)
+//    {
+//        return $this->_runEventHandler("plgVmOnSelectedCalculatePriceShipment", $event);
+//    }
+//
+//    /**
+//     * Обертка для обработки события plgVmOnCheckAutomaticSelectedShipment для Joomla 4
+//     * @param Event $event
+//     *
+//     * @return Event|true
+//     * @since 1.0.15
+//     */
+//    public function plgVmOnCheckAutomaticSelectedShipment4(Event $event)
+//    {
+//        return $this->_runEventHandler("plgVmOnCheckAutomaticSelectedShipment", $event);
+//    }
+//
+//    /**
+//     * Обертка для обработки события plgVmOnCheckoutCheckDataShipment для Joomla 4
+//     * @param Event $event
+//     *
+//     * @return Event|true
+//     * @since 1.0.15
+//     */
+//    public function plgVmOnCheckoutCheckDataShipment4(Event $event)
+//    {
+//        return $this->_runEventHandler("plgVmOnCheckoutCheckDataShipment", $event);
+//    }
+//
+//    /**
+//     * Обертка для обработки события plgVmonShowOrderPrint для Joomla 4
+//     * @param Event $event
+//     *
+//     * @return Event|true
+//     * @since 1.0.15
+//     */
+//    public function plgVmonShowOrderPrint4(Event $event)
+//    {
+//        return $this->_runEventHandler("plgVmonShowOrderPrint", $event);
+//    }
+//
+//    /**
+//     * Обертка для обработки события plgVmDeclarePluginParamsShipment для Joomla 4
+//     * @param Event $event
+//     *
+//     * @return Event|true
+//     * @since 1.0.15
+//     */
+//    public function plgVmDeclarePluginParamsShipment4(Event $event)
+//    {
+//        return $this->_runEventHandler("plgVmDeclarePluginParamsShipment", $event);
+//    }
+//
+//    /**
+//     * Обертка для обработки события plgVmDeclarePluginParamsShipmentVM3 для Joomla 4
+//     * @param Event $event
+//     *
+//     * @return Event|true
+//     * @since 1.0.15
+//     */
+//    public function plgVmDeclarePluginParamsShipmentVM3_4(Event $event)
+//    {
+//        return $this->_runEventHandler("plgVmDeclarePluginParamsShipmentVM3", $event);
+//    }
+//
+//    /**
+//     * Обертка для обработки события plgVmSetOnTablePluginShipment для Joomla 4
+//     * @param Event $event
+//     *
+//     * @return Event|true
+//     * @since 1.0.15
+//     */
+//    public function plgVmSetOnTablePluginShipment4(Event $event)
+//    {
+//        return $this->_runEventHandler("plgVmSetOnTablePluginShipment", $event);
+//    }
 }
