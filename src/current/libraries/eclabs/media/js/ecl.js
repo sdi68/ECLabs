@@ -47,7 +47,7 @@ class ECL {
      */
     debug(method = '', name = '', value) {
         if (this._debug_mode) {
-            console.log(method + '.' + name, value);
+            console.log(this.constructor.name + '.' + method + '.' + name, value);
         }
     }
 
