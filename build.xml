@@ -46,7 +46,7 @@
         <phingcall target="_build_source_package" >
             <property name = "source" value = "eclabs" />
             <property name = "prefix" value = "lib_" />
-            <property name = "version" value = "1_0_12" />
+            <property name = "version" value = "1_0_19" />
             <property name = "source_dir" value = "src/current/libraries/${source}" />
             <property name = "ftp_dir" value = "${ftp.common_dir}/libraries/${source}/" />
             <property name = "manifest_dir" value = "${source_dir}/" />
@@ -110,7 +110,7 @@
         <phingcall target="_build_source_package" >
             <property name = "source" value = "eclabs" />
             <property name = "prefix" value = "lib_" />
-            <property name = "version" value = "1_0_12" />
+            <property name = "version" value = "1_0_19" />
             <property name = "source_dir" value = "src/current/libraries/${source}" />
             <property name = "ftp_dir" value = "${ftp.common_dir}/" />
             <property name = "manifest_dir" value = "${source_dir}/" />

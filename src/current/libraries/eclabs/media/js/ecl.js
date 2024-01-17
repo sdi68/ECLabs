@@ -1,6 +1,6 @@
 /*
  * @package        Econsult Labs Library
- * @version          1.0.3
+ * @version          1.0.19
  * @author           ECL <info@econsultlab.ru>
  * @link                https://econsultlab.ru
  * @copyright      Copyright © 2023 ECL All Rights Reserved
@@ -33,6 +33,7 @@ class ECL {
      * Set debug mode
      * @param debug_mode    on/off debug mode
      * @public
+     * @deprecated since version 1.0.19
      */
     setDebugMode(debug_mode = false) {
         this._debug_mode = debug_mode;
@@ -100,5 +101,25 @@ class ECL {
         if (element) {
             element.replaceWith(element.cloneNode(true));
         }
+    }
+
+    /**
+     * Get the debug mode flag
+     * @public
+     * @return {boolean}
+     * @since 1.0.19
+     */
+    get debug_mode() {
+        return this._debug_mode;
+    }
+    /**
+     * Set the debug mode flag
+     * @public
+     * @param {boolean} value
+     * @since 1.0.19
+     */
+
+    set debug_mode(value) {
+        this._debug_mode = value;
     }
 }
