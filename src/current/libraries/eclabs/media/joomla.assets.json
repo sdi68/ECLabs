@@ -51,6 +51,16 @@
       ]
     },
     {
+      "name": "eclabs.field-token",
+      "type": "script",
+      "uri": "eclabs/field-token.js"
+    },
+    {
+      "name": "eclabs.field-taskurl",
+      "type": "script",
+      "uri": "eclabs/field-taskurl.js"
+    },
+    {
       "name": "eclabs.modal",
       "type": "style",
       "uri": "eclabs/ecl_modal.css"
