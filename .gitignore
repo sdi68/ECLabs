@@ -228,3 +228,8 @@ fabric.properties
 /src/current/libraries/eclabs/vendor/composer/InstalledVersions.php
 /src/current/libraries/eclabs/vendor/composer/LICENSE
 /src/current/libraries/eclabs/vendor/composer/platform_check.php
+/src/current/libraries/eclabs/vendor/sdi68/ecllog/README.md
+/src/current/libraries/eclabs/vendor/sdi68/ecllog/src/ECLLOG/ECLLOG.php
+/src/current/libraries/eclabs/vendor/sdi68/ecllog/src/ECLLOG/ECLLogger.php
+/src/current/libraries/eclabs/vendor/sdi68/ecllog/composer.json
+/src/current/libraries/eclabs/vendor/sdi68/ecllog/LICENSE

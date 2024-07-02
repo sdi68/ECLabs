@@ -57,6 +57,7 @@ class ECLTools
 	 *
 	 * @param   bool    $enabled  Разрешить логирование
 	 *
+	 * @depecated Use ECLLogging::add();
 	 * @since   1.0.0
 	 *
 	 */
@@ -85,6 +86,7 @@ class ECLTools
 	 * Кодирует для передачи параметры
 	 *
 	 * @param   array  $params  Параметры
+	 * @param   bool   $unescape_unicode
 	 *
 	 * @return string
 	 *

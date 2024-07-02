@@ -1,6 +1,11 @@
 {
+  "repositories": [{
+      "type": "github",
+      "url": "https://github.com/sdi68/ecllog.git"
+  }],
   "require": {
     "php": ">=7.4",
-    "simplehtmldom/simplehtmldom": "2.0-RC2"
+    "simplehtmldom/simplehtmldom": "2.0-RC2",
+    "sdi68/ecllog": "dev-main"
   }
 }
