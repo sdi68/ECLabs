@@ -10,7 +10,6 @@
 namespace ECLabs\Library\Traits;
 
 use ECLabs\Library\ECLLogging\ECLLogging;
-use ECLabs\Library\ECLTools;
 use ECLabs\Library\ECLVersion;
 use ECLLOG\ECLLOG;
 use Exception;
@@ -101,28 +100,57 @@ trait ECLPlugin
     {
         // Load the layout & push variables
         ob_start();
-        $layout = $this->_buildLayoutPath($layout);
-        $this->_addMedia();
-        // Подключаем шаблон
-        include $layout;
-        $html = ob_get_contents();
-        ob_end_clean();
+	    $layout = $this->_buildLayoutPath($layout);
+	    $this->_addMedia();
+	    // Подключаем шаблон
+	    include $layout;
+	    $html = ob_get_contents();
+	    ob_end_clean();
 
-        return $html;
+	    return $html;
     }
 
+	/**
+	 * Логирование работы плагина
+	 *
+	 * @param   string  $type     Тип записи
+	 * @param   string  $message  Сообщение для записи в лог (например имя переменной)
+	 * @param   array   $data     Переменная для записи в лог
+	 *
+	 * @return void
+	 * @see   ECLLOG
+	 * @since 1.0.20
+	 */
+	protected final function _addLog(string $type, string $message, mixed $data = null): void
+	{
+		ECLLogging::add(
+			array(
+				"source"           => $this->_name,
+				"enabled"          => $this->enabled_log,
+				"logger"           => "ECLabs\\Library\\ECLLogging\\Loggers\\ECLabDefaultLogger",
+				"back_trace_level" => 3
+			),
+			array(
+				"timestamp" => "",
+				"type"      => $type,
+				"caller"    => "",
+				"message"   => $message,
+				"data"      => $data,
+			)
+		);
+	}
 
-    /**
-     * Логирование работы плагина
-     *
-     * @param   array  $data
-     *
-     * @return void
-     * @since 1.0.0
-     */
+	/**
+	 * Логирование работы плагина
+	 *
+	 * @param   array  $data
+	 *
+	 * @return void
+	 * @since      1.0.0
+	 * @deprecated 1.0.20 use _addLog
+	 */
     protected final function _logging(array $data): void
     {
-        //ECLTools::Storelog($this->_name, $data, $this->enabled_log);
 	    ECLLogging::add(
 		    array(
 			    "source"=>$this->_name,
