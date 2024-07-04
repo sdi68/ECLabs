@@ -9,8 +9,10 @@
 
 namespace ECLabs\Library\Traits;
 
+use ECLabs\Library\ECLLogging\ECLLogging;
 use ECLabs\Library\ECLTools;
 use ECLabs\Library\ECLVersion;
+use ECLLOG\ECLLOG;
 use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Filesystem\File;
@@ -120,7 +122,22 @@ trait ECLPlugin
      */
     protected final function _logging(array $data): void
     {
-        ECLTools::Storelog($this->_name, $data, $this->enabled_log);
+        //ECLTools::Storelog($this->_name, $data, $this->enabled_log);
+	    ECLLogging::add(
+		    array(
+			    "source"=>$this->_name,
+			    "enabled" =>$this->enabled_log,
+			    "logger" => "ECLabs\\Library\\ECLLogging\\Loggers\\ECLabDefaultLogger",
+			    "back_trace_level" => 3
+		    ),
+		    array(
+			    "timestamp" => "",
+			    "type" =>ECLLOG::INFO,
+			    "caller" => "",
+			    "message" =>"",
+			    "data" => $data,
+		    )
+	    );
     }
 
     /**
