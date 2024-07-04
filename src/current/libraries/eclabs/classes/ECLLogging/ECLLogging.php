@@ -13,7 +13,7 @@ namespace ECLabs\Library\ECLLogging;
 
 use ECLabs\Library\ECLLogging\Loggers\ECLabLogger;
 use ECLLOG\ECLLOG;
-
+require_once JPATH_LIBRARIES."/eclabs/vendor/autoload.php";
 
 /**
  * Класс создания логов для отдельных компонентов
