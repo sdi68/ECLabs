@@ -2,7 +2,7 @@
 
 <extension version="3.9" type="package" method="upgrade">
 	<name>PKG_ECLABS</name>
-	<packagename>eclabs</packagename>
+	<packagename>pkg_eclabs</packagename>
 	<author>Econsult labs</author>
 	<creationDate>13.06.2023</creationDate>
 	<copyright>(C) 2023 ECL. All rights reserved.</copyright>

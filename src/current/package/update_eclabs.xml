@@ -13,7 +13,7 @@
         <name>ECLabs library package v1.0.5</name>
         <description>ECLabs library package update то v1.0.5</description>
         <type>package</type>
-        <element>eclabs</element>
+        <element>pkg_eclabs</element>
         <client>0</client>
         <version>1.0.5</version>
         <infourl title="ECLabs library package update то v1.0.5">https://econsultlab.ru/</infourl>
@@ -30,7 +30,7 @@
         <name>ECLabs library package v1.0.5</name>
         <description>ECLabs library package update то v1.0.5</description>
         <type>package</type>
-        <element>eclabs</element>
+        <element>pkg_eclabs</element>
         <client>0</client>
         <version>1.0.5</version>
         <infourl title="ECLabs library package update то v1.0.5">https://econsultlab.ru/</infourl>
