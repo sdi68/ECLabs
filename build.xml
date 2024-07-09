@@ -59,7 +59,7 @@
         <phingcall target="_build_source_package" >
             <property name = "source" value = "eclabs" />
             <property name = "prefix" value = "plg_" />
-            <property name = "version" value = "1_0_4" />
+            <property name = "version" value = "1_0_6" />
             <property name = "source_dir" value = "src/current/plugins/system/${source}" />
             <property name = "ftp_dir" value = "${ftp.common_dir}plugins/system/${source}/" />
             <property name = "manifest_dir" value = "${source_dir}/" />
@@ -124,7 +124,7 @@
         <phingcall target="_build_source_package" >
             <property name = "source" value = "eclabs" />
             <property name = "prefix" value = "plg_" />
-            <property name = "version" value = "1_0_4" />
+            <property name = "version" value = "1_0_6" />
             <property name = "source_dir" value = "src/current/plugins/system/${source}" />
             <property name = "ftp_dir" value = "${ftp.common_dir}plugins/system/${source}/" />
             <property name = "manifest_dir" value = "${source_dir}/" />
