@@ -2,7 +2,7 @@
 
 <extension version="3.9" type="package" method="upgrade">
 	<name>PKG_ECLABS</name>
-	<packagename>pkg_eclabs</packagename>
+	<packagename>eclabs</packagename>
 	<author>Econsult labs</author>
 	<creationDate>13.06.2023</creationDate>
 	<copyright>(C) 2023 ECL. All rights reserved.</copyright>
@@ -10,16 +10,17 @@
 	<authorEmail>info@econsultlab.ru</authorEmail>
 	<authorUrl>https://econsultlab.ru</authorUrl>
 	<version>1.0.5</version>
-	<description>PKG_ECLABS_XML_DESCRIPTION</description>
+	<description>PKG_ECLABS_DESCRIPTION</description>
 	<ecltype>free</ecltype>
 
-	<languages folder="language">
+	<scriptfile>script.php</scriptfile>
+
+	<languages folder ="language">
 		<language tag="en-GB">en-GB/en-GB.pkg_eclabs.sys.ini</language>
 		<language tag="en-GB">en-GB/en-GB.pkg_eclabs.ini</language>
 		<language tag="ru-RU">ru-RU/ru-RU.pkg_eclabs.sys.ini</language>
 		<language tag="ru-RU">ru-RU/ru-RU.pkg_eclabs.ini</language>
 	</languages>
-
 	<files folder="packages">
 		<file type="library" id="eclabs" >lib_eclabs.zip</file>
 		<file type="plugin" id="eclabs" group = "system">plg_eclabs.zip</file>
