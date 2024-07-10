@@ -11,8 +11,15 @@
  */
 
 use Joomla\CMS\Factory;
+use Joomla\CMS\Http\HttpFactory;
+use Joomla\CMS\Installer\Installer;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Version;
+use Joomla\Registry\Registry;
+use Joomla\CMS\Installer\InstallerAdapter;
+use Joomla\CMS\Installer\Manifest\PackageManifest as JPackageManifest;
 
 if (!class_exists('plgSystemECLabsInstallerScript'))
 {
@@ -22,44 +29,86 @@ if (!class_exists('plgSystemECLabsInstallerScript'))
 	 */
 	class plgSystemECLabsInstallerScript
 	{
-		public function preflight($type, $parent)
+
+		/**
+		 * Адаптер установщика
+		 * @var object
+		 * @since 1.0.4
+		 */
+		static $parent = null;
+		/**
+		 * Текущая версия устанавливаемого элемента
+		 * @var string
+		 * @since 1.0.4
+		 */
+		static $current_version = "";
+		/**
+		 * Наименование устанавливаемого элемента
+		 * @var null
+		 * @since 1.0.4
+		 */
+		static $name = "";
+		/**
+		 * Предыдущая версия устанавливаемого элемента
+		 * @var string
+		 * @since 1.0.4
+		 */
+		static $previous_version = "";
+		/**
+		 * Зависимости устанавливаемого элемента
+		 * @var array
+		 * @since 1.0.4
+		 */
+		static $dependencies = array();
+
+		/**
+		 * Method to check compatible.
+		 *
+		 * @param string $type Type of PostFlight action.
+		 * @param InstallerAdapter $parent Parent object calling object.
+		 *
+		 * @return  boolean  Compatible current version or not.
+		 *
+		 * @throws Exception
+		 * @since 1.0.4
+		 */
+		public function preflight(string $type, InstallerAdapter $parent): bool
 		{
-			if ($type == 'uninstall')
-			{
+
+			$manifest = $parent->getManifest();
+			//var_export($manifest);
+
+			if (!in_array($type, ['install', 'update'])) {
 				return true;
 			}
 
-			$app = Factory::getApplication();
-
-			$jversion = new Version();
-			if (!$jversion->isCompatible('3.0.0'))
-			{
-				$app->enqueueMessage('Please upgrade to at least Joomla! 3.x before continuing!', 'error');
-
+			if (!self::checkCompatible()) {
 				return false;
 			}
 
-			$db    = Factory::getDbo();
-			$query = $db->getQuery(true);
-			$query->select('extension_id')
-				->from($db->qn('#__extensions'))
-				->where($db->qn('type') . ' = ' . $db->q('library'))
-				->where($db->qn('element') . ' = ' . $db->q('eclabs'));
+			static::$parent = $parent;
+			static::$name = trim($manifest->name);
+			static::$current_version = trim($manifest->version);
+			static::$previous_version = self::getPreviousVersion();
 
-			if (is_null($db->setQuery($query)->loadResult()))
-			{
-				$app->enqueueMessage('The plugin requires an installed library ECLabs to work! Install please this before!', 'error');
-
-				return false;
+			if (count(static::$dependencies)) {
+				return self::installDependencies();
 			}
-
 			return true;
 		}
 
-		public function postflight($type, $parent)
+		/**
+		 * Runs right after any installation action.
+		 *
+		 * @param string $type Type of PostFlight action. Possible values are:
+		 * @param InstallerAdapter $parent Parent object calling object.
+		 * @return  boolean  True on success
+		 * @since  1.4.0
+		 */
+		public function postflight(string $type, InstallerAdapter $parent)
 		{
-			if ($type == 'uninstall')
-			{
+
+			if ($type == 'uninstall') {
 				return true;
 			}
 
@@ -72,14 +121,12 @@ if (!class_exists('plgSystemECLabsInstallerScript'))
 				->where($db->qn('element') . ' = ' . $db->q('eclabs'));
 			$pluginId = $db->setQuery($query)->loadResult();
 
-            // Включаем плагин
-            $query->clear()
-                ->update($db->qn('#__extensions'))
-                ->set($db->qn('enabled').'= 1')
-	            ->where($db->qn('extension_id') . ' = ' . $db->q($pluginId));
-            $db->setQuery($query)->execute();
-
-			$jversion = new Version;
+			// Включаем плагин
+			$query->clear()
+				->update($db->qn('#__extensions'))
+				->set($db->qn('enabled').'= 1')
+				->where($db->qn('extension_id') . ' = ' . $db->q($pluginId));
+			$db->setQuery($query)->execute();
 
 			?>
             <style type="text/css">
@@ -125,19 +172,20 @@ if (!class_exists('plgSystemECLabsInstallerScript'))
                 }
             </style>
 
-            <h3>the System ECLabs Plugin v1.0.3 Changelog</h3>
+            <h3><?php echo Text::_("PLG_SYSTEM_ECLABS_CHANGE_LOG_TITLE");?></h3>
             <ul class="version-history">
-                <li><span class="version-fixed">1.0.5</span> Bug fix.</li>
-                <li><span class="version-fixed">1.0.4</span> Bug fix.</li>
-                <li><span class="version-fixed">1.0.3</span> Code optimization.</li>
-                <li><span class="version-upgraded">1.0.2</span> Add only token extension authorisation.</li>
-                <li><span class="version-fixed">1.0.1</span> Bug fix.</li>
-                <li><span class="version-new">NEW</span> First version.</li>
+                <li><span class="version-fixed">1.0.7</span> <?php echo Text::_("PLG_SYSTEM_ECLABS_CHANGE_LOG_1_0_7");?></li>
+                <li><span class="version-fixed">1.0.6</span> <?php echo Text::_("PLG_SYSTEM_ECLABS_CHANGE_LOG_1_0_6");?></li>
+                <li><span class="version-fixed">1.0.5</span> <?php echo Text::_("PLG_SYSTEM_ECLABS_CHANGE_LOG_1_0_5");?></li>
+                <li><span class="version-fixed">1.0.4</span> <?php echo Text::_("PLG_SYSTEM_ECLABS_CHANGE_LOG_1_0_4");?></li>
+                <li><span class="version-fixed">1.0.3</span> <?php echo Text::_("PLG_SYSTEM_ECLABS_CHANGE_LOG_1_0_3");?></li>
+                <li><span class="version-upgraded">1.0.2</span> <?php echo Text::_("PLG_SYSTEM_ECLABS_CHANGE_LOG_1_0_2");?></li>
+                <li><span class="version-fixed">1.0.1</span> <?php echo Text::_("PLG_SYSTEM_ECLABS_CHANGE_LOG_1_0_1");?></li>
+                <li><span class="version-new">1.0.0</span> First version.</li>
             </ul>
 			<?php if ($pluginId) { ?>
             <a class="btn btn-primary btn-large"
-               href="<?php echo Route::_('index.php?option=com_plugins&task=plugin.edit&extension_id=' . $pluginId); ?>">Start
-                using the System ECLabs Plugin.</a>
+               href="<?php echo Route::_('index.php?option=com_plugins&task=plugin.edit&extension_id=' . $pluginId); ?>"><?php echo Text::_("PLG_SYSTEM_ECLABS_START_USING");?></a>
 		<?php } ?>
 			<?php if (0): ?>
 
@@ -146,51 +194,332 @@ if (!class_exists('plgSystemECLabsInstallerScript'))
 		<?php endif; ?>
             <div style="clear: both;"></div>
 			<?php
+			return true;
 		}
 
-		public function install($parent)
+		/**
+		 * Install all dependencies for this element
+		 * @throws Exception
+		 * @since  1.4.0
+		 */
+		private static function installDependencies(): bool
 		{
-			$source = $parent->getParent()->getPath('source');
-			$this->runSQL($source, "install.sql");
-		}
 
-		protected function runSQL($source, $file)
-		{
-			$db     = Factory::getDbo();
-			$driver = strtolower($db->name);
-			if (strpos($driver, 'mysql') !== false)
-			{
-				$driver = 'mysql';
-			}
-            elseif ($driver == 'sqlsrv')
-			{
-				$driver = 'sqlazure';
-			}
-
-			//$sqlfile = $source . '/sql/' . $driver . '/' . $file;
-			$sqlfile = __DIR__ . "/sql/mysql/" . $file;
-			if (file_exists($sqlfile))
-			{
-				$buffer = file_get_contents($sqlfile);
-				if ($buffer !== false)
-				{
-					if (is_callable(array($db, 'splitSql')))
-					{
-						$queries = $db->splitSql($buffer);
+			if (count(static::$dependencies)) {
+				foreach (static::$dependencies as $dependency) {
+					$info = self::getDependencyInfo($dependency);
+					//var_export($info);
+					if ($info) {
+						if (self::needDependencyInstall($info)) {
+							return self::installDependency($info['downloads']['downloadurl']);
+						}
 					}
-					else
-					{
+				}
+
+			}
+			return true;
+		}
+
+		/**
+		 * Get dependency info from update server
+		 * @param array $dependency Dependency
+		 * @return array | false (if unsuccessful)
+		 * @throws Exception
+		 * @since  1.4.0
+		 */
+		private static function getDependencyInfo(array $dependency): array|false
+		{
+			$app = Factory::getApplication();
+			$version = new Version;
+			$httpOption = new Registry;
+			$httpOption->set('userAgent', $version->getUserAgent('Joomla', true, false));
+
+			// JHttp transport throws an exception when there's no response.
+			try {
+				$http = HttpFactory::getHttp($httpOption);
+				$response = $http->get($dependency['url'], array(), 20);
+			} catch (\RuntimeException $e) {
+				$response = null;
+			}
+
+			if ($response === null || $response->code !== 200) {
+				$app->enqueueMessage(Text::sprintf('COM_INSTALLER_MSG_ERROR_CANT_CONNECT_TO_UPDATESERVER', $dependency['url']), 'warning');
+				return false;
+			}
+			// Выбираем нужную секцию манифеста обновления в зависимости от версии Joomla
+			$version_mask = '3.';
+			switch (true) {
+				case $version->isCompatible('5.0'):
+					$version_mask = '5.';
+					break;
+				case $version->isCompatible('4.0'):
+					$version_mask = '4.';
+					break;
+				case $version->isCompatible('3.0'):
+				default:
+			}
+
+			$xml = new SimpleXMLElement($response->body);
+			foreach ($xml->update as $item) {
+				//var_export($item->targetplatform);
+				$tp = $item->targetplatform;
+				if (str_contains((string)($tp->attributes()->version), $version_mask)) {
+					return json_decode(json_encode($item), true);
+				}
+			}
+
+			return false;
+		}
+
+		/**
+		 * Check all compatibilities requirements for element
+		 * @return bool true if compatible
+		 * @throws Exception
+		 * @since 1.0.4
+		 */
+		private static function checkCompatible(): bool
+		{
+			$app = Factory::getApplication();
+			$jversion = new Version();
+			if (!$jversion->isCompatible('3.0.0')) {
+				$app->enqueueMessage(Text::_('PLG_SYSTEM_ECLABS_ERROR_COMPATIBLE_JOOMLA_3'), 'error');
+				return false;
+			}
+
+			$db    = Factory::getDbo();
+			$query = $db->getQuery(true);
+			$query->select('extension_id')
+				->from($db->qn('#__extensions'))
+				->where($db->qn('type') . ' = ' . $db->q('library'))
+				->where($db->qn('element') . ' = ' . $db->q('eclabs'));
+
+			if (is_null($db->setQuery($query)->loadResult()))
+			{
+				$app->enqueueMessage(Text::_('PLG_SYSTEM_ECLABS_ERROR_COMPATIBLE_ECLABS'), 'error');
+				return false;
+			}
+
+			return true;
+		}
+
+		/**
+		 * Get previous version for element
+		 * @return string
+		 * @since 1.0.4
+		 */
+		private static function getPreviousVersion(): string
+		{
+
+			$xml_file = self::getXmlFile();
+
+			if (!$xml_file) {
+				return '';
+			}
+
+			$manifest = new JPackageManifest($xml_file);
+
+			return isset($manifest->version) ? trim($manifest->version) : '';
+		}
+
+		/**
+		 * Get path for manifest file
+		 * @return string
+		 * @since 1.0.4
+		 */
+		private static function getXmlFile()
+		{
+			$xml_file = JPATH_MANIFESTS . '/packages/pkg_' . static::$name . '.xml';
+
+			if (file_exists($xml_file)) {
+				return $xml_file;
+			}
+
+			$xml_file = JPATH_LIBRARIES . '/' . static::$name . '.xml';
+
+			if (file_exists($xml_file)) {
+				return $xml_file;
+			}
+
+			$xml_file = JPATH_ADMINISTRATOR . '/components/com_' . static::$name . '/' . static::$name . '.xml';
+
+			if (file_exists($xml_file)) {
+				return $xml_file;
+			}
+
+			return '';
+		}
+
+		/**
+		 * Проверяет возможность и необходимость установки расширения
+		 * @param array $info Параметры устанавливаемого расширения
+		 *
+		 * @return bool
+		 *
+		 * @since 1.0.4
+		 */
+		private static function needDependencyInstall(array $info): bool
+		{
+			// Получаем информацию об установленном расширении
+			$db = Factory::getDbo();
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName('manifest_cache'))
+				->from($db->qn('#__extensions'))
+				->where($db->quoteName('type') . ' = ' . $db->quote($info['type']))
+				->where($db->quoteName('element') . ' = ' . $db->quote($info['element']));
+			$params = json_decode($db->setQuery($query)->loadResult() ?? "", true);
+			//var_dump($params);
+			$ret = false;
+			if (is_null($params)) {
+				// Расширение не установлено. Надо устанавливать.
+				$ret = true;
+			} else if (is_array($params)) {
+				// Если на сайте более старая версия, то нужно устанавливать расширение
+				$ret = (bool)version_compare($info['version'], $params['version'], '>');
+			}
+			return $ret;
+		}
+
+		/**
+		 * Устанавливает расширение по URL
+		 * @param string $url URL сервера обновлений расширения
+		 *
+		 * @return bool
+		 *
+		 * @throws Exception
+		 * @since 1.0.4
+		 */
+		private static function installDependency(string $url): bool
+		{
+			// Load installer plugins for assistance if required:
+			PluginHelper::importPlugin('installer');
+
+			$app = Factory::getApplication();
+
+			$package = null;
+
+			// This event allows an input pre-treatment, a custom pre-packing or custom installation.
+			// (e.g. from a JSON description).
+			$results = $app->triggerEvent('onInstallerBeforeInstallation', array(static::$parent, &$package));
+
+			if (in_array(true, $results, true)) {
+				return true;
+			}
+
+			if (in_array(false, $results, true)) {
+				return false;
+			}
+
+			// Download the package at the URL given.
+			$p_file = JInstallerHelper::downloadPackage($url);
+
+			// Was the package downloaded?
+			if (!$p_file) {
+				$app->enqueueMessage(Text::_('COM_INSTALLER_MSG_INSTALL_INVALID_URL'), 'error');
+
+				return false;
+			}
+
+			$config = Factory::getConfig();
+			$tmp_dest = $config->get('tmp_path');
+
+			// Unpack the downloaded package file.
+			$package = JInstallerHelper::unpack($tmp_dest . '/' . $p_file, true);
+
+			// This event allows a custom installation of the package or a customization of the package:
+			$results = $app->triggerEvent('onInstallerBeforeInstaller', array(static::$parent, &$package));
+
+			if (in_array(true, $results, true)) {
+				return true;
+			}
+
+			if (in_array(false, $results, true)) {
+				JInstallerHelper::cleanupInstall($package['packagefile'], $package['extractdir']);
+
+				return false;
+			}
+
+			// Get an installer instance.
+			$installer = new Installer();
+
+			/*
+			 * Check for a Joomla core package.
+			 * To do this we need to set the source path to find the manifest (the same first step as JInstaller::install())
+			 *
+			 * This must be done before the unpacked check because JInstallerHelper::detectType() returns a boolean false since the manifest
+			 * can't be found in the expected location.
+			 */
+			if (is_array($package) && isset($package['dir']) && is_dir($package['dir'])) {
+				$installer->setPath('source', $package['dir']);
+
+				if (!$installer->findManifest()) {
+					JInstallerHelper::cleanupInstall($package['packagefile'], $package['extractdir']);
+					$app->enqueueMessage(Text::sprintf('COM_INSTALLER_INSTALL_ERROR', '.'), 'warning');
+
+					return false;
+				}
+			}
+
+			// Was the package unpacked?
+			if (!$package || !$package['type']) {
+				JInstallerHelper::cleanupInstall($package['packagefile'], $package['extractdir']);
+				$app->enqueueMessage(Text::_('COM_INSTALLER_UNABLE_TO_FIND_INSTALL_PACKAGE'), 'error');
+
+				return false;
+			}
+
+			// Install the package.
+			if (!$installer->install($package['dir'])) {
+				// There was an error installing the package.
+				$msg = Text::sprintf('COM_INSTALLER_INSTALL_ERROR',
+					Text::_('COM_INSTALLER_TYPE_TYPE_' . strtoupper($package['type'])));
+				$result = false;
+				$msgType = 'error';
+			} else {
+				// Package installed successfully.
+				$msg = Text::sprintf('COM_INSTALLER_INSTALL_SUCCESS',
+					Text::_('COM_INSTALLER_TYPE_TYPE_' . strtoupper($package['type'])));
+				$result = true;
+				$msgType = 'message';
+			}
+
+			// This event allows a custom a post-flight:
+			$app->triggerEvent('onInstallerAfterInstaller', array(self::$parent, &$package, $installer, &$result, &$msg));
+
+			$app->enqueueMessage($msg, $msgType);
+
+			// Cleanup the install files.
+			if (!is_file($package['packagefile'])) {
+				$package['packagefile'] = $config->get('tmp_path') . '/' . $package['packagefile'];
+			}
+
+			JInstallerHelper::cleanupInstall($package['packagefile'], $package['extractdir']);
+
+			return $result;
+		}
+
+		public function install($parent): void
+		{
+			self::runSQL("install.sql");
+		}
+
+		private static function runSQL($file)
+		{
+			$db = Factory::getDbo();
+			$sqlfile = __DIR__ . "/sql/mysql/" . $file;
+			if (file_exists($sqlfile)) {
+				$buffer = file_get_contents($sqlfile);
+				if ($buffer !== false) {
+					if (is_callable(array($db, 'splitSql'))) {
+						$queries = $db->splitSql($buffer);
+					} else {
 						$queries = JInstallerHelper::splitSql($buffer);
 					}
 
-					foreach ($queries as $query)
-					{
+					foreach ($queries as $query) {
 						$query = trim($query);
-						if ($query != '' && $query[0] != '#')
-						{
+						if ($query != '' && $query[0] != '#') {
 							$db->setQuery($query);
-							if (!$db->execute())
-							{
+							if (!$db->execute()) {
 								JError::raiseWarning(1, JText::sprintf('JLIB_INSTALLER_ERROR_SQL_ERROR', $db->stderr(true)));
 							}
 						}
@@ -199,10 +528,9 @@ if (!class_exists('plgSystemECLabsInstallerScript'))
 			}
 		}
 
-		public function uninstall($parent)
+		public function uninstall($parent): void
 		{
-			$source = $parent->getParent()->getPath('source');
-			$this->runSQL($source, "uninstall.sql");
+			self::runSQL("uninstall.sql");
 		}
 	}
 }

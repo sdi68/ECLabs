@@ -8,13 +8,13 @@
   -->
 <updates>
     <update>
-        <name>Econsult Labs Library v. 1.0.21</name>
-        <description>Обновление библиотеки Econsult Labs Library до версии 1.0.21</description>
+        <name>Econsult Labs Library v. 1.0.22</name>
+        <description>Обновление библиотеки Econsult Labs Library до версии 1.0.22</description>
         <element>eclabs</element>
         <type>library</type>
-        <version>1.0.21</version>
+        <version>1.0.22</version>
         <client>0</client>
-        <infourl title="Econsult Labs Library update то v. 1.0.21">
+        <infourl title="Econsult Labs Library update то v. 1.0.22">
             https://econsultlab.ru/
         </infourl>
         <downloads>
@@ -31,13 +31,13 @@
         <php_minimum>8.0</php_minimum>
     </update>
     <update>
-        <name>Econsult Labs Library v. 1.0.21</name>
-        <description>Обновление библиотеки Econsult Labs Library до версии 1.0.21</description>
+        <name>Econsult Labs Library v. 1.0.22</name>
+        <description>Обновление библиотеки Econsult Labs Library до версии 1.0.22</description>
         <element>eclabs</element>
         <type>library</type>
-        <version>1.0.21</version>
+        <version>1.0.22</version>
         <client>0</client>
-        <infourl title="Econsult Labs Library update то v. 1.0.21">
+        <infourl title="Econsult Labs Library update то v. 1.0.22">
             https://econsultlab.ru/
         </infourl>
         <downloads>

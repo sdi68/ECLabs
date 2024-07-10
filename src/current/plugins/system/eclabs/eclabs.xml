@@ -10,14 +10,14 @@
   -->
 <extension type="plugin" group="system" method="upgrade">
     <name>PLG_SYSTEM_ECLABS</name>
-    <author>Econsult labs</author>
-    <creationDate>04.07.2023</creationDate>
+    <author>ECL</author>
+    <creationDate>10.07.2024</creationDate>
     <copyright>(C) 2023 ECL.</copyright>
     <license>GNU General Public License version 2 or later; see LICENSE.txt</license>
     <authorEmail>info@econsultlab.ru</authorEmail>
     <authorUrl>https://econsultlab.ru</authorUrl>
-    <version>1.0.6</version>
-    <description>PLG_SYSTEM_ECLABS_XML_DESCRIPTION</description>
+    <version>1.0.7</version>
+    <description>PLG_SYSTEM_ECLABS_DESCRIPTION</description>
     <ecltype>free</ecltype>
 
     <!-- Scripts to run on installation -->

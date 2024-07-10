@@ -9,11 +9,11 @@
   -->
 
 <extension version="3.9" type="library" method="upgrade">
-    <name>ECLabs Library</name>
-    <description>Econsult Labs Library - используется с расширениями от Econsult Labs</description>
-    <version>1.0.21</version>
-    <creationDate>26.06.2024</creationDate>
-    <author>Econsult Labs</author>
+    <name>LIB_ECLABS</name>
+    <description>LIB_ECLABS_DESCRIPTION</description>
+    <version>1.0.22</version>
+    <creationDate>10.07.2024</creationDate>
+    <author>ECL</author>
     <authorEmail>info@econsultlab.ru</authorEmail>
     <authorUrl>https://econsultlab.ru</authorUrl>
     <copyright>Copyright © 2023 ECL - All Rights Reserved</copyright>

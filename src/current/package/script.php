@@ -153,9 +153,10 @@ if (!class_exists('pkg_eclabsInstallerScript'))
                 }
 			</style>
 
-			<h3>The package ECLabs library changelog</h3>
+			<h3><?php echo Text::_('PKG_ECLABS_CHANGE_LOG_TITLE');?></h3>
 			<ul class="version-history">
-				<li><span class="version-upgraded">1.0.21</span> BugFix</li>
+				<li><span class="version-upgraded">1.0.6</span> <?php echo Text::_('PKG_ECLABS_CHANGE_LOG_1_0_6');?></li>
+                <li><span class="version-fixed">1.0.5</span> <?php echo Text::_('PKG_ECLABS_CHANGE_LOG_1_0_6');?></li>
 			</ul>
 			<div style="clear: both;"></div>
 			<?php
@@ -182,7 +183,7 @@ if (!class_exists('pkg_eclabsInstallerScript'))
 				}
 
 			}
-			return false;
+			return true;
 		}
 
 		/**
@@ -247,10 +248,9 @@ if (!class_exists('pkg_eclabsInstallerScript'))
 			$app = Factory::getApplication();
 			$jversion = new Version();
 			if (!$jversion->isCompatible('3.0.0')) {
-				$app->enqueueMessage('Please upgrade to at least Joomla! 3.0.0 before continuing!', 'error');
+				$app->enqueueMessage(Text::_('PKG_ECLABS_ERROR_COMPATIBLE_JOOMLA_3'), 'error');
 				return false;
 			}
-
 			return true;
 		}
 
@@ -326,7 +326,6 @@ if (!class_exists('pkg_eclabsInstallerScript'))
 			} else if (is_array($params)) {
 				// Если на сайте более старая версия, то нужно устанавливать расширение
 				$ret = (bool)version_compare($info['version'], $params['version'], '>');
-				Joomla\CMS\Log\Log::add($info['version'].$params['version'],Joomla\CMS\Log\Log::INFO,"compare");
 			}
 			return $ret;
 		}
