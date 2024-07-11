@@ -15,6 +15,10 @@ use JConfig;
 use JEventDispatcher;
 use JLayoutHelper;
 use Joomla\CMS\Factory;
+use Joomla\CMS\Form\Form;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Plugin\PluginHelper;
+use SimpleXMLElement;
 
 defined('_JEXEC') or die;
 
@@ -164,40 +168,120 @@ class ECLTools
 		$return = "";
 		if (count($plugins))
 		{
-			$db    = Factory::getDbo();
-			$query = $db->getQuery(true);
 			foreach ($plugins as $folder => $item)
 			{
-				$query->clear();
-				$query->select('`extension_id`, `element`, `enabled`,`manifest_cache`,`folder`')
-					->from($db->qn('#__extensions'))
-					->where($db->qn('type') . ' = ' . $db->q('plugin'))
-					->where($db->qn('folder') . ' = ' . $db->q($folder));
-				if (!empty($item['plugins']))
-				{
-					$names = explode(",", $item['plugins']);
-					foreach ($names as $name)
-					{
-						if (str_contains($name, '%'))
-						{
-							// Передана маска на имя
-							$query->where($db->qn('element') . ' LIKE ' . $db->q($name), 'OR');
-						}
-						else
-						{
-							//  Передано имя плагина
-							$query->where($db->qn('element') . ' = ' . $db->q($name), 'OR');
-						}
-					}
-				}
-				$result = $db->setQuery($query)->loadAssocList();
-				$path   = 'blocks.plugins_statuses.' . $layout . ECLVersion::getJoomlaVersionSuffix("_j");
-				$return .= JLayoutHelper::render($path, array("plugins_info" => $result, "folder" => $folder, "title" => $item["title"]), JPATH_LIBRARIES . '/eclabs/layouts');
+                $result = self::_getComponentFolderPlugins($folder,$item);
+                if($result) {
+                    $path = 'blocks.plugins_statuses.' . $layout . ECLVersion::getJoomlaVersionSuffix("_j");
+                    $return .= JLayoutHelper::render($path, array("plugins_info" => $result, "folder" => $folder, "title" => $item["title"]), JPATH_LIBRARIES . '/eclabs/layouts');
+                }
 			}
-
 		}
-
 		return $return;
 	}
 
+
+    /**
+     * Формирует блок диагностики подключенных плагинов в XML для вывода в формах настройки плагинами.
+     * Например, в событии onContentPrepareForm
+     *
+     * @param array $plugins Массив проверяемых плагинов
+     *                                  array(
+     *                                  [folder]=>array(                string Наименование каталога плагинов
+     *                                  "plugins =>[plugins],   string пустое - использовать все плагины каталога,
+     *                                  либо имена плагинов через запятую
+     *                                  либо маска имен плагина, например, receipts_%
+     *                                  "title" => [title]      Заголовок блока плагинов каталога
+     *                                  ),
+     *                                  ...
+     *                                  )
+     * @param Form $form    Форма настроек
+     * @return void
+     * @throws Exception
+     * @since 1.0.22
+     */
+    public static function getXMLComponentPluginsStatus(array $plugins, Form &$form): void
+    {
+	    ECLLanguage::loadExtraLanguageFiles('eclabs', JPATH_ROOT);
+        switch (ECLVersion::getJoomlaVersion())
+        {
+            case 4:
+                $class_warning = 'alert alert-warning';
+                $class_info    = 'alert alert-info';
+                break;
+            case 3:
+            default:
+                $class_warning = 'alert alert-warning';
+                $class_info    = 'alert alert-info';
+        }
+        $element = '<field name="check_plugins" type="note" label = "ECLABS_CHECK_PLUGINS_LABEL" description="" class = "' . $class_warning . '" />';
+        $xml     = new SimpleXMLElement($element);
+        $form->setField($xml, null, true, 'basic');
+
+        if (count($plugins))
+        {
+            foreach ($plugins as $folder => $item)
+            {
+                $result = self::_getComponentFolderPlugins($folder,$item);
+                if($result){
+                    $element = '<field name="check_plugins_' . $folder . '" type="note" label = "' . ($item['title'] ?? $folder) . '" description="" class = "' . $class_info . '" />';
+                    $xml     = new SimpleXMLElement($element);
+                    $form->setField($xml, null, true, 'basic');
+                    foreach ($result as $plugin){
+                        $description = "";
+                        $extension   = 'plg_' . $plugin['folder'] . '_' . $plugin['element'];
+                        ECLLanguage::loadExtraLanguageFiles($extension, JPATH_ADMINISTRATOR);
+                        if (!empty($plugin['manifest_cache']))
+                        {
+                            $manifest_cache = json_decode($plugin['manifest_cache'], true);
+                            if (array_key_exists('description', $manifest_cache))
+                            {
+                                $description = Text::_($manifest_cache['description']);
+                            }
+                        }
+                        $class   = (PluginHelper::isEnabled($folder, $plugin['element']) ? "alert alert-success" : "alert alert-error");
+                        $text    = $plugin['element'] . (empty($description) ? '' : ' (' . $description . ')') . ' - ' . (PluginHelper::isEnabled($folder, $plugin['element']) ? Text::_('ECLABS_PLUGIN_STATE_ON') : Text::_('ECLABS_PLUGIN_STATE_OFF'));
+                        $element = '<field name="check_plugins_' . $plugin['extension_id'] . '" type="note" class = "' . $class . '" label = "" description="' . $text . '" />';
+                        $xml     = new SimpleXMLElement($element);
+                        $form->setField($xml, null, true, 'basic');
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Получает плагины компонента из указанной группы
+     * @param string $folder    Группа плагинов
+     * @param array $options    Настройки отбора плагинов
+     * @return array|mixed
+     * @since 1.0.22
+     */
+    private static function _getComponentFolderPlugins(string $folder,array $options): mixed
+    {
+        $db    = Factory::getDbo();
+        $query = $db->getQuery(true);
+        $query->select('`extension_id`, `element`, `enabled`,`manifest_cache`,`folder`')
+            ->from($db->qn('#__extensions'))
+            ->where($db->qn('type') . ' = ' . $db->q('plugin'))
+            ->where($db->qn('folder') . ' = ' . $db->q($folder));
+        if (!empty($options['plugins']))
+        {
+            $names = explode(",", $options['plugins']);
+            foreach ($names as $name)
+            {
+                if (str_contains($name, '%'))
+                {
+                    // Передана маска на имя
+                    $query->where($db->qn('element') . ' LIKE ' . $db->q($name), 'OR');
+                }
+                else
+                {
+                    //  Передано имя плагина
+                    $query->where($db->qn('element') . ' = ' . $db->q($name), 'OR');
+                }
+            }
+        }
+        return $db->setQuery($query)->loadAssocList();
+    }
 }
