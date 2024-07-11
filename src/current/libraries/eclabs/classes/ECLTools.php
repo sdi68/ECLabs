@@ -202,7 +202,7 @@ class ECLTools
      */
     public static function getXMLComponentPluginsStatus(array $plugins, Form &$form): void
     {
-	    ECLLanguage::loadExtraLanguageFiles('eclabs', JPATH_ROOT);
+	    ECLLanguage::loadLibLanguage();
         switch (ECLVersion::getJoomlaVersion())
         {
             case 4:
