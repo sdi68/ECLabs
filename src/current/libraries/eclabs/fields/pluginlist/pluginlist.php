@@ -31,6 +31,17 @@ class JFormFieldPluginList extends JFormFieldList {
      */
     protected $folder = 'system';
 
+	/**
+	 * Анализируемые имена плагинов.
+	 * Определяет какие плагины будут анализироваться (все, список имен или по маске на имя)
+	 * Пусто - все плагины группы
+     * Имена плагинов через запятую
+     * Маска на имя плагина, например: %имя%,sditracking_%
+     * @var string
+     * @since 1.0.24
+     */
+    protected $plugins = "";
+
     /**
      * Method to attach a Form object to the field.
      *
@@ -52,6 +63,8 @@ class JFormFieldPluginList extends JFormFieldList {
         if ($return)
         {
             $this->folder      = (string) $this->element['folder'];
+	        /** @since 1.0.24 */
+            $this->plugins = (string) $this->element['plugins'];
         }
 
         return $return;
@@ -76,8 +89,26 @@ class JFormFieldPluginList extends JFormFieldList {
             ->select($db->quoteName('enabled'))
             ->from($db->qn('#__extensions'))
             ->where($db->quoteName('type') . ' = ' . $db->quote('plugin'))
-            ->where($db->quoteName('folder') . ' = ' . $db->quote($this->folder))
-            ->order($db->quoteName('element'));
+            ->where($db->quoteName('folder') . ' = ' . $db->quote($this->folder));
+		/** @since 1.0.24 */
+        if (!empty($this->plugins))
+        {
+            $names = explode(",", $this->plugins);
+            foreach ($names as $name)
+            {
+                if (str_contains($name, '%'))
+                {
+                    // Передана маска на имя
+                    $query->where($db->qn('element') . ' LIKE ' . $db->q($name), 'OR');
+                }
+                else
+                {
+                    //  Передано имя плагина
+                    $query->where($db->qn('element') . ' = ' . $db->q($name), 'OR');
+                }
+            }
+        }
+        $query->order($db->quoteName('element'));
         $plugins = $db->setQuery($query)->loadAssocList();
         if($plugins){
             foreach ($plugins as $plugin) {
