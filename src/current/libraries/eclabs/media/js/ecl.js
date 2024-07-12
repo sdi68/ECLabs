@@ -122,4 +122,28 @@ class ECL {
     set debug_mode(value) {
         this._debug_mode = value;
     }
+
+    /**
+     * Analog sprintf function php
+     * @param string    Template witch %s, %d
+     * @param args      Any values to be in template replaced
+     * @return {string}
+     * @public
+     * @since 1.0.24
+     */
+    sprintf(string, ...args){
+        const newString = Joomla.Text._(string);
+        let i = 0;
+        return newString.replace(/%((%)|s|d)/g, (m) => {
+            let val = args[i];
+            if (m === '%d') {
+                val = parseFloat(val);
+                if (Number.isNaN(val)) {
+                    val = 0;
+                }
+            }
+            i += 1;
+            return val;
+        });
+    }
 }
