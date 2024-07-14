@@ -66,6 +66,10 @@ class JFormFieldTaskUrl extends FormField
 		{
 			$this->token_field     = (!empty($this->element['token_field'])) ? $this->element['token_field'] : "";
 			$this->task_url     = (!empty($this->element['task_url'])) ? $this->element['task_url'] : "";
+			Text::script("ECL_TASKURL_ERROR_NEED_TOKEN");
+			$suff = ECLVersion::getJoomlaVersionSuffix('_j');
+			if(!str_contains($this->layout, $suff))
+				$this->layout .= $suff;
 		}
 
 		return $return;
@@ -94,10 +98,6 @@ class JFormFieldTaskUrl extends FormField
 	 */
 	public function getLayoutPaths(): array
 	{
-		Text::script("ECL_TASKURL_ERROR_NEED_TOKEN");
-		$suff = ECLVersion::getJoomlaVersionSuffix('_j');
-		if(!str_contains($this->layout, $suff))
-			$this->layout .= $suff;
 		return array_merge([JPATH_LIBRARIES . '/eclabs/layouts/taskurl/'], parent::getLayoutPaths());
 	}
 

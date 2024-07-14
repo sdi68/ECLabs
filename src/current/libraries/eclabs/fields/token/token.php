@@ -54,6 +54,9 @@ class JFormFieldToken extends FormField
 		if ($return = parent::setup($element, $value, $group))
 		{
 			$this->length     = (!empty((int) $this->element['length'])) ? $this->element['length'] : 10;
+			$suff = ECLVersion::getJoomlaVersionSuffix('_j');
+			if(!str_contains($this->layout, $suff))
+				$this->layout .= $suff;
 		}
 
 		return $return;
@@ -81,9 +84,6 @@ class JFormFieldToken extends FormField
 	 */
 	public function getLayoutPaths(): array
 	{
-		$suff = ECLVersion::getJoomlaVersionSuffix('_j');
-		if(!str_contains($this->layout, $suff))
-			$this->layout .= $suff;
 		return array_merge([JPATH_LIBRARIES . '/eclabs/layouts/token/'], parent::getLayoutPaths());
 	}
 
