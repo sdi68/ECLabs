@@ -215,7 +215,7 @@ trait ECLPlugin
                 $result[] = $ret;
                 $event->setArgument('result', $result);
 
-                return $event;
+                return (bool)$ret;
             }
 
         }
