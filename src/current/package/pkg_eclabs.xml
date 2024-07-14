@@ -4,12 +4,12 @@
 	<name>PKG_ECLABS</name>
 	<packagename>eclabs</packagename>
 	<author>ECL</author>
-	<creationDate>10.07.2024</creationDate>
+	<creationDate>12.07.2024</creationDate>
 	<copyright>(C) 2023 ECL. All rights reserved.</copyright>
 	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
 	<authorEmail>info@econsultlab.ru</authorEmail>
 	<authorUrl>https://econsultlab.ru</authorUrl>
-	<version>1.0.7</version>
+	<version>1.0.8</version>
 	<description>PKG_ECLABS_DESCRIPTION</description>
 	<ecltype>free</ecltype>
 
