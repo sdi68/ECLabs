@@ -11,8 +11,8 @@
 <extension version="3.9" type="library" method="upgrade">
     <name>LIB_ECLABS</name>
     <description>LIB_ECLABS_DESCRIPTION</description>
-    <version>1.0.23</version>
-    <creationDate>11.07.2024</creationDate>
+    <version>1.0.24</version>
+    <creationDate>12.07.2024</creationDate>
     <author>ECL</author>
     <authorEmail>info@econsultlab.ru</authorEmail>
     <authorUrl>https://econsultlab.ru</authorUrl>
