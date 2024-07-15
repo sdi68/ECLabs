@@ -32,8 +32,7 @@ $wa = Factory::getApplication()->getDocument()->getWebAssetManager();
 $wr = $wa->getRegistry();
 $wr->addRegistryFile('/media/eclabs/joomla.assets.json');
 // TODO подключить ресурсы компонента
-$this->document->getWebAssetManager()
-	->useScript('eclabs.field-token');
+$wa->useScript('eclabs.field-token');
 
 ?>
 <div class="<?php echo $class; ?>" input-key="container" data-length="<?php echo $length; ?>">

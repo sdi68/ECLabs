@@ -33,8 +33,7 @@ $wa = Factory::getApplication()->getDocument()->getWebAssetManager();
 $wr = $wa->getRegistry();
 $wr->addRegistryFile('/media/eclabs/joomla.assets.json');
 // TODO подключить ресурсы компонента
-$this->document->getWebAssetManager()
-	->useScript('eclabs.field-taskurl');
+$wa->useScript('eclabs.field-taskurl');
 
 ?>
 <div class="<?php echo $class; ?>" input-taskurl="container" data-token_field="<?php echo $token_field; ?>" data-task_url="<?php echo JUri::root().$task_url; ?>">
