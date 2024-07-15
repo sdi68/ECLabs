@@ -14,11 +14,11 @@ defined('_JEXEC') or die;
 use ECLabs\Library\ECLExtension;
 use ECLabs\Library\ECLInput;
 use ECLabs\Library\ECLLanguage;
+use ECLabs\Library\ECLLogging\ECLLogging;
 use ECLabs\Library\ECLPlugin;
 use ECLabs\Library\ECLTools;
 use ECLabs\Library\ECLUpdateInfoStatus;
 use ECLabs\Library\ECLVersion;
-use ECLLOG\ECLLOG;
 use Joomla\CMS\Document\HtmlDocument;
 use Joomla\CMS\Event\Table\BeforeStoreEvent;
 use Joomla\CMS\Factory;
@@ -124,7 +124,7 @@ if(File::exists(JPATH_LIBRARIES . '/eclabs/classes/autoload.php'))
 			}
 
 			$this->_updateSites = Factory::getApplication()->getUserState('eclabs.updateSites', false);
-			$this->_addLog(ECLLOG::INFO,'eclabs.updateSites',$this->_updateSites);
+			$this->_addLog(ECLLogging::INFO,'eclabs.updateSites',$this->_updateSites);
 			if (is_array($this->_updateSites))
 			{
 				//var_dump($this->_updateSites);
@@ -301,7 +301,7 @@ if(File::exists(JPATH_LIBRARIES . '/eclabs/classes/autoload.php'))
 		 */
 		public function onExtensionAfterInstall(Installer $installer, int $eid)
 		{
-			$this->_addLog(ECLLOG::INFO,'eid',$eid);
+			$this->_addLog(ECLLogging::INFO,'eid',$eid);
 			if ($eid)
 			{
 				$this->_installer = $installer;
@@ -324,8 +324,8 @@ if(File::exists(JPATH_LIBRARIES . '/eclabs/classes/autoload.php'))
 		 */
 		public function onExtensionBeforeUpdate($type, $manifest): bool
 		{
-			$this->_addLog(ECLLOG::INFO,'type',$type);
-			$this->_addLog(ECLLOG::INFO,'manifest',$manifest);
+			$this->_addLog(ECLLogging::INFO,'type',$type);
+			$this->_addLog(ECLLogging::INFO,'manifest',$manifest);
 			return true;
 		}
 
@@ -340,7 +340,7 @@ if(File::exists(JPATH_LIBRARIES . '/eclabs/classes/autoload.php'))
 		 */
 		public function onExtensionAfterUpdate(Installer $installer, int $eid)
 		{
-			$this->_addLog(ECLLOG::INFO,'eid',$eid,);
+			$this->_addLog(ECLLogging::INFO,'eid',$eid,);
 
 			if ($eid)
 			{
@@ -395,11 +395,11 @@ if(File::exists(JPATH_LIBRARIES . '/eclabs/classes/autoload.php'))
 				foreach ($children as $child)
 				{
 					$attrs = $child->attributes();
-					$this->_addLog(ECLLOG::INFO,'eid',$this->_eid);
-					$this->_addLog(ECLLOG::INFO,'attrs[\'name\']',(string) $attrs['name']);
-					$this->_addLog(ECLLOG::INFO,'attrs[\'type\']',(string) $attrs['type']);
-					$this->_addLog(ECLLOG::INFO,'child',trim($child));
-					$this->_addLog(ECLLOG::INFO,'_installer->extraQuery',$this->_installer->extraQuery);
+					$this->_addLog(ECLLogging::INFO,'eid',$this->_eid);
+					$this->_addLog(ECLLogging::INFO,'attrs[\'name\']',(string) $attrs['name']);
+					$this->_addLog(ECLLogging::INFO,'attrs[\'type\']',(string) $attrs['type']);
+					$this->_addLog(ECLLogging::INFO,'child',trim($child));
+					$this->_addLog(ECLLogging::INFO,'_installer->extraQuery',$this->_installer->extraQuery);
 					$tmp = ECLExtension::generateXMLLocation($this->_eid, (string) $attrs['name'], (string) $attrs['type'], trim($child), true, $this->_installer->extraQuery);
 					if ($tmp !== false)
 					{
@@ -407,7 +407,7 @@ if(File::exists(JPATH_LIBRARIES . '/eclabs/classes/autoload.php'))
 						// extra_query не используется
 						$this->_updateLocationAndExtraQuery(trim($child), null);
 						$this->_updateSites[] = $tmp;
-						$this->_addLog(ECLLOG::INFO,'_updateSites',$this->_updateSites);
+						$this->_addLog(ECLLogging::INFO,'_updateSites',$this->_updateSites);
 						Factory::getApplication()->setUserState('eclabs.updateSites', $this->_updateSites);
 					}
 				}
@@ -419,7 +419,7 @@ if(File::exists(JPATH_LIBRARIES . '/eclabs/classes/autoload.php'))
 				if ($data !== '')
 				{
 					// We have a single entry in the update server line, let us presume this is an extension line
-					$this->_addLog(ECLLOG::WARNING,Text::_('PLG_EXTENSION_JOOMLA_UNKNOWN_SITE'));
+					$this->_addLog(ECLLogging::WARNING,Text::_('PLG_EXTENSION_JOOMLA_UNKNOWN_SITE'));
 				}
 			}
 		}
@@ -472,7 +472,7 @@ if(File::exists(JPATH_LIBRARIES . '/eclabs/classes/autoload.php'))
 
 			$element = ECLExtension::getElement($element_name);
 
-			$this->_addLog(ECLLOG::INFO,'Before sending ECLExtension::getUpdateFromServer params - user_data',$user_data);
+			$this->_addLog(ECLLogging::INFO,'Before sending ECLExtension::getUpdateFromServer params - user_data',$user_data);
 			$update_info                    = ECLExtension::getUpdateFromServer($element, $user_data);
 			$user_data['ECL']['token']      = $update_info['token'] ?? '';
 			$user_data['ECL']['project_id'] = $update_info['project_id'] ?? '';
@@ -511,14 +511,14 @@ if(File::exists(JPATH_LIBRARIES . '/eclabs/classes/autoload.php'))
 			$vars->is_free       = $is_free;
 			$vars->debug_mode    = $this->enabled_log;
 			$this->getECLUpdateInfo('checkUpdate', $extension_name, $update_info, $user_data);
-			$this->_addLog(ECLLOG::INFO,'update_info',$update_info);
+			$this->_addLog(ECLLogging::INFO,'update_info',$update_info);
 
 
 			switch (true)
 			{
 				case $is_free:
 					// TODO Как получить с сервера обновлений SWJProjects информацию о бесплатном расширении
-					$this->_addLog(ECLLOG::INFO,'is free extension',$extension_name);
+					$this->_addLog(ECLLogging::INFO,'is free extension',$extension_name);
 					$version['new']        = "";
 					$vars->class           = $this->jVersion <= 3 ? "label label-success" : "alert-success";
 					$vars->text            = "FREE";
@@ -590,7 +590,7 @@ if(File::exists(JPATH_LIBRARIES . '/eclabs/classes/autoload.php'))
 		{
 			$input  = new ECLInput(true);
 			$action = $input->get('action', '');
-			$this->_addLog(ECLLOG::INFO,'action',$action);
+			$this->_addLog(ECLLogging::INFO,'action',$action);
 			$out = array('ok' => '', 'response' => '');
 
 			switch ($action)
@@ -600,7 +600,7 @@ if(File::exists(JPATH_LIBRARIES . '/eclabs/classes/autoload.php'))
 					$element_name   = $input->get('element_name', '');
 					$user_data      = $input->get('user_data', array('ECL' => array('user' => '', 'password' => '', 'has_token' => false, 'token' => '')));
 					$is_free        = $input->get('is_free', 0);
-					$this->_addLog(ECLLOG::INFO,'element_name',$element_name);
+					$this->_addLog(ECLLogging::INFO,'element_name',$element_name);
 					$html        = "";
 					$update_info = array();
 					$this->onRenderVersionBlock('renderVersionBlock', $extension_info, $element_name, $is_free, $user_data, $update_info, $html);
