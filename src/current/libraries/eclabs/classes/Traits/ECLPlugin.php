@@ -193,18 +193,18 @@ trait ECLPlugin
      * @param   string  $fn_name    Имя функции обработчика
      * @param   Event   $event  Событие
      *
-     * @return Event|true
+     * @return bool
      *
      * @since 1.0.10
      */
-    protected final function _runEventHandler(string $fn_name, Event $event) {
+    protected final function _runEventHandler(string $fn_name, Event $event): bool
+    {
         $args = $event->getArguments();
         if(is_array($args))
         {
             if(isset($args['result']))
                 unset($args['result']);
 
-            //return call_user_func_array(array($this, $fn_name), $args);
             $ret = call_user_func_array(array($this, $fn_name), $args);
             if(!$event->hasArgument('result')) {
                 $event->addArgument('result',array());
