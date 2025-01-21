@@ -174,6 +174,7 @@ if (!class_exists('plgSystemECLabsInstallerScript'))
 
             <h3><?php echo Text::_("PLG_SYSTEM_ECLABS_CHANGE_LOG_TITLE");?></h3>
             <ul class="version-history">
+                <li><span class="version-fixed">1.0.8</span> <?php echo Text::_("PLG_SYSTEM_ECLABS_CHANGE_LOG_1_0_8");?></li>
                 <li><span class="version-fixed">1.0.7</span> <?php echo Text::_("PLG_SYSTEM_ECLABS_CHANGE_LOG_1_0_7");?></li>
                 <li><span class="version-fixed">1.0.6</span> <?php echo Text::_("PLG_SYSTEM_ECLABS_CHANGE_LOG_1_0_6");?></li>
                 <li><span class="version-fixed">1.0.5</span> <?php echo Text::_("PLG_SYSTEM_ECLABS_CHANGE_LOG_1_0_5");?></li>
