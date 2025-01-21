@@ -545,7 +545,7 @@ if(File::exists(JPATH_LIBRARIES . '/eclabs/classes/autoload.php'))
 					$version['new']        = $update_info['last_version'] ?? $version['current'];
 					$vars->show_auth_btn   = false;
 					$vars->version_tooltip = Text::_("PLG_SYSTEM_ECLABS_AUTHORISATION_SUCCESS_TOOLTIP");
-					if ($version['new'] == $version['current'])
+					if (version_compare($version['current'],$version['new'],'>='))
 					{
 						$version['new'] = "";
 						$vars->class    = $this->jVersion <= 3 ? "label label-success" : "alert-success";
