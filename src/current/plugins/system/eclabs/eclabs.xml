@@ -11,7 +11,7 @@
 <extension type="plugin" group="system" method="upgrade">
     <name>PLG_SYSTEM_ECLABS</name>
     <author>ECL</author>
-    <creationDate>10.07.2024</creationDate>
+    <creationDate>21.01.2025</creationDate>
     <copyright>(C) 2023 ECL.</copyright>
     <license>GNU General Public License version 2 or later; see LICENSE.txt</license>
     <authorEmail>info@econsultlab.ru</authorEmail>
