@@ -9,15 +9,20 @@
  * @license           http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
+use Joomla\CMS\Event\Installer\AfterInstallerEvent;
+use Joomla\CMS\Event\Installer\BeforeInstallationEvent;
+use Joomla\CMS\Event\Installer\BeforeInstallerEvent;
 use Joomla\CMS\Factory;
-use Joomla\CMS\Http\HttpFactory;
 use Joomla\CMS\Installer\Installer;
-use Joomla\CMS\Language\Text;
-use Joomla\CMS\Plugin\PluginHelper;
-use Joomla\CMS\Version;
-use Joomla\Registry\Registry;
 use Joomla\CMS\Installer\InstallerAdapter;
 use Joomla\CMS\Installer\Manifest\PackageManifest as JPackageManifest;
+use Joomla\CMS\Plugin\PluginHelper;
+use Joomla\CMS\Version;
+use Joomla\Database\DatabaseInterface;
+use Joomla\Event\DispatcherInterface;
+use Joomla\Http\HttpFactory;
+use Joomla\Language\Text;
+use Joomla\Registry\Registry;
 
 if (!class_exists('pkg_eclabsInstallerScript'))
 {
@@ -155,6 +160,7 @@ if (!class_exists('pkg_eclabsInstallerScript'))
 
 			<h3><?php echo Text::_('PKG_ECLABS_CHANGE_LOG_TITLE');?></h3>
 			<ul class="version-history">
+                <li><span class="version-upgraded">2.0.0</span> <?php echo Text::_('PKG_ECLABS_CHANGE_LOG_2_0_0');?></li>
                 <li><span class="version-upgraded">1.0.8</span> <?php echo Text::_('PKG_ECLABS_CHANGE_LOG_1_0_8');?></li>
                 <li><span class="version-upgraded">1.0.7</span> <?php echo Text::_('PKG_ECLABS_CHANGE_LOG_1_0_7');?></li>
 				<li><span class="version-upgraded">1.0.6</span> <?php echo Text::_('PKG_ECLABS_CHANGE_LOG_1_0_6');?></li>
@@ -249,8 +255,8 @@ if (!class_exists('pkg_eclabsInstallerScript'))
 		{
 			$app = Factory::getApplication();
 			$jversion = new Version();
-			if (!$jversion->isCompatible('3.0.0')) {
-				$app->enqueueMessage(Text::_('PKG_ECLABS_ERROR_COMPATIBLE_JOOMLA_3'), 'error');
+			if (!$jversion->isCompatible('4.0.0')) {
+				$app->enqueueMessage(Text::_('PKG_ECLABS_ERROR_COMPATIBLE_JOOMLA_4'), 'error');
 				return false;
 			}
 			return true;
@@ -314,7 +320,7 @@ if (!class_exists('pkg_eclabsInstallerScript'))
 		private static function needDependencyInstall(array $info): bool
 		{
 			// Получаем информацию об установленном расширении
-			$db = Factory::getDbo();
+			$db = Factory::getContainer()->get(DatabaseInterface::class);
 			$query = $db->getQuery(true);
 			$query->select($db->quoteName('manifest_cache'))
 				->from($db->qn('#__extensions'))
@@ -352,7 +358,15 @@ if (!class_exists('pkg_eclabsInstallerScript'))
 
 			// This event allows an input pre-treatment, a custom pre-packing or custom installation.
 			// (e.g. from a JSON description).
-			$results = $app->triggerEvent('onInstallerBeforeInstallation', array(static::$parent, &$package));
+
+            //$results = $app->triggerEvent('onInstallerBeforeInstallation', array(static::$parent, &$package));
+
+			$dispatcher = Factory::getContainer()->get(DispatcherInterface::class);
+            $beforeInstallationEvent = new BeforeInstallationEvent(
+	            'onInstallerBeforeInstallation',
+	            [static::$parent, &$package]
+            );
+			$results = $dispatcher->dispatch('onInstallerBeforeInstallation', $beforeInstallationEvent)->getArgument('result', []);
 
 			if (in_array(true, $results, true)) {
 				return true;
@@ -372,14 +386,19 @@ if (!class_exists('pkg_eclabsInstallerScript'))
 				return false;
 			}
 
-			$config = Factory::getConfig();
+			$config = Factory::getApplication()->getConfig();
 			$tmp_dest = $config->get('tmp_path');
 
 			// Unpack the downloaded package file.
 			$package = JInstallerHelper::unpack($tmp_dest . '/' . $p_file, true);
 
 			// This event allows a custom installation of the package or a customization of the package:
-			$results = $app->triggerEvent('onInstallerBeforeInstaller', array(static::$parent, &$package));
+			//$results = $app->triggerEvent('onInstallerBeforeInstaller', array(static::$parent, &$package));
+			$beforeInstallationEvent = new BeforeInstallerEvent(
+				'onInstallerBeforeInstallation',
+				[static::$parent, &$package]
+			);
+			$results = $dispatcher->dispatch('onInstallerBeforeInstallation', $beforeInstallationEvent)->getArgument('result', []);
 
 			if (in_array(true, $results, true)) {
 				return true;
@@ -436,9 +455,16 @@ if (!class_exists('pkg_eclabsInstallerScript'))
 			}
 
 			// This event allows a custom a post-flight:
-			$app->triggerEvent('onInstallerAfterInstaller', array(self::$parent, &$package, $installer, &$result, &$msg));
+			//$app->triggerEvent('onInstallerAfterInstaller', array(self::$parent, &$package, $installer, &$result, &$msg));
 
-			$app->enqueueMessage($msg, $msgType);
+            $afterInstallerEvent = new AfterInstallerEvent(
+                    'onInstallerAfterInstaller',
+                            [self::$parent, &$package, $installer, &$result, &$msg]
+            );
+
+			$dispatcher->dispatch('onInstallerAfterInstaller', $afterInstallerEvent);
+
+            $app->enqueueMessage($msg, $msgType);
 
 			// Cleanup the install files.
 			if (!is_file($package['packagefile'])) {
