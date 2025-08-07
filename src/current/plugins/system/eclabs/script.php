@@ -1,25 +1,35 @@
-<?php defined('_JEXEC') or die;
+<?php \defined('_JEXEC') or die;
 
 /**
  * @package         Econsult Labs Library
  * @subpackage   Econsult Labs system plugin
- * @version           1.0.5
+ * @version           __DEPLOYMENT_VERSION__
  * @author            ECL <info@econsultlab.ru>
  * @link                 https://econsultlab.ru
- * @copyright      Copyright © 2023 ECL All Rights Reserved
+ * @copyright      Copyright © 2025 ECL All Rights Reserved
  * @license           http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
+use Joomla\CMS\Event\Installer\AfterInstallerEvent;
+use Joomla\CMS\Event\Installer\BeforeInstallationEvent;
+use Joomla\CMS\Event\Installer\BeforeInstallerEvent;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Http\HttpFactory;
 use Joomla\CMS\Installer\Installer;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\Log\Log;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Version;
+use Joomla\Database\DatabaseDriver;
+use Joomla\Database\DatabaseInterface;
+use Joomla\Event\DispatcherInterface;
+use Joomla\Filesystem\File;
+use Joomla\Filesystem\Folder;
 use Joomla\Registry\Registry;
 use Joomla\CMS\Installer\InstallerAdapter;
 use Joomla\CMS\Installer\Manifest\PackageManifest as JPackageManifest;
+use Joomla\Filesystem\Path;
 
 if (!class_exists('plgSystemECLabsInstallerScript'))
 {
@@ -62,6 +72,90 @@ if (!class_exists('plgSystemECLabsInstallerScript'))
 		static $dependencies = array();
 
 		/**
+		 * Extension files.
+		 *
+		 * @var  array
+		 *
+		 * @since  1.0.0
+		 */
+		protected array $externalFiles = [
+			[
+				//'src'  => JPATH_ROOT . '/modules/mod_radicalmart_extfilter/tmpl/radicalmart_extfilter_ajax.php',
+				//'dest' => JPATH_ROOT . '/templates/system/radicalmart_extfilter_ajax.php',
+				//'type' => 'file',
+			],
+            ];
+
+		/**
+		 * Method to copy external files.
+		 *
+		 * @param   Installer  $installer  Installer calling object.
+		 *
+		 * @return  bool True on success, False on failure.
+		 *
+		 * @since  1.0.0
+		 */
+		public function copyExternalFiles(Installer $installer): bool
+		{
+			$copyFiles = [];
+			foreach ($this->externalFiles as $path)
+			{
+                if($path['src'] && $path['dest'])
+                {
+	                $path['src']  = Path::clean($path['src']);
+	                $path['dest'] = Path::clean($path['dest']);
+	                if (basename($path['dest']) !== $path['dest'])
+	                {
+		                $newdir = dirname($path['dest']);
+		                if (!Folder::create($newdir))
+		                {
+			                Log::add(Text::sprintf('JLIB_INSTALLER_ERROR_CREATE_DIRECTORY', $newdir), Log::WARNING, 'jerror');
+
+			                return false;
+		                }
+	                }
+
+	                $copyFiles[] = $path;
+                }
+			}
+
+			return $installer->copyFiles($copyFiles, true);
+		}
+
+		/**
+		 * Method to delete external files.
+		 *
+		 * @return  bool  True on success.
+		 *
+		 * @since  1.0.0
+		 */
+		protected function removeExternalFiles(): bool
+		{
+			// Process each file in the $files array (children of $tagName).
+			foreach ($this->externalFiles as $path)
+			{
+				// Actually delete the files/folders
+				if (is_dir($path['dest']))
+				{
+					$val = Folder::delete($path['dest']);
+				}
+				else
+				{
+					$val = File::delete($path['dest']);
+				}
+
+				if ($val === false)
+				{
+					Log::add('Failed to delete ' . $path, Log::WARNING, 'jerror');
+
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+		/**
 		 * Method to check compatible.
 		 *
 		 * @param string $type Type of PostFlight action.
@@ -98,6 +192,97 @@ if (!class_exists('plgSystemECLabsInstallerScript'))
 		}
 
 		/**
+		 * Method to parse through a layout element of the installation manifest and take appropriate action.
+		 *
+		 * @param   SimpleXMLElement  $element    The XML node to process.
+		 * @param   Installer         $installer  Installer calling object.
+		 *
+		 * @return  boolean  True on success.
+		 *
+		 * @since  1.0.0
+		 */
+		protected function parseLayouts(SimpleXMLElement $element, $installer)
+		{
+			if (!$element || !count($element->children())) return false;
+
+			// Get destination
+			$folder      = ((string) $element->attributes()->destination) ? '/' . $element->attributes()->destination : null;
+			$destination = Path::clean(JPATH_ROOT . '/layouts' . $folder);
+
+			// Get source
+			$folder = (string) $element->attributes()->folder;
+			$source = ($folder && file_exists($installer->getPath('source') . '/' . $folder)) ?
+				$installer->getPath('source') . '/' . $folder : $installer->getPath('source');
+
+			// Prepare files
+			$copyFiles = array();
+			foreach ($element->children() as $file)
+			{
+				$path['src']  = Path::clean($source . '/' . $file);
+				$path['dest'] = Path::clean($destination . '/' . $file);
+
+				// Is this path a file or folder?
+				$path['type'] = $file->getName() === 'folder' ? 'folder' : 'file';
+				if (basename($path['dest']) !== $path['dest'])
+				{
+					$newdir = dirname($path['dest']);
+					if (!Folder::create($newdir))
+					{
+						Log::add(Text::sprintf('JLIB_INSTALLER_ERROR_CREATE_DIRECTORY', $newdir), Log::WARNING, 'jerror');
+
+						return false;
+					}
+				}
+
+				$copyFiles[] = $path;
+			}
+
+			return $installer->copyFiles($copyFiles, true);
+		}
+
+		/**
+		 * Method to parse through a layouts element of the installation manifest and remove the files that were installed.
+		 *
+		 * @param   SimpleXMLElement  $element  The XML node to process.
+		 *
+		 * @return  boolean  True on success.
+		 *
+		 * @since  1.0.0
+		 */
+		protected function removeLayouts(SimpleXMLElement $element)
+		{
+			if (!$element || !count($element->children())) return false;
+
+			// Get the array of file nodes to process
+			$files = $element->children();
+
+			// Get source
+			$folder = ((string) $element->attributes()->destination) ? '/' . $element->attributes()->destination : null;
+			$source = Path::clean(JPATH_ROOT . '/layouts' . $folder);
+
+			// Process each file in the $files array (children of $tagName).
+			foreach ($files as $file)
+			{
+				$path = Path::clean($source . '/' . $file);
+
+				// Actually delete the files/folders
+				if (is_dir($path)) $val = Folder::delete($path);
+				else $val = File::delete($path);
+
+				if ($val === false)
+				{
+					Log::add('Failed to delete ' . $path, Log::WARNING, 'jerror');
+
+					return false;
+				}
+			}
+
+			if (!empty($folder)) Folder::delete($source);
+
+			return true;
+		}
+
+		/**
 		 * Runs right after any installation action.
 		 *
 		 * @param string $type Type of PostFlight action. Possible values are:
@@ -108,11 +293,23 @@ if (!class_exists('plgSystemECLabsInstallerScript'))
 		public function postflight(string $type, InstallerAdapter $parent)
 		{
 
-			if ($type == 'uninstall') {
-				return true;
+			$installer = $parent->getParent();
+			if ($type !== 'uninstall')
+			{
+				// Parse layouts
+				$this->parseLayouts($parent->getParent()->getManifest()->layouts, $parent->getParent());
+				// Copy external files
+				$this->copyExternalFiles($installer);
+			} else {
+				// Remove layouts
+				$this->removeLayouts($installer->getManifest()->layouts);
+
+				// Remove external files
+				$this->removeExternalFiles();
+                return true;
 			}
 
-			$db    = Factory::getDbo();
+			$db    = Factory::getContainer()->get(DatabaseInterface::class);
 			$query = $db->getQuery(true);
 			$query->select('extension_id')
 				->from($db->qn('#__extensions'))
@@ -174,6 +371,7 @@ if (!class_exists('plgSystemECLabsInstallerScript'))
 
             <h3><?php echo Text::_("PLG_SYSTEM_ECLABS_CHANGE_LOG_TITLE");?></h3>
             <ul class="version-history">
+                <li><span class="version-upgraded">2.0.0</span> <?php echo Text::_("PLG_SYSTEM_ECLABS_CHANGE_LOG_2_0_0");?></li>
                 <li><span class="version-fixed">1.0.8</span> <?php echo Text::_("PLG_SYSTEM_ECLABS_CHANGE_LOG_1_0_8");?></li>
                 <li><span class="version-fixed">1.0.7</span> <?php echo Text::_("PLG_SYSTEM_ECLABS_CHANGE_LOG_1_0_7");?></li>
                 <li><span class="version-fixed">1.0.6</span> <?php echo Text::_("PLG_SYSTEM_ECLABS_CHANGE_LOG_1_0_6");?></li>
@@ -287,7 +485,7 @@ if (!class_exists('plgSystemECLabsInstallerScript'))
 				return false;
 			}
 
-			$db    = Factory::getDbo();
+			$db    = Factory::getContainer()->get(DatabaseInterface::class);
 			$query = $db->getQuery(true);
 			$query->select('extension_id')
 				->from($db->qn('#__extensions'))
@@ -361,7 +559,7 @@ if (!class_exists('plgSystemECLabsInstallerScript'))
 		private static function needDependencyInstall(array $info): bool
 		{
 			// Получаем информацию об установленном расширении
-			$db = Factory::getDbo();
+			$db = Factory::getContainer()->get(DatabaseInterface::class);
 			$query = $db->getQuery(true);
 			$query->select($db->quoteName('manifest_cache'))
 				->from($db->qn('#__extensions'))
@@ -400,7 +598,15 @@ if (!class_exists('plgSystemECLabsInstallerScript'))
 
 			// This event allows an input pre-treatment, a custom pre-packing or custom installation.
 			// (e.g. from a JSON description).
-			$results = $app->triggerEvent('onInstallerBeforeInstallation', array(static::$parent, &$package));
+			//$results = $app->triggerEvent('onInstallerBeforeInstallation', array(static::$parent			$dispatcher = Factory::getContainer()->get(DispatcherInterface::class);
+
+            $dispatcher = Factory::getContainer()->get(DispatcherInterface::class);
+            $beforeInstallationEvent = new BeforeInstallationEvent(
+	            'onInstallerBeforeInstallation',
+	            [static::$parent, &$package]
+            );
+			$results = $dispatcher->dispatch('onInstallerBeforeInstallation', $beforeInstallationEvent)->getArgument('result', []);
+
 
 			if (in_array(true, $results, true)) {
 				return true;
@@ -420,14 +626,20 @@ if (!class_exists('plgSystemECLabsInstallerScript'))
 				return false;
 			}
 
-			$config = Factory::getConfig();
+			$config = Factory::getApplication()->getConfig();
 			$tmp_dest = $config->get('tmp_path');
 
 			// Unpack the downloaded package file.
 			$package = JInstallerHelper::unpack($tmp_dest . '/' . $p_file, true);
 
 			// This event allows a custom installation of the package or a customization of the package:
-			$results = $app->triggerEvent('onInstallerBeforeInstaller', array(static::$parent, &$package));
+			//$results = $app->triggerEvent('onInstallerBeforeInstaller', array(static::$parent, &$package));
+			$beforeInstallationEvent = new BeforeInstallerEvent(
+				'onInstallerBeforeInstallation',
+				[static::$parent, &$package]
+			);
+			$results = $dispatcher->dispatch('onInstallerBeforeInstallation', $beforeInstallationEvent)->getArgument('result', []);
+
 
 			if (in_array(true, $results, true)) {
 				return true;
@@ -484,8 +696,13 @@ if (!class_exists('plgSystemECLabsInstallerScript'))
 			}
 
 			// This event allows a custom a post-flight:
-			$app->triggerEvent('onInstallerAfterInstaller', array(self::$parent, &$package, $installer, &$result, &$msg));
+			//$app->triggerEvent('onInstallerAfterInstaller', array(self::$parent, &$package, $installer, &$result, &$msg));
+			$afterInstallerEvent = new AfterInstallerEvent(
+				'onInstallerAfterInstaller',
+				[self::$parent, &$package, $installer, &$result, &$msg]
+			);
 
+			$dispatcher->dispatch('onInstallerAfterInstaller', $afterInstallerEvent);
 			$app->enqueueMessage($msg, $msgType);
 
 			// Cleanup the install files.
@@ -505,7 +722,7 @@ if (!class_exists('plgSystemECLabsInstallerScript'))
 
 		private static function runSQL($file)
 		{
-			$db = Factory::getDbo();
+			$db = Factory::getContainer()->get(DatabaseInterface::class);
 			$sqlfile = __DIR__ . "/sql/mysql/" . $file;
 			if (file_exists($sqlfile)) {
 				$buffer = file_get_contents($sqlfile);
@@ -513,7 +730,7 @@ if (!class_exists('plgSystemECLabsInstallerScript'))
 					if (is_callable(array($db, 'splitSql'))) {
 						$queries = $db->splitSql($buffer);
 					} else {
-						$queries = JInstallerHelper::splitSql($buffer);
+						$queries = DatabaseDriver::splitSql($buffer);
 					}
 
 					foreach ($queries as $query) {
@@ -521,7 +738,7 @@ if (!class_exists('plgSystemECLabsInstallerScript'))
 						if ($query != '' && $query[0] != '#') {
 							$db->setQuery($query);
 							if (!$db->execute()) {
-								JError::raiseWarning(1, JText::sprintf('JLIB_INSTALLER_ERROR_SQL_ERROR', $db->stderr(true)));
+								JError::raiseWarning(1, Text::sprintf('JLIB_INSTALLER_ERROR_SQL_ERROR', $db->stderr(true)));
 							}
 						}
 					}

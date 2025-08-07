@@ -1,48 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
   ~ @package        Econsult Labs Library
-  ~ @version          1.0.19
+  ~ @version          __DEPLOYMENT_VERSION__
   ~ @author           ECL <info@econsultlab.ru>
   ~ @link                https://econsultlab.ru
-  ~ @copyright      Copyright © 2023 ECL All Rights Reserved
+  ~ @copyright      Copyright © 2025 ECL All Rights Reserved
   ~ @license           http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
   -->
 
-<extension version="3.9" type="library" method="upgrade">
+<extension version="3.*" type="library" method="upgrade">
     <name>LIB_ECLABS</name>
+    <libraryname>eclabs</libraryname>
     <description>LIB_ECLABS_DESCRIPTION</description>
-    <version>1.0.25</version>
+    <version>2.0.0</version>
     <creationDate>21.01.2025</creationDate>
     <author>ECL</author>
     <authorEmail>info@econsultlab.ru</authorEmail>
     <authorUrl>https://econsultlab.ru</authorUrl>
     <copyright>Copyright © 2023 ECL - All Rights Reserved</copyright>
     <license>https://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
-    <ecltype>free</ecltype>
+    <namespace path="src">ECLABS\Library</namespace>
+    <dlid prefix="download_key" ecltype = "free" suffix=""/>
 
-    <libraryname>eclabs</libraryname>
     <scriptfile>script.php</scriptfile>
 
     <!-- Language files -->
     <languages folder="language">
-        <language tag="ru-RU">ru-RU/ru-RU.eclabs.ini</language>
-        <language tag="en-GB">en-GB/en-GB.eclabs.ini</language>
+        <language tag="ru-RU">ru-RU/lib_eclabs.sys.ini</language>
+        <language tag="ru-RU">ru-RU/lib_eclabs.ini</language>
+        <language tag="en-GB">en-GB/lib_eclabs.sys.ini</language>
+        <language tag="en-GB">en-GB/lib_eclabs.ini</language>
     </languages>
 
-    <updateservers>
-        <server type="extension" priority="1" name="Econsult Labs Library">
-            https://econsultlab.ru/uploads/joomla/packages/eclabs/libraries/eclabs/update_eclabs.xml
-        </server>
-    </updateservers>
-
-    <files>
-        <file>eclabs.xml</file>
+    <layouts destination="libraries/eclabs" folder="layouts">
         <folder>fields</folder>
-        <folder>helpers</folder>
-        <folder>layouts</folder>
-        <folder>classes</folder>
-        <folder>vendor</folder>
-    </files>
+    </layouts>
 
     <media folder="media" destination="eclabs">
         <folder>css</folder>
@@ -50,4 +42,16 @@
         <folder>js</folder>
         <file>joomla.assets.json</file>
     </media>
+
+    <files>
+        <folder>vendor</folder>
+        <folder>src</folder>
+        <file>eclabs.xml</file>
+    </files>
+
+    <updateservers>
+        <server type="extension" priority="1" name="ECLabs library: library">
+            https://econsultlab.ru/component/swjprojects/jupdate?element=lib_eclabs
+        </server>
+    </updateservers>
 </extension>

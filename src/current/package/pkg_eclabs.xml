@@ -11,7 +11,7 @@
 	<authorUrl>https://econsultlab.ru</authorUrl>
 	<version>2.0.0</version>
 	<description>PKG_ECLABS_DESCRIPTION</description>
-	<ecltype>free</ecltype>
+	<dlid prefix="download_key" ecltype = "free" suffix=""/>
 
 	<scriptfile>script.php</scriptfile>
 
@@ -26,8 +26,8 @@
 		<file type="plugin" id="eclabs" group = "system">plg_eclabs.zip</file>
 	</files>
 	<updateservers>
-		<server type="extension" priority="1" name="ECLabs package">
-			https://econsultlab.ru/uploads/joomla/packages/eclabs/update_eclabs.xml
+		<server type="extension" priority="1" name="ECLabs library: package">
+			https://econsultlab.ru/component/swjprojects/jupdate?element=pkg_eclabs
 		</server>
 	</updateservers>
 </extension>

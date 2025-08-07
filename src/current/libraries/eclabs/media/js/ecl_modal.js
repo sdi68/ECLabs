@@ -1,9 +1,9 @@
 /*
  * @package        Econsult Labs Library
- * @version          1.0.3
+ * @version          __DEPLOYMENT_VERSION__
  * @author           ECL <info@econsultlab.ru>
  * @link                https://econsultlab.ru
- * @copyright      Copyright © 2023 ECL All Rights Reserved
+ * @copyright      Copyright © 2025 ECL All Rights Reserved
  * @license           http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
@@ -190,6 +190,7 @@ class ECLModal extends ECL {
         if (!_modal) {
             this._buildHtmlWrap();
             const eclModal = document.createRange().createContextualFragment(this._htmlWrap);
+
             if (typeof bootstrap !== "undefined") {
                 if (eclModal) {
                     let bsModal = bootstrap.Modal.getInstance(eclModal);
@@ -237,7 +238,7 @@ class ECLModal extends ECL {
      */
     _buildHtmlWrap() {
         let _data_dismiss = 'data-bs-dismiss="modal"';
-        if (this.jVersion !== 4) {
+        if (this.jVersion < 4) {
             _data_dismiss = 'data-dismiss="modal"';
         }
         this._htmlWrap = '<div class="modal fade ' + this.getJVersionClass() + '" id="' + this._wrapId + '" tabIndex="-1" aria-labelledby="' + this._wrapId + 'Label" aria-hidden="true">' +
@@ -249,7 +250,6 @@ class ECLModal extends ECL {
             '<div class="modal-body">' + this._content + '</div>' +
             '<div class="modal-footer ' + (this._hideFooter ? this._hiddenClass : '') + '">' +
             '<a href="#" class="btn btn-secondary" ' + _data_dismiss + '>' + Joomla.Text._('JCLOSE') + '</button>' +
-            //(this._saveBtnCaption ? '<a type="button" class="btn btn-primary" id="ecl-modal-send">' + this._saveBtnCaption + '</a>':'') +
             '<a type="button" class="btn btn-primary ' + (this._saveBtnCaption === "" ? this._hiddenClass : '') + '" id="ecl-modal-send">' + this._saveBtnCaption + '</a>' +
             '</div>' +
             '</div>' +
@@ -377,11 +377,10 @@ class ECLModal extends ECL {
                     } catch (e) {
                         _params = false;
                     }
-
                     if (_params) {
+                        let myModal = new ECLModal(_params);
                         element.addEventListener('click', function (e) {
                             e.preventDefault();
-                            let myModal = new ECLModal(_params);
                             myModal.show();
                         });
                     }

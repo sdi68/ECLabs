@@ -1,4 +1,4 @@
-<?php defined('_JEXEC') or die;
+<?php \defined('_JEXEC') or die;
 
 /**
  * @package        Econsult Labs Library package
@@ -16,12 +16,12 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Installer\Installer;
 use Joomla\CMS\Installer\InstallerAdapter;
 use Joomla\CMS\Installer\Manifest\PackageManifest as JPackageManifest;
+use Joomla\CMS\Language\Text;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Version;
 use Joomla\Database\DatabaseInterface;
 use Joomla\Event\DispatcherInterface;
 use Joomla\Http\HttpFactory;
-use Joomla\Language\Text;
 use Joomla\Registry\Registry;
 
 if (!class_exists('pkg_eclabsInstallerScript'))
