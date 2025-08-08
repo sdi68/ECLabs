@@ -77,7 +77,7 @@ class ECLExtension
 	 */
 	public static function checkUpdate(string $extension, string $user_name, string $password): mixed
 	{
-		$params = array('user' => $user_name, 'password' => $password, 'element' => $extension);
+		$params = array('user' => $user_name, 'password' => $password, 'element' => self::prepareElementName($extension));
 		$params = ECLAuthorisation::encodeAuthorisationParams($params);
 		$link   = self::_ECL_UPDATE_SERVER_URL . '/index.php?option=com_swjprojects&view=token&params=' . $params;
 		$data   = ECLHttp::get($link);
@@ -102,7 +102,7 @@ class ECLExtension
 	 */
 	public static function getUpdateFromServer(string $extension, array $user_data): mixed
 	{
-		$params = array('user_data' => $user_data['ECL'], 'element' => $extension);
+		$params = array('user_data' => $user_data['ECL'], 'element' => self::prepareElementName($extension));
 		$params = ECLAuthorisation::encodeAuthorisationParams($params);
 		$link   = self::_ECL_UPDATE_SERVER_URL . '/index.php?option=com_swjprojects&view=token&params=' . $params;
 		try
@@ -121,6 +121,50 @@ class ECLExtension
 		}
 
 		return $data;
+	}
+
+	/**
+	 * Преобразует элемент к формату хранения в SWJProjects.
+	 * Например: plg_xxx, com_xxx
+	 * @param   string  $element Значение элемента как в #__extensions
+	 *
+	 * @return string
+	 *
+	 * @since 2.0.0.
+	 *
+	 */
+	public static function prepareElementName(string $element):string{
+		$dbo   = Factory::getContainer()->get(DatabaseInterface::class);
+		$query = $dbo->getQuery(true);
+		$query->select($dbo->quoteName('type'))
+			->from($dbo->quoteName('#__extensions'))
+			->where($dbo->quoteName('element') . ' = ' . $dbo->quote($element));
+		$dbo->setQuery($query);
+		$type = $dbo->loadResult();
+		$suffix = "";
+		switch($type) {
+			case "component":
+				$suffix="com_";
+				break;
+			case "plugin":
+				$suffix="plg_";
+				break;
+			case "package":
+				$suffix="pkg_";
+				break;
+			case "library":
+				$suffix="lib_";
+				break;
+			case "module":
+				$suffix="mod_";
+				break;
+			case "language":
+			case "template":
+			case "file":
+			default:
+				break;
+		}
+		return str_starts_with($element,$suffix) ? $element:$suffix.$element;
 	}
 
 	/**
