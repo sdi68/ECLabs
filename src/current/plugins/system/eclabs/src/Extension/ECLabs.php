@@ -158,7 +158,7 @@ if (file_exists(JPATH_LIBRARIES . '/eclabs/src/autoload.php'))
 					foreach ($items as $i => $item)
 					{
 
-						if (ECLExtension::checkECLType($item->extension_id) === ECLExtension::_ECL_EXTENSION_TYPE_FREE)
+						if ($item->extension_id && ECLExtension::checkECLType($item->extension_id) === ECLExtension::_ECL_EXTENSION_TYPE_FREE)
 						{
 							$item->downloadKey['supported'] = false;
 						}
@@ -171,7 +171,7 @@ if (file_exists(JPATH_LIBRARIES . '/eclabs/src/autoload.php'))
 			{
 				// Удаляем поле ключа в форме сервера обновлений для бесплатного расширения ECL
 				$item = $subject->get("item");
-				if (ECLExtension::checkECLTypeByUpdateSiteId($item->update_site_id) === ECLExtension::_ECL_EXTENSION_TYPE_FREE)
+				if ($item->update_site_id && ECLExtension::checkECLTypeByUpdateSiteId($item->update_site_id) === ECLExtension::_ECL_EXTENSION_TYPE_FREE)
 				{
 					$subject->getForm()->removeField('extra_query');
 					$event->setArgument('subject', $subject);
