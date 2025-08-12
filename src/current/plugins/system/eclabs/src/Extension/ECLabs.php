@@ -153,7 +153,7 @@ if (file_exists(JPATH_LIBRARIES . '/eclabs/src/autoload.php'))
 			{
 				$items = $subject->get("items");
 				// Удаляем в списке серверов обновления для расширений ECL с бесплатным обновлением бейдж с ключом
-				if ($items)
+				if (is_array($items))
 				{
 					foreach ($items as $i => $item)
 					{
@@ -171,10 +171,13 @@ if (file_exists(JPATH_LIBRARIES . '/eclabs/src/autoload.php'))
 			{
 				// Удаляем поле ключа в форме сервера обновлений для бесплатного расширения ECL
 				$item = $subject->get("item");
-				if ($item->update_site_id && ECLExtension::checkECLTypeByUpdateSiteId($item->update_site_id) === ECLExtension::_ECL_EXTENSION_TYPE_FREE)
+				if($item)
 				{
-					$subject->getForm()->removeField('extra_query');
-					$event->setArgument('subject', $subject);
+					if ($item->update_site_id && ECLExtension::checkECLTypeByUpdateSiteId($item->update_site_id) === ECLExtension::_ECL_EXTENSION_TYPE_FREE)
+					{
+						$subject->getForm()->removeField('extra_query');
+						$event->setArgument('subject', $subject);
+					}
 				}
 			}
 		}
