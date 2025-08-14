@@ -167,7 +167,7 @@ if (file_exists(JPATH_LIBRARIES . '/eclabs/src/autoload.php'))
 					$event->setArgument('subject', $subject);
 				}
 			}
-			else if ("com_installer.updatesite")
+			elseif ($event->getArgument('extension') === "com_installer.updatesite")
 			{
 				// Удаляем поле ключа в форме сервера обновлений для бесплатного расширения ECL
 				$item = $subject->get("item");
