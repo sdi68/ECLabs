@@ -60,6 +60,7 @@ class TokenField extends FormField
 			$suff = ECLVersion::getJoomlaVersionSuffix('_j');
 			if(!str_contains($this->layout, $suff))
 				$this->layout .= $suff;
+			$this->layout        = 'libraries.eclabs.fields.token.' . $this->layout;
 		}
 
 		return $return;
@@ -87,7 +88,8 @@ class TokenField extends FormField
 	 */
 	public function getLayoutPaths(): array
 	{
-		return array_merge([JPATH_LIBRARIES . '/eclabs/layouts/token/'], parent::getLayoutPaths());
+		//return array_merge([JPATH_LIBRARIES . '/eclabs/layouts/token/'], parent::getLayoutPaths());
+		return parent::getLayoutPaths();
 	}
 
 }

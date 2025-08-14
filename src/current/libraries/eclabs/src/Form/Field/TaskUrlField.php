@@ -73,6 +73,7 @@ class TaskUrlField extends FormField
 			$suff = ECLVersion::getJoomlaVersionSuffix('_j');
 			if(!str_contains($this->layout, $suff))
 				$this->layout .= $suff;
+			$this->layout        = 'libraries.eclabs.fields.taskurl.' . $this->layout;
 		}
 
 		return $return;
@@ -101,7 +102,8 @@ class TaskUrlField extends FormField
 	 */
 	public function getLayoutPaths(): array
 	{
-		return array_merge([JPATH_LIBRARIES . '/eclabs/layouts/taskurl/'], parent::getLayoutPaths());
+		//return array_merge([JPATH_LIBRARIES . '/eclabs/layouts/taskurl/'], parent::getLayoutPaths());
+		return parent::getLayoutPaths();
 	}
 
 }

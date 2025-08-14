@@ -19,6 +19,7 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Form\Form;
 use Joomla\CMS\Form\FormField;
 use ECLabs\Library\Helpers\PluginsHelper;
+use Joomla\CMS\WebAsset\WebAssetManager;
 
 require_once JPATH_LIBRARIES . '/eclabs/src/autoload.php';
 
@@ -72,6 +73,15 @@ class AboutField extends FormField
 	protected $free_update = true;
 
 	/**
+	 * Путь к файлу логотипа
+	 *
+	 * @var string
+	 * @since      2.0.0
+	 */
+	protected string $ext_image = "";
+
+
+	/**
 	 * Method to instantiate the form field object.
 	 *
 	 * @param   Form  $form  The form to attach to the form field object.
@@ -96,7 +106,7 @@ class AboutField extends FormField
 	 */
 	public function __get($name)
 	{
-		if ($name === 'ext_page' || $name === 'ext_doc' || $name === 'this_xml_path')
+		if ($name === 'ext_page' || $name === 'ext_doc' || $name === 'this_xml_path' || $name === 'ext_image')
 		{
 			return $this->$name;
 		}
@@ -129,6 +139,7 @@ class AboutField extends FormField
 			case 'ext_page':
 			case 'ext_doc':
 			case 'this_xml_path':
+			case "ext_image":
 				$this->$name = (string) $value;
 				break;
 			case 'free_update':
@@ -154,7 +165,7 @@ class AboutField extends FormField
 	 * @see     FormField::setup()
 	 * @since   1.0.0
 	 */
-	public function setup(\SimpleXMLElement $element, $value, $group = null)
+	public function setup(\SimpleXMLElement $element, $value, $group = null): bool
 	{
 		$return = parent::setup($element, $value, $group);
 
@@ -163,11 +174,39 @@ class AboutField extends FormField
 			$this->ext_page      = (string) $this->element['ext_page'];
 			$this->ext_doc       = (string) $this->element['ext_doc'];
 			$this->this_xml_path = (string) $this->element['this_xml_path'];
+			$this->ext_image     = (string) $this->element['ext_image'];
 			$this->layout        = 'libraries.eclabs.fields.about.' . (!empty($this->element['layout']) ? (string) $this->element['layout'] : $this->layout);
 
 		}
 
 		return $return;
+	}
+
+	/**
+	 * render field
+	 *
+	 * @param   array  $options
+	 *
+	 * @return string
+	 *
+	 * @since 1.0.0
+	 */
+	public function renderField($options = array()): string
+	{
+		$options = array_merge($options, array('class' => 'sdi-about-controls'));
+
+		return parent::renderField($options);
+	}
+
+	/**
+	 * Set layout path
+	 * @return array
+	 *
+	 * @since 1.0.0
+	 */
+	public function getLayoutPaths(): array
+	{
+		return parent::getLayoutPaths();
 	}
 
 	/**
@@ -178,11 +217,11 @@ class AboutField extends FormField
 	 * @throws Exception
 	 * @since   1.0.0
 	 */
-	protected function getInput()
+	protected function getInput(): string
 	{
 		$info = simplexml_load_file(JPATH_SITE . $this->this_xml_path);
 		// Подключаем скрипты админки
-		/** @var Joomla\CMS\WebAsset\WebAssetManager $wa */
+		/** @var WebAssetManager $wa */
 		$wa = Factory::getApplication()->getDocument()->getWebAssetManager();
 		$wr = $wa->getRegistry();
 		$wr->addRegistryFile('/media/eclabs/joomla.assets.json');
@@ -202,7 +241,7 @@ class AboutField extends FormField
 	 *
 	 * @since 1.0.0
 	 */
-	protected function getLabel()
+	protected function getLabel(): string
 	{
 		return '';
 	}
@@ -215,7 +254,7 @@ class AboutField extends FormField
 	 * @throws Exception
 	 * @since 1.0.0
 	 */
-	protected function getLayoutData()
+	protected function getLayoutData(): array
 	{
 		$info = simplexml_load_file(JPATH_SITE . $this->this_xml_path);
 
@@ -249,32 +288,5 @@ class AboutField extends FormField
 		);
 
 		return array_merge(parent::getLayoutData(), $options);
-	}
-
-	/**
-	 * render field
-	 *
-	 * @param   array  $options
-	 *
-	 * @return string
-	 *
-	 * @since 1.0.0
-	 */
-	public function renderField($options = array()): string
-	{
-		$options = array_merge($options, array('class' => 'sdi-about-controls'));
-
-		return parent::renderField($options);
-	}
-
-	/**
-	 * Set layout path
-	 * @return array
-	 *
-	 * @since 1.0.0
-	 */
-	public function getLayoutPaths(): array
-	{
-		return parent::getLayoutPaths();
 	}
 }
