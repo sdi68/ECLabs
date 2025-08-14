@@ -1,12 +1,12 @@
 <?php \defined('_JEXEC') or die;
 
 /**
- * @package        Econsult Labs Library
- * @version          __DEPLOYMENT_VERSION__
- * @author           ECL <info@econsultlab.ru>
+ * @package             Econsult Labs Library
+ * @version             __DEPLOYMENT_VERSION__
+ * @author              ECL <info@econsultlab.ru>
  * @link                https://econsultlab.ru
- * @copyright      Copyright © 2025 ECL All Rights Reserved
- * @license           http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
+ * @copyright           Copyright © 2025 ECL All Rights Reserved
+ * @license             http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
 use Joomla\CMS\Event\Installer\AfterInstallerEvent;
@@ -30,13 +30,13 @@ use Joomla\Registry\Registry;
 use Joomla\CMS\Installer\InstallerAdapter;
 use Joomla\CMS\Installer\Manifest\PackageManifest as JPackageManifest;
 
-if (!class_exists('libECLabsInstallerScript'))
+if (!class_exists('ECLabsInstallerScript'))
 {
     /**
      * Class ECLabsSystemPluginInstallerScript
      * @since 1.0.0
      */
-    class libECLabsInstallerScript
+    class ECLabsInstallerScript
     {
         use libECLabsInstallerScriptTrait;
 
@@ -110,9 +110,10 @@ if (!class_exists('libECLabsInstallerScript'))
         private static function _renderHistory(): void
         {
             ?>
-            <h3><?php echo Text::_("LIB_ECLABS_CHANGE_LOG_TITLE");?></h3>
+            <h3><?php echo Text::_("LIB_ECLABS_CHANGE_LOG_TITLE"); ?></h3>
             <ul class="version-history">
-                <li><span class="version-upgraded">2.0.0</span> <?php echo Text::_("LIB_ECLABS_CHANGE_LOG_2_0_0");?></li>
+                <li><span class="version-upgraded">2.0.0</span> <?php echo Text::_("LIB_ECLABS_CHANGE_LOG_2_0_0"); ?>
+                </li>
             </ul>
             <?php
         }
@@ -123,12 +124,14 @@ if (!class_exists('libECLabsInstallerScript'))
          * @throws Exception
          * @since 1.0.4
          */
-        private static function checkCompatible(): bool
+        private static function _checkCompatible(): bool
         {
-            $app = Factory::getApplication();
+            $app      = Factory::getApplication();
             $jversion = new Version();
-            if (!$jversion->isCompatible('4.0.0')) {
+            if (!$jversion->isCompatible('4.0.0'))
+            {
                 $app->enqueueMessage(Text::_('LIB_ECLABS_ERROR_COMPATIBLE_JOOMLA_4'), 'error');
+
                 return false;
             }
 
@@ -155,6 +158,38 @@ if (!class_exists('libECLabsInstallerScript'))
             return [];
         }
 
+        /**
+         * Устанавливает папки и файлы текущего расширения, которые надо удалить при обновлении.
+         *  array(
+         * *  "folders" =>array([относительный путь к каталогу],...),
+         * *  "files" =>array([относительный путь к файлу],...)
+         * *  );
+         * * например:
+         * * array(
+         * * "folders" => array(),
+         * * "files" => array("/media/com_receipts/js/diagnostic.js")
+         * * );
+         *
+         * @return array
+         *
+         * @since 2.0.0
+         */
+        private static function _getToRemove(): array
+        {
+            return array();
+        }
+
+        /**
+         * Устанавливает относительный путь к скриптам установки базы данных
+         *
+         * @return string
+         *
+         * @since 2.0.0
+         */
+        private static function _geSQLPath(): string
+        {
+            return "";
+        }
     }
 }
 
@@ -203,8 +238,127 @@ trait libECLabsInstallerScriptTrait
      *
      * @since  1.0.0
      */
-    static  array $externalFiles = array();
+    static array $externalFiles = array();
 
+    /**
+     * Список файлов и папок, которые надо удалить при обновлении
+     *  array(
+     *  "folders" =>array([относительный путь к каталогу],...),
+     *  "files" =>array([относительный путь к файлу],...)
+     *  );
+     * например:
+     * array(
+     * "folders" => array(),
+     * "files" => array("/media/com_receipts/js/diagnostic.js")
+     * );
+     * @var array
+     * @since 2.0.0
+     */
+    static array $to_remove = array();
+
+    /**
+     * Относительный путь к скриптам установки базы данных
+     * @var string
+     * @since 2.0.0
+     */
+    static string $sql_path = "/admin/sql/mysql/";
+
+    /**
+     * Method to check compatible.
+     *
+     * @param   string            $type    Type of PostFlight action.
+     * @param   InstallerAdapter  $parent  Parent object calling object.
+     *
+     * @return  boolean  Compatible current version or not.
+     *
+     * @throws Exception
+     * @since 2.0.0
+     */
+    public function preflight(string $type, InstallerAdapter $parent): bool
+    {
+
+        $manifest = $parent->getManifest();
+
+        if (!in_array($type, ['install', 'update']))
+        {
+            return true;
+        }
+
+        if (!self::_checkCompatible())
+        {
+            return false;
+        }
+
+        self::$parent           = $parent;
+        self::$name             = trim($manifest->name);
+        self::$current_version  = trim($manifest->version);
+        self::$previous_version = self::getPreviousVersion();
+        self::$dependencies     = self::_getDependencies();
+        self::$externalFiles    = self::_getExternalFiles();
+        self::$to_remove        = self::_getToRemove();
+        self::$sql_path         = self::_geSQLPath();
+
+        return true;
+    }
+
+    /**
+     * Check all compatibilities requirements for element
+     * @return bool true if compatible
+     * @throws Exception
+     * @since 2.0.0
+     */
+    abstract private static function _checkCompatible(): bool;
+
+    /**
+     * Get previous version for element
+     * @return string
+     * @since 2.0.0
+     */
+    private static function getPreviousVersion(): string
+    {
+
+        $xml_file = self::getXmlFile();
+
+        if (!$xml_file)
+        {
+            return '';
+        }
+
+        $manifest = new JPackageManifest($xml_file);
+
+        return isset($manifest->version) ? trim($manifest->version) : '';
+    }
+
+    /**
+     * Get path for manifest file
+     * @return string
+     * @since 2.0.0
+     */
+    private static function getXmlFile(): string
+    {
+        $xml_file = JPATH_MANIFESTS . '/packages/pkg_' . self::$name . '.xml';
+
+        if (file_exists($xml_file))
+        {
+            return $xml_file;
+        }
+
+        $xml_file = JPATH_LIBRARIES . '/' . self::$name . '.xml';
+
+        if (file_exists($xml_file))
+        {
+            return $xml_file;
+        }
+
+        $xml_file = JPATH_ADMINISTRATOR . '/components/com_' . self::$name . '/' . self::$name . '.xml';
+
+        if (file_exists($xml_file))
+        {
+            return $xml_file;
+        }
+
+        return '';
+    }
 
     /**
      * Устанавливает внешние файлы текущего расширения.
@@ -241,95 +395,37 @@ trait libECLabsInstallerScriptTrait
     abstract private static function _getExternalFiles(): array;
 
     /**
-     * Устанавливает наименование element расширения (как в таблице #__extension)
+     * Устанавливает папки и файлы текущего расширения, которые надо удалить при обновлении.
+     *  array(
+     * *  "folders" =>array([относительный путь к каталогу],...),
+     * *  "files" =>array([относительный путь к файлу],...)
+     * *  );
+     * * например:
+     * * array(
+     * * "folders" => array(),
+     * * "files" => array("/media/com_receipts/js/diagnostic.js")
+     * * );
+     *
+     * @return array
+     *
+     * @since 2.0.0
+     */
+    abstract private static function _getToRemove(): array;
+
+    /**
+     * Устанавливает относительный путь к скриптам установки базы данных
+     *
      * @return string
      *
      * @since 2.0.0
      */
-    abstract private static function _getElement(): string;
-
-    /**
-     * Устанавливает тип расширения (как в таблице #__extension)
-     * @return string
-     *
-     * @since 2.0.0
-     */
-    abstract private static function _getElementType(): string;
-
-    /**
-     * Устанавливает каталог плагина (как в таблице #__extension)
-     * @return string
-     *
-     * @since 2.0.0
-     */
-    abstract private static function _getElementFolder(): string;
-
-    /**
-     * Формирует историю изменений расширения. Используется html.
-     * Например:
-     * ?>
-     * <h3><?php echo Text::_("PLG_SYSTEM_RECEIPTSLOADER_CHANGE_LOG_TITLE"); ?></h3>
-     * <ul class="version-history">
-     * <li><span class="version-upgraded">1.0.1</span> <?php echo Text::_("PLG_SYSTEM_RECEIPTSLOADER_CHANGE_LOG_1_0_1");?></li>
-     * <li><span class="version-new">1.0.0</span> First version.</li>
-     * </ul>
-     * <?php
-     *
-     * @return void
-     *
-     * @since 2.0.0
-     */
-    abstract private static function _renderHistory(): void;
-
-    /**
-     * Check all compatibilities requirements for element
-     * @return bool true if compatible
-     * @throws Exception
-     * @since 2.0.0
-     */
-    abstract private static function checkCompatible(): bool;
-
-    /**
-     * Method to check compatible.
-     *
-     * @param   string            $type    Type of PostFlight action.
-     * @param   InstallerAdapter  $parent  Parent object calling object.
-     *
-     * @return  boolean  Compatible current version or not.
-     *
-     * @throws Exception
-     * @since 2.0.0
-     */
-    public function preflight(string $type, InstallerAdapter $parent): bool
-    {
-
-        $manifest = $parent->getManifest();
-
-        if (!in_array($type, ['install', 'update']))
-        {
-            return true;
-        }
-
-        if (!self::checkCompatible())
-        {
-            return false;
-        }
-
-        self::$parent           = $parent;
-        self::$name             = trim($manifest->name);
-        self::$current_version  = trim($manifest->version);
-        self::$previous_version = self::getPreviousVersion();
-        self::$dependencies     = self::_getDependencies();
-        self::$externalFiles     = self::_getExternalFiles();
-
-        return true;
-    }
+    abstract private static function _geSQLPath(): string;
 
     /**
      * Runs right after any installation action.
      *
-     * @param string $type Type of PostFlight action. Possible values are:
-     * @param InstallerAdapter $parent Parent object calling object.
+     * @param   string            $type    Type of PostFlight action. Possible values are:
+     * @param   InstallerAdapter  $parent  Parent object calling object.
      *
      * @return  boolean  True on success
      * @throws Exception
@@ -341,9 +437,10 @@ trait libECLabsInstallerScriptTrait
         if ($type !== 'uninstall')
         {
             // Parse layouts
-            self::_parseLayouts($installer->getManifest()->layouts,  $installer);
+            self::_parseLayouts($installer->getManifest()->layouts, $installer);
             // Copy external files
-            if(count(self::$externalFiles)){
+            if (count(self::$externalFiles))
+            {
                 self::_copyExternalFiles($installer);
             }
 
@@ -352,10 +449,12 @@ trait libECLabsInstallerScriptTrait
                 self::installDependencies();
             }
 
-        } else {
+        }
+        else
+        {
             // Remove layouts
             $manifest = $installer->getManifest();
-            if($manifest)
+            if ($manifest)
             {
                 $layout = $installer->getManifest()->layouts;
                 if ($layout)
@@ -364,10 +463,11 @@ trait libECLabsInstallerScriptTrait
                 }
             }
             // Remove external files
-            if(count(self::$externalFiles))
+            if (count(self::$externalFiles))
             {
                 self::_removeExternalFiles();
             }
+
             return true;
         }
 
@@ -448,7 +548,6 @@ trait libECLabsInstallerScriptTrait
         return true;
     }
 
-
     /**
      * Method to parse through a layout element of the installation manifest and take appropriate action.
      *
@@ -457,7 +556,7 @@ trait libECLabsInstallerScriptTrait
      *
      * @return  boolean  True on success.
      *
-     * @since  1.0.0
+     * @since  2.0.0
      */
     private static function _parseLayouts(SimpleXMLElement $element, Installer $installer): bool
     {
@@ -491,53 +590,10 @@ trait libECLabsInstallerScriptTrait
                     return false;
                 }
             }
-
             $copyFiles[] = $path;
         }
 
         return $installer->copyFiles($copyFiles, true);
-    }
-
-    /**
-     * Method to parse through a layouts element of the installation manifest and remove the files that were installed.
-     *
-     * @param   SimpleXMLElement  $element  The XML node to process.
-     *
-     * @return  boolean  True on success.
-     *
-     * @since  1.0.0
-     */
-    protected function _removeLayouts(SimpleXMLElement $element): bool
-    {
-        if (!$element || !count($element->children())) return false;
-
-        // Get the array of file nodes to process
-        $files = $element->children();
-
-        // Get source
-        $folder = ((string) $element->attributes()->destination) ? '/' . $element->attributes()->destination : null;
-        $source = Path::clean(JPATH_ROOT . '/layouts' . $folder);
-
-        // Process each file in the $files array (children of $tagName).
-        foreach ($files as $file)
-        {
-            $path = Path::clean($source . '/' . $file);
-
-            // Actually delete the files/folders
-            if (is_dir($path)) $val = Folder::delete($path);
-            else $val = File::delete($path);
-
-            if ($val === false)
-            {
-                Log::add('Failed to delete ' . $path, Log::WARNING, 'jerror');
-
-                return false;
-            }
-        }
-
-        if (!empty($folder)) Folder::delete($source);
-
-        return true;
     }
 
     /**
@@ -554,7 +610,7 @@ trait libECLabsInstallerScriptTrait
         $copyFiles = [];
         foreach (self::$externalFiles as $path)
         {
-            if($path['src'] && $path['dest'])
+            if ($path['src'] && $path['dest'])
             {
                 $path['src']  = Path::clean($path['src']);
                 $path['dest'] = Path::clean($path['dest']);
@@ -574,39 +630,6 @@ trait libECLabsInstallerScriptTrait
         }
 
         return $installer->copyFiles($copyFiles, true);
-    }
-
-    /**
-     * Method to delete external files.
-     *
-     * @return  bool  True on success.
-     *
-     * @since  2.0.0
-     */
-    private function _removeExternalFiles(): bool
-    {
-        // Process each file in the $files array (children of $tagName).
-        foreach (self::$externalFiles as $path)
-        {
-            // Actually delete the files/folders
-            if (is_dir($path['dest']))
-            {
-                $val = Folder::delete($path['dest']);
-            }
-            else
-            {
-                $val = File::delete($path['dest']);
-            }
-
-            if ($val === false)
-            {
-                Log::add('Failed to delete ' . $path, Log::WARNING, 'jerror');
-
-                return false;
-            }
-        }
-
-        return true;
     }
 
     /**
@@ -687,11 +710,8 @@ trait libECLabsInstallerScriptTrait
         /** @var  SimpleXMLElement $item */
         foreach ($xml->update as $item)
         {
-            $tp = $item->children()->targetPlatform;
+            $tp          = $item->children()->targetPlatform;
             $dep_version = (string) ($tp->attributes()->version);
-            /*            echo "<pre>";
-                        var_export((string) ($tp->attributes()->version));
-                        echo "</pre>";*/
 
             if (str_contains($dep_version, $version_mask))
             {
@@ -700,57 +720,6 @@ trait libECLabsInstallerScriptTrait
         }
 
         return false;
-    }
-
-    /**
-     * Get previous version for element
-     * @return string
-     * @since 2.0.0
-     */
-    private static function getPreviousVersion(): string
-    {
-
-        $xml_file = self::getXmlFile();
-
-        if (!$xml_file)
-        {
-            return '';
-        }
-
-        $manifest = new JPackageManifest($xml_file);
-
-        return isset($manifest->version) ? trim($manifest->version) : '';
-    }
-
-    /**
-     * Get path for manifest file
-     * @return string
-     * @since 2.0.0
-     */
-    private static function getXmlFile(): string
-    {
-        $xml_file = JPATH_MANIFESTS . '/packages/pkg_' . self::$name . '.xml';
-
-        if (file_exists($xml_file))
-        {
-            return $xml_file;
-        }
-
-        $xml_file = JPATH_LIBRARIES . '/' . self::$name . '.xml';
-
-        if (file_exists($xml_file))
-        {
-            return $xml_file;
-        }
-
-        $xml_file = JPATH_ADMINISTRATOR . '/components/com_' . self::$name . '/' . self::$name . '.xml';
-
-        if (file_exists($xml_file))
-        {
-            return $xml_file;
-        }
-
-        return '';
     }
 
     /**
@@ -800,8 +769,8 @@ trait libECLabsInstallerScriptTrait
      */
     private static function installDependency(string $url): bool
     {
-        $app = Factory::getApplication();
-        $dispatcher              = Factory::getContainer()->get(DispatcherInterface::class);
+        $app        = Factory::getApplication();
+        $dispatcher = Factory::getContainer()->get(DispatcherInterface::class);
         // Load installer plugins for assistance if required:
         PluginHelper::importPlugin('installer', null, true, $dispatcher);
 
@@ -812,7 +781,7 @@ trait libECLabsInstallerScriptTrait
 
         // TODO В Извлечь метод Joomla 5 d события требуется передать модель, а не адаптер установщика
         /** @var  InstallModel $model */
-        $installModel = Factory::getApplication()->bootComponent('com_installer')->getMVCFactory()->createModel("Install", "Administrator", ['ignore_request' => true]);;
+        $installModel = Factory::getApplication()->bootComponent('com_installer')->getMVCFactory()->createModel("Install", "Administrator", ['ignore_request' => true]);
 
         $eventBefore = new BeforeInstallationEvent('onInstallerBeforeInstallation', [
                 'subject' => $installModel/*self::$parent*/,
@@ -854,7 +823,7 @@ trait libECLabsInstallerScriptTrait
                 'subject' => $installModel/*self::$parent*/,
                 'package' => &$package, // @todo: Remove reference in Joomla 6, see InstallerEvent::__constructor()
         ]);
-        $results = $dispatcher->dispatch('onInstallerBeforeInstaller', $eventBeforeInst)->getArgument('result', []);
+        $results         = $dispatcher->dispatch('onInstallerBeforeInstaller', $eventBeforeInst)->getArgument('result', []);
 
         if (in_array(true, $results, true))
         {
@@ -938,45 +907,14 @@ trait libECLabsInstallerScriptTrait
         $app->setUserState('com_installer.redirect_url', $installer->get('redirect_url'));
 
         // Cleanup the install files.
-        if (!is_file($package['packagefile'])) {
+        if (!is_file($package['packagefile']))
+        {
             $package['packagefile'] = $app->get('tmp_path') . '/' . $package['packagefile'];
         }
 
         JInstallerHelper::cleanupInstall($package['packagefile'], $package['extractdir']);
 
         return $result;
-    }
-
-    /**
-     * Вызывается при обновлении
-     *
-     * @param   InstallerAdapter  $parent
-     *
-     * @return bool
-     *
-     * @throws Exception
-     * @since 2.0.0
-     */
-    public function update(InstallerAdapter $parent): bool
-    {
-        if (!self::_checkIfUpdate())
-        {
-            return self::runSQL("install.sql");
-        }
-
-        return true;
-    }
-
-    /**
-     * Проверяет необходимо ли отдельные действия при обновлении
-     *
-     * @return bool
-     *
-     * @since 2.0.0
-     */
-    private function _checkIfUpdate(): bool
-    {
-        return false;
     }
 
     /**
@@ -1008,7 +946,7 @@ trait libECLabsInstallerScriptTrait
     {
         $db = Factory::getContainer()->get(DatabaseInterface::class);
         // Сформировать путь относительно расположения в проекте
-        $sqlfile = __DIR__ . "/sql/mysql/" . $file;
+        $sqlfile = __DIR__ . self::$sql_path . $file;
         if (file_exists($sqlfile))
         {
             $buffer = file_get_contents($sqlfile);
@@ -1020,7 +958,7 @@ trait libECLabsInstallerScriptTrait
                 }
                 else
                 {
-                    $queries = JInstallerHelper::splitSql($buffer);
+                    $queries = Installer::splitSql($buffer);
                 }
 
                 foreach ($queries as $query)
@@ -1044,6 +982,224 @@ trait libECLabsInstallerScriptTrait
     }
 
     /**
+     * Method to parse through a layouts element of the installation manifest and remove the files that were installed.
+     *
+     * @param   SimpleXMLElement  $element  The XML node to process.
+     *
+     * @return  boolean  True on success.
+     *
+     * @since  2.0.0
+     */
+    protected function _removeLayouts(SimpleXMLElement $element): bool
+    {
+        if (!$element || !count($element->children())) return false;
+
+        // Get the array of file nodes to process
+        $files = $element->children();
+
+        // Get source
+        $folder = ((string) $element->attributes()->destination) ? '/' . $element->attributes()->destination : null;
+        $source = Path::clean(JPATH_ROOT . '/layouts' . $folder);
+
+        // Process each file in the $files array (children of $tagName).
+        foreach ($files as $file)
+        {
+            $path = Path::clean($source . '/' . $file);
+
+            // Actually delete the files/folders
+            if (is_dir($path)) $val = Folder::delete($path);
+            else $val = File::delete($path);
+
+            if ($val === false)
+            {
+                Log::add('Failed to delete ' . $path, Log::WARNING, 'jerror');
+
+                return false;
+            }
+        }
+
+        if (!empty($folder)) Folder::delete($source);
+
+        return true;
+    }
+
+    /**
+     * Method to delete external files.
+     *
+     * @return  bool  True on success.
+     *
+     * @since  2.0.0
+     */
+    private function _removeExternalFiles(): bool
+    {
+        // Process each file in the $files array (children of $tagName).
+        foreach (self::$externalFiles as $path)
+        {
+            // Actually delete the files/folders
+            if (is_dir($path['dest']))
+            {
+                $val = Folder::delete($path['dest']);
+            }
+            else
+            {
+                $val = File::delete($path['dest']);
+            }
+
+            if ($val === false)
+            {
+                Log::add('Failed to delete ' . $path, Log::WARNING, 'jerror');
+
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Устанавливает тип расширения (как в таблице #__extension)
+     * @return string
+     *
+     * @since 2.0.0
+     */
+    abstract private static function _getElementType(): string;
+
+    /**
+     * Устанавливает каталог плагина (как в таблице #__extension)
+     * @return string
+     *
+     * @since 2.0.0
+     */
+    abstract private static function _getElementFolder(): string;
+
+    /**
+     * Устанавливает наименование element расширения (как в таблице #__extension)
+     * @return string
+     *
+     * @since 2.0.0
+     */
+    abstract private static function _getElement(): string;
+
+    /**
+     * Вызывается при обновлении
+     *
+     * @param   InstallerAdapter  $parent
+     *
+     * @return bool
+     *
+     * @throws Exception
+     * @since 2.0.0
+     */
+    public function update(InstallerAdapter $parent): bool
+    {
+        static::_removeIts();
+
+        if (!self::_checkIfUpdate())
+        {
+            return self::runSQL("install.sql");
+        }
+
+        return true;
+    }
+
+    /**
+     * Удаляет файлы или каталоги. Например, если в новой версии они не нужны.
+     *
+     * array(
+     * "folders" =>array([относительный путь к каталогу],...),
+     * "files" =>array([относительный путь к файлу],...)
+     *
+     * @return bool
+     *
+     * @throws Exception
+     * @since 2.0.0
+     */
+    private function _removeIts(): bool
+    {
+        $ret = true;
+        foreach (self::$to_remove as $type => $items)
+        {
+            switch ($type)
+            {
+                case "folders":
+                    if (count($items))
+                    {
+                        foreach ($items as $item)
+                        {
+                            $path = JPATH_ROOT . $item;
+                            if (file_exists($path))
+                            {
+                                try
+                                {
+                                    Folder::delete($path);
+                                }
+                                catch (Exception $e)
+                                {
+                                    $ret = false;
+                                    Factory::getApplication()->enqueueMessage(Text::sprintf('FILES_JOOMLA_ERROR_FILE_FOLDER', $path), "warning");
+                                }
+                            }
+                        }
+                    }
+                    break;
+                case "files":
+                    if (count($items))
+                    {
+                        foreach ($items as $item)
+                        {
+                            $path = JPATH_ROOT . $item;
+                            if (File::exists($path))
+                            {
+                                try
+                                {
+                                    File::delete($path);
+                                }
+                                catch (Exception $e)
+                                {
+                                    $ret = false;
+                                    Factory::getApplication()->enqueueMessage(Text::sprintf('FILES_JOOMLA_ERROR_FILE_FOLDER', $path), "warning");
+                                }
+                            }
+                        }
+                    }
+                    break;
+                default:
+            }
+        }
+
+        return $ret;
+    }
+
+    /**
+     * Проверяет необходимо ли отдельные действия при обновлении
+     *
+     * @return bool
+     *
+     * @since 2.0.0
+     */
+    private function _checkIfUpdate(): bool
+    {
+        return false;
+    }
+
+    /**
+     * Формирует историю изменений расширения. Используется html.
+     * Например:
+     * ?>
+     * <h3><?php echo Text::_("PLG_SYSTEM_RECEIPTSLOADER_CHANGE_LOG_TITLE"); ?></h3>
+     * <ul class="version-history">
+     * <li><span class="version-upgraded">1.0.1</span> <?php echo Text::_("PLG_SYSTEM_RECEIPTSLOADER_CHANGE_LOG_1_0_1");?></li>
+     * <li><span class="version-new">1.0.0</span> First version.</li>
+     * </ul>
+     * <?php
+     *
+     * @return void
+     *
+     * @since 2.0.0
+     */
+    abstract private static function _renderHistory(): void;
+
+    /**
      * Вызывается при удалении
      *
      * @param   InstallerAdapter  $parent
@@ -1057,4 +1213,5 @@ trait libECLabsInstallerScriptTrait
     {
         return self::runSQL("uninstall.sql");
     }
+
 }
