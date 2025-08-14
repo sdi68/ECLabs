@@ -18,6 +18,7 @@ use JLayoutHelper;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Form\Form;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\Layout\LayoutHelper;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\Database\DatabaseInterface;
 use SimpleXMLElement;
@@ -180,7 +181,7 @@ class ECLTools
 				if ($result)
 				{
 					$path   = 'blocks.plugins_statuses.' . $layout . ECLVersion::getJoomlaVersionSuffix("_j");
-					$return .= JLayoutHelper::render($path, array("plugins_info" => $result, "folder" => $folder, "title" => $item["title"]), JPATH_LIBRARIES . '/eclabs/layouts');
+					$return .= LayoutHelper::render($path, array("plugins_info" => $result, "folder" => $folder, "title" => $item["title"]), JPATH_ROOT."/layouts/libraries/eclabs");
 				}
 			}
 		}
