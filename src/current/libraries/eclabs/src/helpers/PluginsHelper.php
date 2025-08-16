@@ -82,7 +82,7 @@ class PluginsHelper
 	/**
 	 * Calls the plugins handler associated with the event.
 	 *
-	 * @param   string|array|null  $types  The plugin type, relates to the subdirectory in the plugins directory.
+	 * @param array|string|null $types  The plugin type, relates to the subdirectory in the plugins directory.
 	 * @param   string|null        $event  The event name.
 	 * @param   array  |null       $args   An array of arguments (optional).
 	 *
@@ -92,7 +92,7 @@ class PluginsHelper
 	 *
 	 * @since  1.0.0
 	 */
-	public static function triggerPlugins($types = null, ?string $event = null, ?array $args = []): array
+	public static function triggerPlugins(array|string $types = null, ?string $event = null, ?array $args = []): array
 	{
 		$result = [];
 		if (!is_array($types))
