@@ -14,7 +14,11 @@ namespace ECLabs\Library;
 
 \defined('DS') or define('DS', DIRECTORY_SEPARATOR);
 
+use Joomla\CMS\Application\CMSApplicationInterface;
 use Joomla\CMS\Plugin\CMSPlugin;
+use Joomla\Database\DatabaseAwareTrait;
+use Joomla\Database\DatabaseInterface;
+use Joomla\Event\DispatcherInterface;
 use Joomla\Event\SubscriberInterface;
 
 
@@ -30,18 +34,21 @@ require_once JPATH_LIBRARIES . '/eclabs/src/autoload.php';
 abstract class ECLPlugin extends CMSPlugin implements SubscriberInterface
 {
 	use Traits\ECLPlugin;
+    use DatabaseAwareTrait;
 
-	/**
-	 * @param $subject
-	 * @param $config
-	 *
-	 * @since 1.0.0
-	 */
+    /**
+     * @param DispatcherInterface $dispatcher
+     * @param array $config
+     * @param CMSApplicationInterface $app
+     * @param DatabaseInterface $db
+     * @since 1.0.0
+     */
 
-	public function __construct(&$subject, $config = array())
+    public function __construct(DispatcherInterface $dispatcher, array $config, CMSApplicationInterface $app, DatabaseInterface $db)
 	{
-		parent::__construct($subject, $config);
-
+		parent::__construct($config);
+        $this->setApplication($app);
+        $this->setDatabase($db);
         $this->jVersion = ECLVersion::getJoomlaVersion();
 	}
 }
