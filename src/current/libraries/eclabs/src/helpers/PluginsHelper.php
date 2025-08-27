@@ -158,7 +158,7 @@ class PluginsHelper
 			// Load language
 			Factory::getApplication()->getLanguage()->load($key, JPATH_ADMINISTRATOR);
 
-			if (isset(Factory::$language))
+			if (Factory::getApplication()->getLanguage() !== null)
 			{
 				Factory::getApplication()->getLanguage()->load($key, JPATH_ADMINISTRATOR);
 			}
