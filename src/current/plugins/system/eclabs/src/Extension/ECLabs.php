@@ -63,9 +63,8 @@ if (file_exists(JPATH_LIBRARIES . '/eclabs/src/autoload.php'))
 
 	ECLLanguage::loadExtraLanguageFiles('plg_system_eclabs', JPATH_ADMINISTRATOR);
 
-	final class ECLabs extends ECLPlugin implements SubscriberInterface
+	final class ECLabs extends ECLPlugin
 	{
-		use DatabaseAwareTrait;
 
 		/**
 		 * Load the language file on instantiation.
@@ -105,10 +104,8 @@ if (file_exists(JPATH_LIBRARIES . '/eclabs/src/autoload.php'))
 
 		public function __construct(DispatcherInterface $dispatcher, array $config, CMSApplicationInterface $app, DatabaseInterface $db)
 		{
-			parent::__construct($dispatcher, $config);
+			parent::__construct($dispatcher, $config,$app,$db);
 
-			$this->setApplication($app);
-			$this->setDatabase($db);
 			$this->enabled_log  = $this->params->get('logging', false);
 			$this->_plugin_path = __DIR__;
 		}
@@ -590,7 +587,7 @@ if (file_exists(JPATH_LIBRARIES . '/eclabs/src/autoload.php'))
 			$wa_is_free = true;
 
 			/** @var WebAssetManager $wa */
-			$wa = Factory::getApplication()->getDocument()->getWebAssetManager();
+			$wa = $this->getApplication()->getDocument()->getWebAssetManager();
 			$wr = $wa->getRegistry();
 			$wr->addRegistryFile('/media/eclabs/joomla.assets.json');
 			$wr->addRegistryFile('/media/plg_system_eclabs/joomla.assets.json');
