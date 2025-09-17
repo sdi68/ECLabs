@@ -12,7 +12,7 @@
     <name>LIB_ECLABS</name>
     <libraryname>eclabs</libraryname>
     <description>LIB_ECLABS_DESCRIPTION</description>
-    <version>2.0.0</version>
+    <version>__DEPLOYMENT_VERSION__</version>
     <creationDate>21.01.2025</creationDate>
     <author>ECL</author>
     <authorEmail>info@econsultlab.ru</authorEmail>
@@ -33,6 +33,7 @@
     </languages>
 
     <layouts destination="libraries/eclabs" folder="layouts">
+        <folder>blocks</folder>
         <folder>fields</folder>
     </layouts>
 

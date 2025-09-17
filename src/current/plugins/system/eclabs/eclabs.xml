@@ -16,7 +16,7 @@
     <license>GNU General Public License version 2 or later; see LICENSE.txt</license>
     <authorEmail>info@econsultlab.ru</authorEmail>
     <authorUrl>https://econsultlab.ru</authorUrl>
-    <version>2.0.0</version>
+    <version>__DEPLOYMENT_VERSION__</version>
     <description>PLG_SYSTEM_ECLABS_DESCRIPTION</description>
     <namespace path="src">Joomla\Plugin\System\ECLabs</namespace>
 <!--    <ecltype>free</ecltype>-->

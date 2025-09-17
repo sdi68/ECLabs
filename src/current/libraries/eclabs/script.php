@@ -38,7 +38,7 @@ if (!class_exists('ECLabsInstallerScript'))
      */
     class ECLabsInstallerScript
     {
-        use libECLabsInstallerScriptTrait;
+        use libECLabsInstallerScriptTrait__UNIQUE_SUFFIX__;
 
         /**
          * Устанавливает зависимости текущего расширения.
@@ -193,12 +193,11 @@ if (!class_exists('ECLabsInstallerScript'))
     }
 }
 
-
 /**
  * Общая часть скрипта установки
  * @since _DEPLOY_VERSION__
  */
-trait libECLabsInstallerScriptTrait
+trait libECLabsInstallerScriptTrait__UNIQUE_SUFFIX__
 {
     /**
      * Адаптер установщика

@@ -9,7 +9,7 @@
 	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
 	<authorEmail>info@econsultlab.ru</authorEmail>
 	<authorUrl>https://econsultlab.ru</authorUrl>
-	<version>2.0.0</version>
+	<version>__DEPLOYMENT_VERSION__</version>
 	<description>PKG_ECLABS_DESCRIPTION</description>
 	<dlid prefix="download_key" ecltype = "free" suffix=""/>
 

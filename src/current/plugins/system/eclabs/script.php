@@ -39,7 +39,7 @@ if (!class_exists('plgSystemECLabsInstallerScript'))
 	 */
 	class plgSystemECLabsInstallerScript
 	{
-        use plgSystemECLabsInstallerScriptTrait;
+        use plgSystemECLabsInstallerScriptTrait__UNIQUE_SUFFIX__;
 
 
         /**
@@ -195,7 +195,7 @@ if (!class_exists('plgSystemECLabsInstallerScript'))
  * Общая часть скрипта установки
  * @since _DEPLOY_VERSION__
  */
-trait plgSystemECLabsInstallerScriptTrait
+trait plgSystemECLabsInstallerScriptTrait__UNIQUE_SUFFIX__
 {
     /**
      * Адаптер установщика
