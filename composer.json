@@ -11,11 +11,18 @@
       "email": "info@econsultlab.ru"
     }
   ],
+  "repositories": [
+    {
+      "type": "github",
+      "url": "git@github.com:sdi68/ecllog.git"
+    }
+  ],
   "require-dev": {
     "phing/phing": "2.*",
     "pear/pear": "v1.10.13",
     "pear/net_ftp": "dev-master",
-    "phpunit/phpunit": ">9.2.2"
+    "phpunit/phpunit": ">9.2.2",
+    "platinumpixs/phing-random-string": "dev-master"
   },
   "require": {
     "php": ">=8.3"
