@@ -46,7 +46,7 @@ abstract class ECLPlugin extends CMSPlugin implements SubscriberInterface
 
     public function __construct(DispatcherInterface $dispatcher, array $config, CMSApplicationInterface $app, DatabaseInterface $db)
 	{
-		parent::__construct($config);
+		parent::__construct($dispatcher,$config);
         $this->setApplication($app);
         $this->setDatabase($db);
         $this->jVersion = ECLVersion::getJoomlaVersion();
