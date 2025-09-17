@@ -126,7 +126,6 @@ class ECLModal extends ECL {
          * @private
          */
         this._modal = null;
-
         this._initialize(params);
     }
 
@@ -187,10 +186,11 @@ class ECLModal extends ECL {
             this._saveBtnCaption = this._default.saveBtnCaption;
 
         let _modal = document.getElementById(this._wrapId);
+        this.debug("_initialize", "_modal", _modal);
         if (!_modal) {
             this._buildHtmlWrap();
-            const eclModal = document.createRange().createContextualFragment(this._htmlWrap);
-
+            let eclModal = document.createRange().createContextualFragment(this._htmlWrap);
+            this.debug("_initialize", "eclModal", eclModal);
             if (typeof bootstrap !== "undefined") {
                 if (eclModal) {
                     let bsModal = bootstrap.Modal.getInstance(eclModal);
@@ -207,28 +207,54 @@ class ECLModal extends ECL {
             }
         } else {
             // Изменяем модальное окно по полученным настройкам
+            this.#updateModal();
 
-            let _el = this.getElement('.modal-dialog', _modal, true);
-            _el.removeAttribute('class');
-            _el.setAttribute('class', 'modal-dialog ' + this._dialogClass);
-
-            _el = this.getElement('.modal-header', _modal, true);
-            _el.removeAttribute('class');
-            _el.setAttribute('class', 'modal-header ' + (this._hideHeader ? this._hiddenClass : ''));
-
-            _el = this.getElement('.modal-footer', _modal, true);
-            _el.removeAttribute('class');
-            _el.setAttribute('class', 'modal-footer ' + (this._hideFooter ? this._hiddenClass : ''));
-
-            _el = this.getElement('.modal-footer #ecl-modal-send', _modal, true);
-            _el.setAttribute('class', 'btn btn-primary ' + (this._saveBtnCaption === "" ? this._hiddenClass : ''));
-            _el.innerHTML = this._saveBtnCaption;
-
-            _el = this.getElement('.modal-body', _modal, true);
-            _el.innerHTML = this._content;
-
+            // let _el = this.getElement('.modal-dialog', _modal, true);
+            // _el.removeAttribute('class');
+            // _el.setAttribute('class', 'modal-dialog ' + this._dialogClass);
+            //
+            // _el = this.getElement('.modal-header', _modal, true);
+            // _el.removeAttribute('class');
+            // _el.setAttribute('class', 'modal-header ' + (this._hideHeader ? this._hiddenClass : ''));
+            //
+            // _el = this.getElement('.modal-footer', _modal, true);
+            // _el.removeAttribute('class');
+            // _el.setAttribute('class', 'modal-footer ' + (this._hideFooter ? this._hiddenClass : ''));
+            //
+            // _el = this.getElement('.modal-footer #ecl-modal-send', _modal, true);
+            // _el.setAttribute('class', 'btn btn-primary ' + (this._saveBtnCaption === "" ? this._hiddenClass : ''));
+            // _el.innerHTML = this._saveBtnCaption;
+            //
+            // _el = this.getElement('.modal-body', _modal, true);
+            // _el.innerHTML = this._content;
         }
         this._create();
+    }
+
+    /**
+     * Обновить содержимое модального окна
+     * @private
+     */
+    #updateModal(){
+        let _modal = document.getElementById(this._wrapId);
+        let _el = this.getElement('.modal-dialog', _modal, true);
+        _el.removeAttribute('class');
+        _el.setAttribute('class', 'modal-dialog ' + this._dialogClass);
+
+        _el = this.getElement('.modal-header', _modal, true);
+        _el.removeAttribute('class');
+        _el.setAttribute('class', 'modal-header ' + (this._hideHeader ? this._hiddenClass : ''));
+
+        _el = this.getElement('.modal-footer', _modal, true);
+        _el.removeAttribute('class');
+        _el.setAttribute('class', 'modal-footer ' + (this._hideFooter ? this._hiddenClass : ''));
+
+        _el = this.getElement('.modal-footer #ecl-modal-send', _modal, true);
+        _el.setAttribute('class', 'btn btn-primary ' + (this._saveBtnCaption === "" ? this._hiddenClass : ''));
+        _el.innerHTML = this._saveBtnCaption;
+
+        _el = this.getElement('.modal-body', _modal, true);
+        _el.innerHTML = this._content;
     }
 
 
@@ -264,7 +290,8 @@ class ECLModal extends ECL {
      */
     _create() {
         let _this = this;
-        const modal = document.getElementById(this._wrapId);
+        let modal = document.getElementById(this._wrapId);
+        this.debug("_create", "modal", modal);
         document.querySelector('#' + this._wrapId + ' #' + this._wrapId + 'Label').innerHTML = this._title;
 
         if (typeof bootstrap !== "undefined") {
@@ -328,6 +355,7 @@ class ECLModal extends ECL {
     show() {
         this.debug("show", "this._modal", this._modal);
         if (this._modal !== null) {
+            this.#updateModal();
             switch (true) {
                 case typeof bootstrap !== "undefined":
                     this._modal.show();
@@ -367,6 +395,14 @@ class ECLModal extends ECL {
      */
     static bindModal(paramsAttributeSelector = 'data-eclmodal') {
         let modals = document.querySelectorAll('[' + paramsAttributeSelector + ']');
+        // Предотвращаем дублирование обработки событий
+        if (modals) {
+            modals.forEach(function (element) {
+                //element.replaceWith(element.cloneNode(true));
+                ECL.clearAllEvents(element);
+            });
+        }
+        modals = document.querySelectorAll('[' + paramsAttributeSelector + ']');
         if (modals) {
             modals.forEach(function (element) {
                 // Получаем параметры мобильного окна
@@ -379,6 +415,7 @@ class ECLModal extends ECL {
                     }
                     if (_params) {
                         let myModal = new ECLModal(_params);
+
                         element.addEventListener('click', function (e) {
                             e.preventDefault();
                             myModal.show();

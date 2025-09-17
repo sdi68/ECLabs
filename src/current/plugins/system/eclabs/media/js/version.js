@@ -91,7 +91,8 @@ function showAuthorization(e) {
     element.removeAttribute('disabled');
     // удаляем все события, чтобы была привязка только одного EOF
     if (element) {
-        element.replaceWith(element.cloneNode(true));
+        //element.replaceWith(element.cloneNode(true));
+        ECL.clearAllEvents(element);
     }
     element = document.querySelector('#' + e.target.id + ' #ecl-modal-send');
     // удаляем все события, чтобы была привязка только одного EOF

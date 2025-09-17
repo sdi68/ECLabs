@@ -96,8 +96,20 @@ class ECL {
      * Remove all events from the DOM element
      * @public
      * @param element   DOM Element
+     * @deprecated use ECL.clearAllEvents();
      */
     removeAllEvents(element) {
+        if (element) {
+            element.replaceWith(element.cloneNode(true));
+        }
+    }
+
+    /**
+     * Remove all events from the DOM element
+     * @public
+     * @param element   DOM Element
+     */
+    static clearAllEvents(element){
         if (element) {
             element.replaceWith(element.cloneNode(true));
         }
