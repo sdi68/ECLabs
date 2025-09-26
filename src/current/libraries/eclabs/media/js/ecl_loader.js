@@ -368,6 +368,21 @@ class ECLModalLoader extends ECLLoader {
             autoHide: true
         };
 
+        /**
+         * Флаг того , что окно лоадера открыто
+         * @type {boolean}
+         * @private
+         */
+        this._isShown = false;
+
+        /**
+         * Контент для отображения в лоадере,
+         * записывается только когда окно открыто
+         * @type {string}
+         * @private
+         */
+        this._content = "";
+
         this._default = Object.assign({}, _defaultParams, this._default);
 
         this._initialize(params);
@@ -511,8 +526,23 @@ class ECLModalLoader extends ECLLoader {
      * @public
      */
     setContent(content = "") {
+        this._content = content.trim();
+        // Если окно открыто, записываем контент
+        if(this._isShown){
+        // let _contentElement = this.getElement('.' + this._contentSelector, this._eclmodal.getModalElement(), true);
+        // _contentElement.innerHTML = content.trim();
+            this.#setContent()
+        }
+    }
+    /**
+     * Записываем контент в лоадер
+     * @private
+     */
+    #setContent(){
         let _contentElement = this.getElement('.' + this._contentSelector, this._eclmodal.getModalElement(), true);
-        _contentElement.innerHTML = content.trim();
+        _contentElement.innerHTML = this._content;
+        // Сбрасываем контент
+        this._content = "";
     }
 
     /**
