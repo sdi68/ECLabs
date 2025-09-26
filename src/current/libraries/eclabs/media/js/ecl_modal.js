@@ -306,12 +306,20 @@ class ECLModal extends ECL {
                 modal.addEventListener('shown.bs.modal', function (e) {
                     window[_this._shown](e);
                 });
+            } else if(typeof this._shown === "function"){
+                modal.addEventListener('shown.bs.modal', function (e) {
+                    _this._shown(e);
+                });
             }
 
             // Событие закрытия окна
             if (typeof window[this._hidden] === "function") {
                 modal.addEventListener('hidden.bs.modal', function (e) {
                     window[_this._hidden](e);
+                });
+            } else if(typeof this._hidden === "function"){
+                modal.addEventListener('hidden.bs.modal', function (e) {
+                    _this._hidden(e);
                 });
             }
 
@@ -326,12 +334,19 @@ class ECLModal extends ECL {
                 this._modal.on('shown', function (e) {
                     window[_this._shown](e);
                 });
+            } else if(typeof this._shown === "function") {
+                this._modal.on('shown', function (e) {
+                    _this._shown(e);
+                });
             }
-
-            // Событие закрытия окна
+                // Событие закрытия окна
             if (typeof window[this._hidden] === "function") {
                 this._modal.on('hidden', function (e) {
                     window[_this._hidden](e);
+                });
+            } else if(typeof this._hidden === "function") {
+                this._modal.on('hidden', function (e) {
+                    _this._hidden(e);
                 });
             }
         } else {
