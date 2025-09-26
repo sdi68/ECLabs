@@ -383,8 +383,8 @@ class ECLModalLoader extends ECLLoader {
             saveBtnCaption: "",
             content: this._modalBODY,
             title: "",
-            shown: "",
-            hidden: ""
+            shown: this.loaderShown.bind(this),
+            hidden: this.loaderHidden.bind(this)
         };
         this._eclmodal = new ECLModal(modalParams);
 
@@ -521,5 +521,27 @@ class ECLModalLoader extends ECLLoader {
      * @public
      */
     setResult(result = "") {
+    }
+
+    /**
+     * Событие показа окна лоадера
+     * @public
+     */
+    loaderShown(){
+        this.debug("loaderShown","this._content",this._content);
+        this._isShown=true;
+        if(this._content){
+            // Выводим контент, если есть
+            this.#setContent();
+        }
+    }
+
+    /**
+     * Событие скрытия окна лоадера
+     * @public
+     */
+    loaderHidden(){
+        this.debug("loaderHidden","started","...");
+        this._isShown=false;
     }
 }
