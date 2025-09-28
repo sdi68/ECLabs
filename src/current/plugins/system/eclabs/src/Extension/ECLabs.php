@@ -107,7 +107,7 @@ if (file_exists(JPATH_LIBRARIES . '/eclabs/src/autoload.php'))
 			parent::__construct($dispatcher, $config,$app,$db);
 
 			$this->enabled_log  = $this->params->get('logging', false);
-			$this->_plugin_path = __DIR__;
+			$this->_plugin_path = str_replace(["\src\Extension","/src/Extension"], "", __DIR__);
 		}
 
 		/**
