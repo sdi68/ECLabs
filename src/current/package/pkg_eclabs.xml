@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<extension version="3.9" type="package" method="upgrade">
+<extension type="package" method="upgrade">
 	<name>PKG_ECLABS</name>
 	<packagename>eclabs</packagename>
 	<author>ECL</author>
