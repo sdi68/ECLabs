@@ -151,12 +151,27 @@
 
         <echo msg="Making the ${build_type} ${source} package."/>
 
-        <phingcall target="_replace_tokens">
-            <property name = "token1" value="DEPLOYMENT_VERSION"/>
-            <property name = "token1_value" value="${version}"/>
-            <property name = "token2" value="UNIQUE_SUFFIX"/>
-            <property name = "token2_value" value="${unique_suffix}"/>
-        </phingcall>
+        <if>
+            <equals arg1="${build_type}" arg2="production"/>
+            <then>
+                <echo msg="Replace production tokens."/>
+                <phingcall target="_replace_tokens">
+                    <property name = "token1" value="DEPLOYMENT_VERSION"/>
+                    <property name = "token1_value" value="${version}"/>
+                    <property name = "token2" value="UNIQUE_SUFFIX"/>
+                    <property name = "token2_value" value="${unique_suffix}"/>
+                </phingcall>
+            </then>
+            <else>
+                <echo msg="Replace deployment tokens."/>
+                <phingcall target="_replace_tokens">
+                    <property name = "token1" value="DEPLOYMENT_VERSION"/>
+                    <property name = "token1_value" value="__DEPLOYMENT_VERSION__"/>
+                    <property name = "token2" value="UNIQUE_SUFFIX"/>
+                    <property name = "token2_value" value="${unique_suffix}"/>
+                </phingcall>
+            </else>
+        </if>
 
         <if>
             <equals arg1="${is_package}" arg2="1" />
