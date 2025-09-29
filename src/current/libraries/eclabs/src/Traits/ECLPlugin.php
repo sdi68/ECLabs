@@ -226,5 +226,14 @@ trait ECLPlugin
 		return array();
 	}
 
+	/**
+	 * Устанавливает путь к директории плагина
+	 *
+	 * @return void
+	 * @since 2.0.0.
+	 */
+	protected function _setPluginPath ():void {
+		$this->_plugin_path = JPATH_PLUGINS.DIRECTORY_SEPARATOR.$this->_type.DIRECTORY_SEPARATOR.$this->_name;
+	}
 
 }
