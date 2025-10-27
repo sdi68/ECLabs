@@ -6,12 +6,12 @@
  * @copyright      Copyright © 2025 ECL All Rights Reserved
  * @license           http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
-
+#eclModal,
 .ecl-modal {
     display: none;
 }
 
-#eclModal.version-3 {
+#eclModal[class *= "version-"] {
     max-width: 400px;
     margin: 0;
     /* центрируем окно по горизонтали */
@@ -19,7 +19,7 @@
     transform: translateX(-50%);
 }
 
-#eclModal.version-3 .row {
+#eclModal[class *= "version-"] .row {
     display: flex;
     flex-flow: row nowrap;
     justify-content: flex-start;
@@ -27,27 +27,35 @@
     margin-left:-15px;
 }
 
-#eclModal.version-3 .results_group {
+#eclModal[class *= "version-"] .row .span9 {
+    width: 75%;
+}
+
+#eclModal[class *= "version-"] .row .span3 {
+    width: 25%;
+}
+
+#eclModal[class *= "version-"].results_group {
     margin-left:0;
 }
 
 @media (max-width: 767px) {
-    #eclModal.version-3 {
+    #eclModal[class *= "version-"] {
         min-width:250px;
         width: 85%;
     }
 
-    #eclModal.version-3 .row {
+    #eclModal[class *= "version-"] .row {
         margin-left:0;
     }
 
-    #eclModal.version-3 #modal-loader .loader-content.ecl-fields {
+    #eclModal[class *= "version-"] #modal-loader .loader-content.ecl-fields {
         width:75%;
     }
-    #eclModal.version-3 #modal-loader  .ecl-spinner {
+    #eclModal[class *= "version-"] #modal-loader  .ecl-spinner {
         width:25%;
     }
-    #eclModal.version-3 #modal-loader  .ecl-spinner > img{
+    #eclModal[class *= "version-"] #modal-loader  .ecl-spinner > img{
         max-width: 100%;
     }
 }
