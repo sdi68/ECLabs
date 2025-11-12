@@ -166,7 +166,7 @@
                 <echo msg="Replace deployment tokens."/>
                 <phingcall target="_replace_tokens">
                     <property name = "token1" value="DEPLOYMENT_VERSION"/>
-                    <property name = "token1_value" value="__DEPLOYMENT_VERSION__"/>
+                    <property name = "token1_value" value="${version}"/>
                     <property name = "token2" value="UNIQUE_SUFFIX"/>
                     <property name = "token2_value" value="${unique_suffix}"/>
                 </phingcall>
