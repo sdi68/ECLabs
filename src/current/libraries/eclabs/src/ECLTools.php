@@ -181,7 +181,7 @@ class ECLTools
 				if ($result)
 				{
 					$path   = 'blocks.plugins_statuses.' . $layout . ECLVersion::getJoomlaVersionSuffix("_j");
-					$return .= LayoutHelper::render($path, array("plugins_info" => $result, "folder" => $folder, "title" => $item["title"]), JPATH_ROOT."/layouts/libraries/eclabs");
+					$return .= LayoutHelper::render($path, array("plugins_info" => $result, "folder" => $folder, "title" => $item["title"]), JPATH_ROOT . "/layouts/libraries/eclabs");
 				}
 			}
 		}
@@ -299,4 +299,20 @@ class ECLTools
 
 		return $db->setQuery($query)->loadAssocList();
 	}
+
+	/**
+	 * Получает плагины компонента из указанной группы
+	 * Обертка для _getComponentFolderPlugins
+	 *
+	 * @param   string  $folder   Группа плагинов
+	 * @param   array   $options  Настройки отбора плагинов
+	 *
+	 * @return array|mixed
+	 * @since __DEPLOYMENT_VERSION__
+	 */
+	public static function getComponentFolderPlugins(string $folder, array $options): mixed
+	{
+		return self::_getComponentFolderPlugins($folder, $options);
+	}
+
 }
