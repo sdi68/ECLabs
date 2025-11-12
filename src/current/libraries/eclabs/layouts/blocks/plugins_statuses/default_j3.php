@@ -58,6 +58,8 @@ ECLLanguage::loadExtraLanguageFiles('com_plugins', JPATH_ADMINISTRATOR);
                     if (array_key_exists('description', $manifest_cache)) {
                         $description = Text::_($manifest_cache['description']);
                     }
+                } else if(!empty($plugin['description'])) {
+                    $description = $plugin['description'];
                 }
                 $link = '<a href="' . Route::_('index.php?option=com_plugins&task=plugin.edit&extension_id=' . $plugin['extension_id']) . '" target = "_blank">' . $plugin['element'] . '</a>';
                 ?>
