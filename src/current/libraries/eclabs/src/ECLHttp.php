@@ -129,6 +129,33 @@ class ECLHttp
 	}
 
 	/**
+	 * Helper method to generate content for cookie header.
+	 *
+	 * @param   array|null  $cookies  Array of cookies to set.
+	 *
+	 * @return  string
+	 * @since 1.0.0
+	 */
+	public static function cookies(array $cookies = null): string
+	{
+		// Prepare cookies data.
+		if (!$cookies || !is_array($cookies))
+		{
+			$cookies = $_COOKIE;
+		}
+
+		// Generate content for cookie header.
+		$_cookies = '';
+
+		foreach ($cookies as $k => $v)
+		{
+			$_cookies .= urlencode($k) . '=' . urlencode($v) . '; ';
+		}
+
+		return substr($cookies, 0, -2);
+	}
+
+	/**
 	 * Send HTTP request using POST method.
 	 *
 	 * @param   string        $link     The URL to send request to.
@@ -195,32 +222,5 @@ class ECLHttp
 		}
 
 		return json_decode($result->body, true);
-	}
-
-	/**
-	 * Helper method to generate content for cookie header.
-	 *
-	 * @param   array|null  $cookies  Array of cookies to set.
-	 *
-	 * @return  string
-	 * @since 1.0.0
-	 */
-	public static function cookies(array $cookies = null): string
-	{
-		// Prepare cookies data.
-		if (!$cookies || !is_array($cookies))
-		{
-			$cookies = $_COOKIE;
-		}
-
-		// Generate content for cookie header.
-		$_cookies = '';
-
-		foreach ($cookies as $k => $v)
-		{
-			$_cookies .= urlencode($k) . '=' . urlencode($v) . '; ';
-		}
-
-		return substr($cookies, 0, -2);
 	}
 }

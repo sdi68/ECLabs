@@ -104,9 +104,9 @@ if (file_exists(JPATH_LIBRARIES . '/eclabs/src/autoload.php'))
 
 		public function __construct(DispatcherInterface $dispatcher, array $config, CMSApplicationInterface $app, DatabaseInterface $db)
 		{
-			parent::__construct($dispatcher, $config,$app,$db);
+			parent::__construct($dispatcher, $config, $app, $db);
 
-			$this->enabled_log  = $this->params->get('logging', false);
+			$this->enabled_log = $this->params->get('logging', false);
 			//$this->_plugin_path = str_replace(["\src\Extension","/src/Extension"], "", __DIR__);
 			$this->_setPluginPath();
 		}
@@ -169,7 +169,7 @@ if (file_exists(JPATH_LIBRARIES . '/eclabs/src/autoload.php'))
 			{
 				// Удаляем поле ключа в форме сервера обновлений для бесплатного расширения ECL
 				$item = $subject->get("item");
-				if($item)
+				if ($item)
 				{
 					if ($item->update_site_id && ECLExtension::checkECLTypeByUpdateSiteId($item->update_site_id) === ECLExtension::_ECL_EXTENSION_TYPE_FREE)
 					{
@@ -323,7 +323,8 @@ if (file_exists(JPATH_LIBRARIES . '/eclabs/src/autoload.php'))
 		 * @throws Exception
 		 * @since 1.0.0
 		 */
-		#[NoReturn] public function onAjaxEclabs(): void
+		#[NoReturn]
+		public function onAjaxEclabs(): void
 		{
 			$input  = new ECLInput(true);
 			$action = $input->get('action', '');

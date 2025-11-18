@@ -23,6 +23,31 @@ use Joomla\CMS\Version;
 class ECLVersion
 {
 	/**
+	 * Getting class name, assigned with current Joomla version
+	 * @public
+	 * @returns string
+	 * @since 1.0.0
+	 */
+	public static function getJVersionClass(): string
+	{
+		return self::getJoomlaVersionSuffix('version-');
+	}
+
+	/**
+	 * Return suffix with major Joomla version
+	 *
+	 * @param   string  $suffix  Suffix
+	 *
+	 * @return string
+	 *
+	 * @since 1.0.0
+	 */
+	public static function getJoomlaVersionSuffix(string $suffix = ""): string
+	{
+		return $suffix . self::getJoomlaVersion();
+	}
+
+	/**
 	 * Return Joomla major version number
 	 *
 	 * @return string
@@ -41,30 +66,5 @@ class ECLVersion
 			$version->isCompatible('3.0') => '3',
 			default => '',
 		};
-	}
-
-	/**
-	 * Return suffix with major Joomla version
-	 *
-	 * @param   string  $suffix  Suffix
-	 *
-	 * @return string
-	 *
-	 * @since 1.0.0
-	 */
-	public static function getJoomlaVersionSuffix(string $suffix = ""): string
-	{
-		return $suffix . self::getJoomlaVersion();
-	}
-
-	/**
-	 * Getting class name, assigned with current Joomla version
-	 * @public
-	 * @returns string
-	 * @since 1.0.0
-	 */
-	public static function getJVersionClass(): string
-	{
-		return self::getJoomlaVersionSuffix('version-');
 	}
 }

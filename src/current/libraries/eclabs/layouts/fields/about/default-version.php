@@ -14,5 +14,5 @@ extract($displayData);
 
 ?>
 <div id="<?php echo $version['container_id']; ?>" class="ecl-version-container">
-	<?php echo $version['html'] ?? ''; ?>
+    <?php echo $version['html'] ?? ''; ?>
 </div>

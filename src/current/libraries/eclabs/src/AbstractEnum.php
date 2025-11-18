@@ -44,6 +44,27 @@ abstract class AbstractEnum
 	}
 
 	/**
+	 * Получает наименование нумератора по значению
+	 *
+	 * @param $value
+	 *
+	 * @return false|int|string
+	 * @since 1.0.0
+	 */
+	public static function getEnumName($value)
+	{
+		foreach (static::$validValues as $key => $val)
+		{
+			if ($value == constant('static::' . $key))
+			{
+				return $key;
+			}
+		}
+
+		return false;
+	}
+
+	/**
 	 * Возвращает все значения в enum'e
 	 * @return array Массив значений в перечислении
 	 * @since 1.0.0
@@ -52,7 +73,6 @@ abstract class AbstractEnum
 	{
 		return array_keys(static::$validValues);
 	}
-
 
 	/**
 	 * Возвращает значения в enum'е значения которых разрешены
@@ -93,27 +113,6 @@ abstract class AbstractEnum
 		}
 
 		return $result;
-	}
-
-	/**
-	 * Получает наименование нумератора по значению
-	 *
-	 * @param $value
-	 *
-	 * @return false|int|string
-	 * @since 1.0.0
-	 */
-	public static function getEnumName($value)
-	{
-		foreach (static::$validValues as $key => $val)
-		{
-			if ($value == constant('static::' . $key))
-			{
-				return $key;
-			}
-		}
-
-		return false;
 	}
 
 	/**

@@ -22,6 +22,24 @@ trait ECLPluginDiagnosticMasterTrait
 {
 	use ECLPluginDiagnosticTrait;
 
+	public function onGetRenderCheckedPlugins(string $context, string &$html, string $layout = "default"): bool
+	{
+		if ($context === $this->_diagnosticContext)
+		{
+			$checkedPluginsInfo = $this->_buildCheckedPluginsList();
+			$path               = 'blocks.plugins_statuses.' . $layout . ECLVersion::getJoomlaVersionSuffix("_j");
+			foreach ($checkedPluginsInfo as $folder => $item)
+			{
+				if ($item)
+				{
+					$html .= LayoutHelper::render($path, array("plugins_info" => $item["plugins"], "folder" => $folder, "title" => $item["title"]), JPATH_ROOT . "/layouts/libraries/eclabs");
+				}
+			}
+		}
+
+		return true;
+	}
+
 	/**
 	 * Формирует список плагинов для отслеживания
 	 * Формат массива:
@@ -45,24 +63,6 @@ trait ECLPluginDiagnosticMasterTrait
 	 * @since __DEPLOYMENT_VERSION__
 	 */
 	abstract protected function _buildCheckedPluginsList(): array;
-
-	public function onGetRenderCheckedPlugins(string $context, string &$html, string $layout = "default"): bool
-	{
-		if ($context === $this->_diagnosticContext)
-		{
-			$checkedPluginsInfo = $this->_buildCheckedPluginsList();
-			$path               = 'blocks.plugins_statuses.' . $layout . ECLVersion::getJoomlaVersionSuffix("_j");
-			foreach ($checkedPluginsInfo as $folder => $item)
-			{
-				if ($item)
-				{
-					$html .= LayoutHelper::render($path, array("plugins_info" => $item["plugins"], "folder" => $folder, "title" => $item["title"]), JPATH_ROOT . "/layouts/libraries/eclabs");
-				}
-			}
-		}
-
-		return true;
-	}
 
 	/**
 	 * Формирует XML поля в форме для вывода диагностической информации по отслеживаемым плагинам

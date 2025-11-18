@@ -30,6 +30,38 @@ class ECL {
     }
 
     /**
+     * Get the debug mode flag
+     * @public
+     * @return {boolean}
+     * @since 1.0.19
+     */
+    get debug_mode() {
+        return this._debug_mode;
+    }
+
+    /**
+     * Set the debug mode flag
+     * @public
+     * @param {boolean} value
+     * @since 1.0.19
+     */
+
+    set debug_mode(value) {
+        this._debug_mode = value;
+    }
+
+    /**
+     * Remove all events from the DOM element
+     * @public
+     * @param element   DOM Element
+     */
+    static clearAllEvents(element) {
+        if (element) {
+            element.replaceWith(element.cloneNode(true));
+        }
+    }
+
+    /**
      * Set debug mode
      * @param debug_mode    on/off debug mode
      * @public
@@ -105,37 +137,6 @@ class ECL {
     }
 
     /**
-     * Remove all events from the DOM element
-     * @public
-     * @param element   DOM Element
-     */
-    static clearAllEvents(element){
-        if (element) {
-            element.replaceWith(element.cloneNode(true));
-        }
-    }
-
-    /**
-     * Get the debug mode flag
-     * @public
-     * @return {boolean}
-     * @since 1.0.19
-     */
-    get debug_mode() {
-        return this._debug_mode;
-    }
-    /**
-     * Set the debug mode flag
-     * @public
-     * @param {boolean} value
-     * @since 1.0.19
-     */
-
-    set debug_mode(value) {
-        this._debug_mode = value;
-    }
-
-    /**
      * Analog sprintf function php
      * @param string    Template witch %s, %d
      * @param args      Any values to be in template replaced
@@ -143,7 +144,7 @@ class ECL {
      * @public
      * @since 1.0.24
      */
-    sprintf(string, ...args){
+    sprintf(string, ...args) {
         const newString = Joomla.Text._(string);
         let i = 0;
         return newString.replace(/%((%)|s|d)/g, (m) => {

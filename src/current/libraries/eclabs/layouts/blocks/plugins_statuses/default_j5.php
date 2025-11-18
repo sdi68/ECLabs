@@ -1,11 +1,11 @@
 <?php
 /**
- * @package        Econsult Labs Library
- * @version          __DEPLOYMENT_VERSION__
- * @author           ECL <info@econsultlab.ru>
+ * @package             Econsult Labs Library
+ * @version             __DEPLOYMENT_VERSION__
+ * @author              ECL <info@econsultlab.ru>
  * @link                https://econsultlab.ru
- * @copyright      Copyright © 2025 ECL All Rights Reserved
- * @license           http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
+ * @copyright           Copyright © 2025 ECL All Rights Reserved
+ * @license             http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
 /**** Шаблон вывода блока для Joomla 5 ****/
@@ -17,7 +17,7 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Route;
 
 /**
- * @var array $displayData;
+ * @var array $displayData ;
  */
 
 \extract($displayData);
@@ -26,9 +26,9 @@ use Joomla\CMS\Router\Route;
  * Layout variables
  * -----------------
  *
- * @var  array $plugins_info Массив выводимых плагинов.
- * @var  string $title Заголовок блока.
- * @var  string $folder Каталог плагинов.
+ * @var  array  $plugins_info Массив выводимых плагинов.
+ * @var  string $title        Заголовок блока.
+ * @var  string $folder       Каталог плагинов.
  *
  */
 
@@ -52,16 +52,21 @@ ECLLanguage::loadExtraLanguageFiles('com_plugins', JPATH_ADMINISTRATOR);
             </tr>
             </thead>
             <?php
-            foreach ($plugins_info as $plugin) {
+            foreach ($plugins_info as $plugin)
+            {
                 $description = "";
-                $extension = 'plg_' . $plugin['folder'] . '_' . $plugin['element'];
+                $extension   = 'plg_' . $plugin['folder'] . '_' . $plugin['element'];
                 ECLLanguage::loadExtraLanguageFiles($extension, JPATH_ADMINISTRATOR);
-                if (!empty($plugin['manifest_cache'])) {
+                if (!empty($plugin['manifest_cache']))
+                {
                     $manifest_cache = json_decode($plugin['manifest_cache'], true);
-                    if (array_key_exists('description', $manifest_cache)) {
+                    if (array_key_exists('description', $manifest_cache))
+                    {
                         $description = Text::_($manifest_cache['description']);
                     }
-                } else if(!empty($plugin['description'])) {
+                }
+                else if (!empty($plugin['description']))
+                {
                     $description = $plugin['description'];
                 }
                 $link = '<a href="' . Route::_('index.php?option=com_plugins&task=plugin.edit&extension_id=' . $plugin['extension_id']) . '" target = "_blank">' . $plugin['element'] . '</a>';

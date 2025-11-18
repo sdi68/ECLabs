@@ -528,17 +528,18 @@ class ECLModalLoader extends ECLLoader {
     setContent(content = "") {
         this._content = content.trim();
         // Если окно открыто, записываем контент
-        if(this._isShown){
-        // let _contentElement = this.getElement('.' + this._contentSelector, this._eclmodal.getModalElement(), true);
-        // _contentElement.innerHTML = content.trim();
+        if (this._isShown) {
+            // let _contentElement = this.getElement('.' + this._contentSelector, this._eclmodal.getModalElement(), true);
+            // _contentElement.innerHTML = content.trim();
             this.#setContent()
         }
     }
+
     /**
      * Записываем контент в лоадер
      * @private
      */
-    #setContent(){
+    #setContent() {
         let _contentElement = this.getElement('.' + this._contentSelector, this._eclmodal.getModalElement(), true);
         _contentElement.innerHTML = this._content;
         // Сбрасываем контент
@@ -557,10 +558,10 @@ class ECLModalLoader extends ECLLoader {
      * Событие показа окна лоадера
      * @public
      */
-    loaderShown(){
-        this.debug("loaderShown","this._content",this._content);
-        this._isShown=true;
-        if(this._content){
+    loaderShown() {
+        this.debug("loaderShown", "this._content", this._content);
+        this._isShown = true;
+        if (this._content) {
             // Выводим контент, если есть
             this.#setContent();
         }
@@ -570,8 +571,8 @@ class ECLModalLoader extends ECLLoader {
      * Событие скрытия окна лоадера
      * @public
      */
-    loaderHidden(){
-        this.debug("loaderHidden","started","...");
-        this._isShown=false;
+    loaderHidden() {
+        this.debug("loaderHidden", "started", "...");
+        this._isShown = false;
     }
 }

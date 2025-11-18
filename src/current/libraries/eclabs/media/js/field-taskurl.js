@@ -14,14 +14,14 @@ document.addEventListener("DOMContentLoaded", function () {
             let token_field_name = container.getAttribute('data-token_field'),
                 task_url = container.getAttribute('data-task_url'),
                 field = container.querySelector('[input-taskurl="field"]');
-            let _token_field = document.querySelector('[name="jform['+ token_field_name +']"]');
-            if(_token_field) {
+            let _token_field = document.querySelector('[name="jform[' + token_field_name + ']"]');
+            if (_token_field) {
                 /**
                  * Обновляем URL после изменения токена
                  *
                  * @param value Значение токена
                  */
-                const update_task = function(value){
+                const update_task = function (value) {
                     if (value) {
                         field.textContent = task_url + '&token=' + value;
                         field.classList.add("alert");

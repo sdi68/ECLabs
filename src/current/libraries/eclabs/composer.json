@@ -1,8 +1,10 @@
 {
-  "repositories": [{
+  "repositories": [
+    {
       "type": "github",
       "url": "https://github.com/sdi68/ecllog.git"
-  }],
+    }
+  ],
   "require": {
     "php": ">=8.0"
   },

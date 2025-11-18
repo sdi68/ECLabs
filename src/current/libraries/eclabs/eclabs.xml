@@ -20,7 +20,7 @@
     <copyright>Copyright © 2023 ECL - All Rights Reserved</copyright>
     <license>https://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
     <namespace path="src">ECLABS\Library</namespace>
-    <dlid prefix="download_key" ecltype = "free" suffix=""/>
+    <dlid prefix="download_key" ecltype="free" suffix=""/>
 
     <scriptfile>script.php</scriptfile>
 

@@ -13,10 +13,12 @@
     justify-content: flex-end;
     align-items: center;
 }
+
 #ecl-authorize .horizontal label {
     margin-bottom: 0;
     margin-left: 15px;
 }
+
 #ecl-authorize .horizontal input {
     margin-top: 0;
 }
@@ -27,10 +29,11 @@
     justify-content: flex-start;
     align-items: flex-start;
 }
-.sdi-extension-name-container > label .sdi-version-container{
+
+.sdi-extension-name-container > label .sdi-version-container {
     margin-top: 5px;
 }
 
-.sdi-extension-name-container > label .sdi-version-container >span:nth-of-type(1){
+.sdi-extension-name-container > label .sdi-version-container > span:nth-of-type(1) {
     display: none;
 }

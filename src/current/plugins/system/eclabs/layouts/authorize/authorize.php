@@ -24,33 +24,33 @@ ECLLanguage::loadLibLanguage();
 $suff = "";
 switch (ECLVersion::getJoomlaVersion())
 {
-	case "5":
-		$suff = "5";
-		break;
-	default:
+    case "5":
+        $suff = "5";
+        break;
+    default:
 }
 
 
 if (!$vars->is_free)
 {
-	ob_start();
-	include 'default' . $suff . '.php';
-	$html = ob_get_contents();
-	ob_end_clean();
+    ob_start();
+    include 'default' . $suff . '.php';
+    $html = ob_get_contents();
+    ob_end_clean();
 
-	$modal_params = array('debug_mode'     => $vars->debug_mode,
-	                      'wrapId'         => 'eclModal',
-	                      'dialogClass'    => '',
-	                      'hideHeader'     => false,
-	                      'hideFooter'     => false,
-	                      'hiddenClass'    => 'hidden',
-	                      'saveBtnCaption' => Text::_('JSUBMIT'),
-	                      'content'        => $html,
-	                      'title'          => Text::_('PLG_SYSTEM_ECLABS_AUTHORISATION_TITLE'),
-	                      'shown'          => 'showAuthorization',
-	                      'hidden'         => 'hideAuthorization');
+    $modal_params = array('debug_mode'     => $vars->debug_mode,
+                          'wrapId'         => 'eclModal',
+                          'dialogClass'    => '',
+                          'hideHeader'     => false,
+                          'hideFooter'     => false,
+                          'hiddenClass'    => 'hidden',
+                          'saveBtnCaption' => Text::_('JSUBMIT'),
+                          'content'        => $html,
+                          'title'          => Text::_('PLG_SYSTEM_ECLABS_AUTHORISATION_TITLE'),
+                          'shown'          => 'showAuthorization',
+                          'hidden'         => 'hideAuthorization');
 
-	$modal_params = ECLTools::encodeParams($modal_params);
+    $modal_params = ECLTools::encodeParams($modal_params);
 }
 $lb_tooltip = $vars->version_tooltip ? 'data-bs-toggle="tooltip" data-bs-placement="top" title="' . $vars->version_tooltip . '"' : "";
 ?>
@@ -64,10 +64,10 @@ $lb_tooltip = $vars->version_tooltip ? 'data-bs-toggle="tooltip" data-bs-placeme
 <?php
 if (!$vars->is_free && $vars->show_auth_btn)
 {
-	?>
+    ?>
     <button type="button" class="btn btn-info btn-refresh btn-sm" data-eclmodal="<?php echo $modal_params; ?>">
         <span class="icon-refresh" aria-hidden="true"></span>
     </button>
-	<?php
+    <?php
 }
 

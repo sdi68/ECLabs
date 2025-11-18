@@ -46,13 +46,18 @@ trait ECLPlugin
 	protected $jVersion = "3";
 
 	/**
-	 * @since 1.0.0
+	 * Подписка на события для Joomla 4
+	 *
+	 * @return string[]
+	 *
+	 * @deprecated @since 2.0.0
+	 *
+	 * @since      1.0.16
 	 */
-	private function _setJVersion(): void
+	public static function getSubscribedEvents(): array
 	{
-		$this->jVersion = ECLVersion::getJoomlaVersion();
+		return array();
 	}
-
 
 	/**
 	 * Подключаем медиа конкретного плагина
@@ -60,21 +65,6 @@ trait ECLPlugin
 	 * @since 1.0.0
 	 */
 	abstract protected function _addMedia(): void;
-
-	/**
-	 * Build Layout path
-	 *
-	 * @param   string  $layout  Layout name
-	 *
-	 * @return   string  Layout Path
-	 * @throws Exception
-	 * @since   1.0.0
-	 *
-	 */
-	protected final function _buildLayoutPath(string $layout): string
-	{
-		return 'plugins.' . $this->_type . '.' . $this->_name . '.' . $layout . '.' . $layout;
-	}
 
 	/**
 	 * Builds the layout to be shown, along with hidden fields.
@@ -92,6 +82,21 @@ trait ECLPlugin
 		$layout = $this->_buildLayoutPath($layout);
 
 		return LayoutHelper::render($layout, ['vars' => $vars]);
+	}
+
+	/**
+	 * Build Layout path
+	 *
+	 * @param   string  $layout  Layout name
+	 *
+	 * @return   string  Layout Path
+	 * @throws Exception
+	 * @since   1.0.0
+	 *
+	 */
+	protected final function _buildLayoutPath(string $layout): string
+	{
+		return 'plugins.' . $this->_type . '.' . $this->_name . '.' . $layout . '.' . $layout;
 	}
 
 	/**
@@ -213,27 +218,22 @@ trait ECLPlugin
 	}
 
 	/**
-	 * Подписка на события для Joomla 4
-	 *
-	 * @return string[]
-	 *
-	 * @deprecated @since 2.0.0
-	 *
-	 * @since      1.0.16
-	 */
-	public static function getSubscribedEvents(): array
-	{
-		return array();
-	}
-
-	/**
 	 * Устанавливает путь к директории плагина
 	 *
 	 * @return void
 	 * @since 2.0.0.
 	 */
-	protected function _setPluginPath ():void {
-		$this->_plugin_path = JPATH_PLUGINS.DIRECTORY_SEPARATOR.$this->_type.DIRECTORY_SEPARATOR.$this->_name;
+	protected function _setPluginPath(): void
+	{
+		$this->_plugin_path = JPATH_PLUGINS . DIRECTORY_SEPARATOR . $this->_type . DIRECTORY_SEPARATOR . $this->_name;
+	}
+
+	/**
+	 * @since 1.0.0
+	 */
+	private function _setJVersion(): void
+	{
+		$this->jVersion = ECLVersion::getJoomlaVersion();
 	}
 
 }

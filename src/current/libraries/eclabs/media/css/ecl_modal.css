@@ -15,7 +15,7 @@
     max-width: 400px;
     margin: 0;
     /* центрируем окно по горизонтали */
-    left:50%;
+    left: 50%;
     transform: translateX(-50%);
 }
 
@@ -24,7 +24,7 @@
     flex-flow: row nowrap;
     justify-content: flex-start;
     align-items: center;
-    margin-left:-15px;
+    margin-left: -15px;
 }
 
 #eclModal[class *= "version-"] .row .span9 {
@@ -36,26 +36,28 @@
 }
 
 #eclModal[class *= "version-"].results_group {
-    margin-left:0;
+    margin-left: 0;
 }
 
 @media (max-width: 767px) {
     #eclModal[class *= "version-"] {
-        min-width:250px;
+        min-width: 250px;
         width: 85%;
     }
 
     #eclModal[class *= "version-"] .row {
-        margin-left:0;
+        margin-left: 0;
     }
 
     #eclModal[class *= "version-"] #modal-loader .loader-content.ecl-fields {
-        width:75%;
+        width: 75%;
     }
-    #eclModal[class *= "version-"] #modal-loader  .ecl-spinner {
-        width:25%;
+
+    #eclModal[class *= "version-"] #modal-loader .ecl-spinner {
+        width: 25%;
     }
-    #eclModal[class *= "version-"] #modal-loader  .ecl-spinner > img{
+
+    #eclModal[class *= "version-"] #modal-loader .ecl-spinner > img {
         max-width: 100%;
     }
 }

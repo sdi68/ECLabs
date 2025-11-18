@@ -30,6 +30,68 @@ class PluginsHelper
 	protected static ?array $_plugins = null;
 
 	/**
+	 * Calls the plugins handler associated with the event.
+	 *
+	 * @param   array|string|null  $types  The plugin type, relates to the subdirectory in the plugins directory.
+	 * @param   string|null        $event  The event name.
+	 * @param   array  |null       $args   An array of arguments (optional).
+	 *
+	 * @return array Plugin event result.
+	 *
+	 * @throws Exception
+	 *
+	 * @since  1.0.0
+	 */
+	public static function triggerPlugins(array|string $types = null, ?string $event = null, ?array $args = []): array
+	{
+		$result = [];
+		if (!is_array($types))
+		{
+			$types = [$types];
+		}
+		foreach ($types as $type)
+		{
+			if ($plugins = PluginHelperBase::getPlugin($type))
+			{
+				foreach ($plugins as $plugin)
+				{
+					$key = self::getPluginKey($type, $plugin->name);
+					try
+					{
+						$result[$key] = self::triggerPlugin($type, $plugin->name, $event, $args);
+					}
+					catch (\Throwable $e)
+					{
+						if (JDEBUG || $e instanceof \RuntimeException)
+						{
+							throw $e;
+						}
+
+						$result[$key] = false;
+					}
+				}
+			}
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Get plugin cache key.
+	 *
+	 * @param   string|null  $type    The plugin type, relates to the subdirectory in the plugins directory.
+	 * @param   string|null  $plugin  The plugin name.
+	 *
+	 * @return string Plugin cache key.
+	 *
+	 * @since  1.0.0
+	 */
+	private static function getPluginKey(string $type = null, string $plugin = null): string
+	{
+		return 'plg_' . $type . '_' . $plugin;
+	}
+
+	/**
 	 * Calls the plugin handler associated with the event.
 	 *
 	 * @param   string|null  $type    The plugin type, relates to the subdirectory in the plugins directory.
@@ -78,54 +140,6 @@ class PluginsHelper
 		return (method_exists($class, $method)) ? call_user_func_array([$class, $method], $args) : false;
 	}
 
-
-	/**
-	 * Calls the plugins handler associated with the event.
-	 *
-	 * @param array|string|null $types  The plugin type, relates to the subdirectory in the plugins directory.
-	 * @param   string|null        $event  The event name.
-	 * @param   array  |null       $args   An array of arguments (optional).
-	 *
-	 * @return array Plugin event result.
-	 *
-	 * @throws Exception
-	 *
-	 * @since  1.0.0
-	 */
-	public static function triggerPlugins(array|string $types = null, ?string $event = null, ?array $args = []): array
-	{
-		$result = [];
-		if (!is_array($types))
-		{
-			$types = [$types];
-		}
-		foreach ($types as $type)
-		{
-			if ($plugins = PluginHelperBase::getPlugin($type))
-			{
-				foreach ($plugins as $plugin)
-				{
-					$key = self::getPluginKey($type, $plugin->name);
-					try
-					{
-						$result[$key] = self::triggerPlugin($type, $plugin->name, $event, $args);
-					}
-					catch (\Throwable $e)
-					{
-						if (JDEBUG || $e instanceof \RuntimeException)
-						{
-							throw $e;
-						}
-
-						$result[$key] = false;
-					}
-				}
-			}
-		}
-
-		return $result;
-	}
-
 	/**
 	 * Method to load plugins.
 	 *
@@ -163,21 +177,6 @@ class PluginsHelper
 				Factory::getApplication()->getLanguage()->load($key, JPATH_ADMINISTRATOR);
 			}
 		}
-	}
-
-	/**
-	 * Get plugin cache key.
-	 *
-	 * @param   string|null  $type    The plugin type, relates to the subdirectory in the plugins directory.
-	 * @param   string|null  $plugin  The plugin name.
-	 *
-	 * @return string Plugin cache key.
-	 *
-	 * @since  1.0.0
-	 */
-	private static function getPluginKey(string $type = null, string $plugin = null): string
-	{
-		return 'plg_' . $type . '_' . $plugin;
 	}
 
 }

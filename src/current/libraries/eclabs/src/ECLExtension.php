@@ -90,6 +90,54 @@ class ECLExtension
 	}
 
 	/**
+	 * Преобразует элемент к формату хранения в SWJProjects.
+	 * Например: plg_xxx, com_xxx
+	 *
+	 * @param   string  $element  Значение элемента как в #__extensions
+	 *
+	 * @return string
+	 *
+	 * @since 2.0.0.
+	 *
+	 */
+	public static function prepareElementName(string $element): string
+	{
+		$dbo   = Factory::getContainer()->get(DatabaseInterface::class);
+		$query = $dbo->getQuery(true);
+		$query->select($dbo->quoteName('type'))
+			->from($dbo->quoteName('#__extensions'))
+			->where($dbo->quoteName('element') . ' = ' . $dbo->quote($element));
+		$dbo->setQuery($query);
+		$type   = $dbo->loadResult();
+		$suffix = "";
+		switch ($type)
+		{
+			case "component":
+				$suffix = "com_";
+				break;
+			case "plugin":
+				$suffix = "plg_";
+				break;
+			case "package":
+				$suffix = "pkg_";
+				break;
+			case "library":
+				$suffix = "lib_";
+				break;
+			case "module":
+				$suffix = "mod_";
+				break;
+			case "language":
+			case "template":
+			case "file":
+			default:
+				break;
+		}
+
+		return str_starts_with($element, $suffix) ? $element : $suffix . $element;
+	}
+
+	/**
 	 * Получает информацию по обновлениям расширения
 	 *
 	 * @param   string  $extension  Наименование расширения
@@ -124,47 +172,27 @@ class ECLExtension
 	}
 
 	/**
-	 * Преобразует элемент к формату хранения в SWJProjects.
-	 * Например: plg_xxx, com_xxx
-	 * @param   string  $element Значение элемента как в #__extensions
+	 * Сохраняет авторизационные данные пользователя для сервера обновлений в поле custom_data расширения
+	 * {"ECL":{"user":"admin","password":"o6_O4_1968","has_token":"","token":"","project_id":""}}
 	 *
-	 * @return string
+	 * @param   string  $extension  Имя расширения
+	 * @param   array   $data       Авторизационные данные
 	 *
-	 * @since 2.0.0.
-	 *
+	 * @since 1.0.0
 	 */
-	public static function prepareElementName(string $element):string{
-		$dbo   = Factory::getContainer()->get(DatabaseInterface::class);
-		$query = $dbo->getQuery(true);
-		$query->select($dbo->quoteName('type'))
-			->from($dbo->quoteName('#__extensions'))
-			->where($dbo->quoteName('element') . ' = ' . $dbo->quote($element));
+	public static function setCustomData(string $extension, array $data): void
+	{
+		$out        = self::getCustomData($extension);
+		$out['ECL'] = ECLTools::encodeParams($data, true);
+		$json       = json_encode($out);
+		$dbo        = Factory::getContainer()->get(DatabaseInterface::class);
+		$query      = $dbo->getQuery(true);
+		$query->update($dbo->quoteName('#__extensions'))
+			->set($dbo->quoteName('custom_data') . ' = ' . $dbo->quote($json))
+			->where($dbo->quoteName('name') . ' = ' . $dbo->quote($extension));
 		$dbo->setQuery($query);
-		$type = $dbo->loadResult();
-		$suffix = "";
-		switch($type) {
-			case "component":
-				$suffix="com_";
-				break;
-			case "plugin":
-				$suffix="plg_";
-				break;
-			case "package":
-				$suffix="pkg_";
-				break;
-			case "library":
-				$suffix="lib_";
-				break;
-			case "module":
-				$suffix="mod_";
-				break;
-			case "language":
-			case "template":
-			case "file":
-			default:
-				break;
-		}
-		return str_starts_with($element,$suffix) ? $element:$suffix.$element;
+		$dbo->execute();
+		self::_storeToken($extension, $data['token']);
 	}
 
 	/**
@@ -196,30 +224,6 @@ class ECLExtension
 
 
 		return $out;
-	}
-
-	/**
-	 * Сохраняет авторизационные данные пользователя для сервера обновлений в поле custom_data расширения
-	 * {"ECL":{"user":"admin","password":"o6_O4_1968","has_token":"","token":"","project_id":""}}
-	 *
-	 * @param   string  $extension  Имя расширения
-	 * @param   array   $data       Авторизационные данные
-	 *
-	 * @since 1.0.0
-	 */
-	public static function setCustomData(string $extension, array $data): void
-	{
-		$out        = self::getCustomData($extension);
-		$out['ECL'] = ECLTools::encodeParams($data, true);
-		$json       = json_encode($out);
-		$dbo        = Factory::getContainer()->get(DatabaseInterface::class);
-		$query      = $dbo->getQuery(true);
-		$query->update($dbo->quoteName('#__extensions'))
-			->set($dbo->quoteName('custom_data') . ' = ' . $dbo->quote($json))
-			->where($dbo->quoteName('name') . ' = ' . $dbo->quote($extension));
-		$dbo->setQuery($query);
-		$dbo->execute();
-		self::_storeToken($extension, $data['token']);
 	}
 
 	/**
@@ -283,6 +287,42 @@ class ECLExtension
 	}
 
 	/**
+	 * Генерирует параметры для формирования URL сервера обновлений
+	 *
+	 * @param   int          $eid
+	 * @param   string       $name
+	 * @param   string       $type
+	 * @param   string       $location
+	 * @param   bool         $enabled
+	 * @param   string|null  $extraQuery
+	 *
+	 * @return array|bool
+	 *
+	 * @since 1.0.0
+	 */
+	public static function generateXMLLocation(int $eid, string $name, string $type, string $location, bool $enabled, ?string $extraQuery = ''): bool|array
+	{
+		$user_info = self::getCustomData($name);
+		if (isset($user_info['ECL']))
+		{
+			// Платное расширение ECL и есть данные по токену
+			$hash       = self::_getXMLKey($user_info['ECL']['token'], $user_info['ECL']['project_id']);
+			$xmlkey     = self::_buildExtraQueryString($hash);
+			$extraQuery = self::_buildExtraQueryString($user_info['ECL']['token']);
+			$location   .= ('&' . $xmlkey);
+
+			return array(
+				'extension_id' => $eid,
+				'name'         => $name,
+				'location'     => $location,
+				'extra_query'  => $extraQuery
+			);
+		}
+
+		return false;
+	}
+
+	/**
 	 * Генерирует ключ на скачивание
 	 *
 	 * @param   string  $token
@@ -311,6 +351,30 @@ class ECLExtension
 	private static function _buildExtraQueryString(string $value): string
 	{
 		return "download_key=" . $value;
+	}
+
+	/**
+	 * Update an update site to download token info.
+	 *
+	 * @param   array  $updateSites  Update sites info array
+	 *
+	 * @return  void
+	 *
+	 * @throws Exception
+	 * @since   1.0.0
+	 */
+	public static function updateXMLLocation(array $updateSites): void
+	{
+		foreach ($updateSites as $updateSite)
+		{
+			$update_site_id = self::getUpdateSiteId($updateSite['extension_id']);
+			if ($update_site_id)
+			{
+				// extra_query не используется
+				self::updateECLLocationAndExtraQuery($update_site_id, $updateSite['location'], null);
+			}
+		}
+
 	}
 
 	/**
@@ -389,63 +453,27 @@ class ECLExtension
 	}
 
 	/**
-	 * Генерирует параметры для формирования URL сервера обновлений
+	 * Проверяет тип расширения ECL по update_site_id.
+	 * Ищет элемент <dlid ecltype="paid|free"/> или
+	 * для совместимости с ранними версиями элемент <ecltype>paid|free</ecltype>
 	 *
-	 * @param   int          $eid
-	 * @param   string       $name
-	 * @param   string       $type
-	 * @param   string       $location
-	 * @param   bool         $enabled
-	 * @param   string|null  $extraQuery
+	 * @param   int  $update_site_id
 	 *
-	 * @return array|bool
-	 *
-	 * @since 1.0.0
-	 */
-	public static function generateXMLLocation(int $eid, string $name, string $type, string $location, bool $enabled, ?string $extraQuery = ''): bool|array
-	{
-		$user_info = self::getCustomData($name);
-		if (isset($user_info['ECL']))
-		{
-			// Платное расширение ECL и есть данные по токену
-			$hash       = self::_getXMLKey($user_info['ECL']['token'], $user_info['ECL']['project_id']);
-			$xmlkey     = self::_buildExtraQueryString($hash);
-			$extraQuery = self::_buildExtraQueryString($user_info['ECL']['token']);
-			$location   .= ('&' . $xmlkey);
-
-			return array(
-				'extension_id' => $eid,
-				'name'         => $name,
-				'location'     => $location,
-				'extra_query'  => $extraQuery
-			);
-		}
-
-		return false;
-	}
-
-	/**
-	 * Update an update site to download token info.
-	 *
-	 * @param   array  $updateSites  Update sites info array
-	 *
-	 * @return  void
-	 *
+	 * @return string
 	 * @throws Exception
-	 * @since   1.0.0
+	 * @since 2.0.0
 	 */
-	public static function updateXMLLocation(array $updateSites): void
+	public static function checkECLTypeByUpdateSiteId(int $update_site_id): string
 	{
-		foreach ($updateSites as $updateSite)
-		{
-			$update_site_id = self::getUpdateSiteId($updateSite['extension_id']);
-			if ($update_site_id)
-			{
-				// extra_query не используется
-				self::updateECLLocationAndExtraQuery($update_site_id, $updateSite['location'], null);
-			}
-		}
+		$dbo   = Factory::getContainer()->get(DatabaseInterface::class);
+		$query = $dbo->getQuery(true);
+		$query->select($dbo->quoteName('extension_id'))
+			->from($dbo->quoteName('#__update_sites_extensions'))
+			->where($dbo->quoteName('update_site_id') . ' = ' . $dbo->quote($update_site_id));
+		$dbo->setQuery($query);
+		$extension_id = $dbo->loadResult();
 
+		return self::checkECLType($extension_id);
 	}
 
 	/**
@@ -557,29 +585,5 @@ class ECLExtension
 		}
 
 		return "";
-	}
-
-	/**
-	 * Проверяет тип расширения ECL по update_site_id.
-	 * Ищет элемент <dlid ecltype="paid|free"/> или
-	 * для совместимости с ранними версиями элемент <ecltype>paid|free</ecltype>
-	 *
-	 * @param   int  $update_site_id
-	 *
-	 * @return string
-	 * @throws Exception
-	 * @since 2.0.0
-	 */
-	public static function checkECLTypeByUpdateSiteId(int $update_site_id): string
-	{
-		$dbo   = Factory::getContainer()->get(DatabaseInterface::class);
-		$query = $dbo->getQuery(true);
-		$query->select($dbo->quoteName('extension_id'))
-			->from($dbo->quoteName('#__update_sites_extensions'))
-			->where($dbo->quoteName('update_site_id') . ' = ' . $dbo->quote($update_site_id));
-		$dbo->setQuery($query);
-		$extension_id = $dbo->loadResult();
-
-		return self::checkECLType($extension_id);
 	}
 }

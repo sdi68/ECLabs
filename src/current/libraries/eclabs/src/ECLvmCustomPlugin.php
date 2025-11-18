@@ -1,11 +1,11 @@
 <?php
 /**
- * @package        Econsult Labs Library
- * @version          __DEPLOYMENT_VERSION__
- * @author           ECL <info@econsultlab.ru>
+ * @package             Econsult Labs Library
+ * @version             __DEPLOYMENT_VERSION__
+ * @author              ECL <info@econsultlab.ru>
  * @link                https://econsultlab.ru
- * @copyright      Copyright © 2025 ECL All Rights Reserved
- * @license           http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
+ * @copyright           Copyright © 2025 ECL All Rights Reserved
+ * @license             http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
 namespace ECLabs\Library;
@@ -47,6 +47,27 @@ abstract class ECLvmCustomPlugin extends vmCustomPlugin
 	{
 		parent::__construct($subject, $config);
 		$this->_virtuemart_custom_id = $this->_getVirtuemartCustomIdByJPluginId($config['id']);
+	}
+
+	/**
+	 * Return virtualmart_custom_id
+	 *
+	 * @param   int  $custom_jplugin_id
+	 *
+	 * @return mixed|null
+	 *
+	 * @since 1.0.0
+	 */
+	protected final function _getVirtuemartCustomIdByJPluginId(int $custom_jplugin_id)
+	{
+		$dbo = Factory::getContainer()->get(DatabaseInterface::class);;
+		$query = $dbo->getQuery(true);
+		$query->select($dbo->quoteName('virtuemart_custom_id'))
+			->from($dbo->quoteName('#__virtuemart_customs'))
+			->where($dbo->quoteName('custom_jplugin_id') . '=' . $dbo->quote($custom_jplugin_id));
+		$dbo->setQuery($query);
+
+		return $dbo->loadColumn();
 	}
 
 	/**
@@ -122,7 +143,6 @@ abstract class ECLvmCustomPlugin extends vmCustomPlugin
 		string &$value_parent_id_field
 	): bool;
 
-
 	/**
 	 * Update custom plugin data (customfield_params) after save product.
 	 * Fix escape unicode chars.
@@ -158,7 +178,7 @@ abstract class ECLvmCustomPlugin extends vmCustomPlugin
 									}
 								}
 
-								$dbo   = Factory::getContainer()->get(DatabaseInterface::class);;
+								$dbo = Factory::getContainer()->get(DatabaseInterface::class);;
 								$query = $dbo->getQuery(true);
 								$query->update($dbo->quoteName('#__virtuemart_product_customfields'))
 									->set($dbo->quoteName('customfield_params') . ' = ' . $dbo->quote($str))
@@ -198,34 +218,19 @@ abstract class ECLvmCustomPlugin extends vmCustomPlugin
 		$ret = $name === $this->_name;
 		//$ret &= (is_null($virtuemart_custom_id) ? $this->_virtuemart_custom_id : $virtuemart_custom_id) == $this->_virtuemart_custom_id;
 
-        if(is_null($virtuemart_custom_id)) {
-            $ret &= true;
-        } elseif (is_array($this->_virtuemart_custom_id)) {
-            $ret &= in_array($virtuemart_custom_id,$this->_virtuemart_custom_id);
-        } else {
-            $ret &= false;
-        }
+		if (is_null($virtuemart_custom_id))
+		{
+			$ret &= true;
+		}
+		elseif (is_array($this->_virtuemart_custom_id))
+		{
+			$ret &= in_array($virtuemart_custom_id, $this->_virtuemart_custom_id);
+		}
+		else
+		{
+			$ret &= false;
+		}
+
 		return $ret;
-	}
-
-	/**
-	 * Return virtualmart_custom_id
-	 *
-	 * @param   int  $custom_jplugin_id
-	 *
-	 * @return mixed|null
-	 *
-	 * @since 1.0.0
-	 */
-	protected final function _getVirtuemartCustomIdByJPluginId(int $custom_jplugin_id)
-	{
-		$dbo   = Factory::getContainer()->get(DatabaseInterface::class);;
-		$query = $dbo->getQuery(true);
-		$query->select($dbo->quoteName('virtuemart_custom_id'))
-			->from($dbo->quoteName('#__virtuemart_customs'))
-			->where($dbo->quoteName('custom_jplugin_id') . '=' . $dbo->quote($custom_jplugin_id));
-		$dbo->setQuery($query);
-
-		return $dbo->loadColumn();
 	}
 }

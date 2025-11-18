@@ -46,15 +46,15 @@ document.addEventListener("DOMContentLoaded", function () {
  */
 function create_UUID(length) {
     let _mask = "";
-    for (let i=0;i<length;i++){
-        if((i/2)*2 === i){
+    for (let i = 0; i < length; i++) {
+        if ((i / 2) * 2 === i) {
             _mask += 'x';
         } else {
             _mask += 'y';
         }
     }
 
-    return _mask.replace(/[xy]/g, function(c) {
+    return _mask.replace(/[xy]/g, function (c) {
         let r = Math.random() * 16 | 0;
         let v = c === 'x' ? r : (r & 0x3 | 0x8);
         return v.toString(16);

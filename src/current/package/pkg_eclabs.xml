@@ -1,33 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <extension type="package" method="upgrade">
-	<name>PKG_ECLABS</name>
-	<packagename>eclabs</packagename>
-	<author>ECL</author>
-	<creationDate>01.08.2025</creationDate>
-	<copyright>(C) 2023 ECL. All rights reserved.</copyright>
-	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
-	<authorEmail>info@econsultlab.ru</authorEmail>
-	<authorUrl>https://econsultlab.ru</authorUrl>
-	<version>__DEPLOYMENT_VERSION__</version>
-	<description>PKG_ECLABS_DESCRIPTION</description>
-	<dlid prefix="download_key" ecltype = "free" suffix=""/>
+    <name>PKG_ECLABS</name>
+    <packagename>eclabs</packagename>
+    <author>ECL</author>
+    <creationDate>01.08.2025</creationDate>
+    <copyright>(C) 2023 ECL. All rights reserved.</copyright>
+    <license>GNU General Public License version 2 or later; see LICENSE.txt</license>
+    <authorEmail>info@econsultlab.ru</authorEmail>
+    <authorUrl>https://econsultlab.ru</authorUrl>
+    <version>__DEPLOYMENT_VERSION__</version>
+    <description>PKG_ECLABS_DESCRIPTION</description>
+    <dlid prefix="download_key" ecltype="free" suffix=""/>
 
-	<scriptfile>script.php</scriptfile>
+    <scriptfile>script.php</scriptfile>
 
-	<languages folder ="language">
-		<language tag="en-GB">en-GB/en-GB.pkg_eclabs.sys.ini</language>
-		<language tag="en-GB">en-GB/en-GB.pkg_eclabs.ini</language>
-		<language tag="ru-RU">ru-RU/ru-RU.pkg_eclabs.sys.ini</language>
-		<language tag="ru-RU">ru-RU/ru-RU.pkg_eclabs.ini</language>
-	</languages>
-	<files folder="packages">
-		<file type="library" id="eclabs" >lib_eclabs.zip</file>
-		<file type="plugin" id="eclabs" group = "system">plg_eclabs.zip</file>
-	</files>
-	<updateservers>
-		<server type="extension" priority="1" name="ECLabs library: package">
-			https://econsultlab.ru/component/swjprojects/jupdate?element=pkg_eclabs
-		</server>
-	</updateservers>
+    <languages folder="language">
+        <language tag="en-GB">en-GB/en-GB.pkg_eclabs.sys.ini</language>
+        <language tag="en-GB">en-GB/en-GB.pkg_eclabs.ini</language>
+        <language tag="ru-RU">ru-RU/ru-RU.pkg_eclabs.sys.ini</language>
+        <language tag="ru-RU">ru-RU/ru-RU.pkg_eclabs.ini</language>
+    </languages>
+    <files folder="packages">
+        <file type="library" id="eclabs">lib_eclabs.zip</file>
+        <file type="plugin" id="eclabs" group="system">plg_eclabs.zip</file>
+    </files>
+    <updateservers>
+        <server type="extension" priority="1" name="ECLabs library: package">
+            https://econsultlab.ru/component/swjprojects/jupdate?element=pkg_eclabs
+        </server>
+    </updateservers>
 </extension>

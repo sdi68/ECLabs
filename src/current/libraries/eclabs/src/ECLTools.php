@@ -189,6 +189,43 @@ class ECLTools
 		return $return;
 	}
 
+	/**
+	 * Получает плагины компонента из указанной группы
+	 *
+	 * @param   string  $folder   Группа плагинов
+	 * @param   array   $options  Настройки отбора плагинов
+	 *
+	 * @return array|mixed
+	 * @since 1.0.22
+	 */
+	private static function _getComponentFolderPlugins(string $folder, array $options): mixed
+	{
+		$db    = Factory::getContainer()->get(DatabaseInterface::class);
+		$query = $db->getQuery(true);
+		$query->select('`extension_id`, `element`, `enabled`,`manifest_cache`,`folder`')
+			->from($db->qn('#__extensions'))
+			->where($db->qn('type') . ' = ' . $db->q('plugin'))
+			->where($db->qn('folder') . ' = ' . $db->q($folder));
+		if (!empty($options['plugins']))
+		{
+			$names = explode(",", $options['plugins']);
+			foreach ($names as $name)
+			{
+				if (str_contains($name, '%'))
+				{
+					// Передана маска на имя
+					$query->where($db->qn('element') . ' LIKE ' . $db->q($name), 'OR');
+				}
+				else
+				{
+					//  Передано имя плагина
+					$query->where($db->qn('element') . ' = ' . $db->q($name), 'OR');
+				}
+			}
+		}
+
+		return $db->setQuery($query)->loadAssocList();
+	}
 
 	/**
 	 * Формирует блок диагностики подключенных плагинов в XML для вывода в формах настройки плагинами.
@@ -260,44 +297,6 @@ class ECLTools
 				}
 			}
 		}
-	}
-
-	/**
-	 * Получает плагины компонента из указанной группы
-	 *
-	 * @param   string  $folder   Группа плагинов
-	 * @param   array   $options  Настройки отбора плагинов
-	 *
-	 * @return array|mixed
-	 * @since 1.0.22
-	 */
-	private static function _getComponentFolderPlugins(string $folder, array $options): mixed
-	{
-		$db    = Factory::getContainer()->get(DatabaseInterface::class);
-		$query = $db->getQuery(true);
-		$query->select('`extension_id`, `element`, `enabled`,`manifest_cache`,`folder`')
-			->from($db->qn('#__extensions'))
-			->where($db->qn('type') . ' = ' . $db->q('plugin'))
-			->where($db->qn('folder') . ' = ' . $db->q($folder));
-		if (!empty($options['plugins']))
-		{
-			$names = explode(",", $options['plugins']);
-			foreach ($names as $name)
-			{
-				if (str_contains($name, '%'))
-				{
-					// Передана маска на имя
-					$query->where($db->qn('element') . ' LIKE ' . $db->q($name), 'OR');
-				}
-				else
-				{
-					//  Передано имя плагина
-					$query->where($db->qn('element') . ' = ' . $db->q($name), 'OR');
-				}
-			}
-		}
-
-		return $db->setQuery($query)->loadAssocList();
 	}
 
 	/**

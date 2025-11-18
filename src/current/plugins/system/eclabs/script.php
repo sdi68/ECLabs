@@ -1,13 +1,13 @@
 <?php \defined('_JEXEC') or die;
 
 /**
- * @package         Econsult Labs Library
- * @subpackage   Econsult Labs system plugin
- * @version           __DEPLOYMENT_VERSION__
- * @author            ECL <info@econsultlab.ru>
+ * @package              Econsult Labs Library
+ * @subpackage           Econsult Labs system plugin
+ * @version              __DEPLOYMENT_VERSION__
+ * @author               ECL <info@econsultlab.ru>
  * @link                 https://econsultlab.ru
- * @copyright      Copyright © 2025 ECL All Rights Reserved
- * @license           http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
+ * @copyright            Copyright © 2025 ECL All Rights Reserved
+ * @license              http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
 use Joomla\CMS\Event\Installer\AfterInstallerEvent;
@@ -33,12 +33,12 @@ use Joomla\CMS\Installer\Manifest\PackageManifest as JPackageManifest;
 
 if (!class_exists('plgSystemECLabsInstallerScript'))
 {
-	/**
-	 * Class ECLabsSystemPluginInstallerScript
-	 * @since 1.0.0
-	 */
-	class plgSystemECLabsInstallerScript
-	{
+    /**
+     * Class ECLabsSystemPluginInstallerScript
+     * @since 1.0.0
+     */
+    class plgSystemECLabsInstallerScript
+    {
         use plgSystemECLabsInstallerScriptTrait__UNIQUE_SUFFIX__;
 
 
@@ -112,22 +112,40 @@ if (!class_exists('plgSystemECLabsInstallerScript'))
         private static function _renderHistory(): void
         {
             ?>
-            <h3><?php echo Text::_("PLG_SYSTEM_ECLABS_CHANGE_LOG_TITLE");?></h3>
+            <h3><?php echo Text::_("PLG_SYSTEM_ECLABS_CHANGE_LOG_TITLE"); ?></h3>
             <ul class="version-history">
-                <li><span class="version-upgraded">2.0.0</span> <?php echo Text::_("PLG_SYSTEM_ECLABS_CHANGE_LOG_2_0_0");?></li>
-                <li><span class="version-fixed">1.0.8</span> <?php echo Text::_("PLG_SYSTEM_ECLABS_CHANGE_LOG_1_0_8");?></li>
-                <li><span class="version-fixed">1.0.7</span> <?php echo Text::_("PLG_SYSTEM_ECLABS_CHANGE_LOG_1_0_7");?></li>
-                <li><span class="version-fixed">1.0.6</span> <?php echo Text::_("PLG_SYSTEM_ECLABS_CHANGE_LOG_1_0_6");?></li>
-                <li><span class="version-fixed">1.0.5</span> <?php echo Text::_("PLG_SYSTEM_ECLABS_CHANGE_LOG_1_0_5");?></li>
-                <li><span class="version-fixed">1.0.4</span> <?php echo Text::_("PLG_SYSTEM_ECLABS_CHANGE_LOG_1_0_4");?></li>
-                <li><span class="version-fixed">1.0.3</span> <?php echo Text::_("PLG_SYSTEM_ECLABS_CHANGE_LOG_1_0_3");?></li>
-                <li><span class="version-upgraded">1.0.2</span> <?php echo Text::_("PLG_SYSTEM_ECLABS_CHANGE_LOG_1_0_2");?></li>
-                <li><span class="version-fixed">1.0.1</span> <?php echo Text::_("PLG_SYSTEM_ECLABS_CHANGE_LOG_1_0_1");?></li>
+                <li>
+                    <span class="version-upgraded">2.0.0</span> <?php echo Text::_("PLG_SYSTEM_ECLABS_CHANGE_LOG_2_0_0"); ?>
+                </li>
+                <li>
+                    <span class="version-fixed">1.0.8</span> <?php echo Text::_("PLG_SYSTEM_ECLABS_CHANGE_LOG_1_0_8"); ?>
+                </li>
+                <li>
+                    <span class="version-fixed">1.0.7</span> <?php echo Text::_("PLG_SYSTEM_ECLABS_CHANGE_LOG_1_0_7"); ?>
+                </li>
+                <li>
+                    <span class="version-fixed">1.0.6</span> <?php echo Text::_("PLG_SYSTEM_ECLABS_CHANGE_LOG_1_0_6"); ?>
+                </li>
+                <li>
+                    <span class="version-fixed">1.0.5</span> <?php echo Text::_("PLG_SYSTEM_ECLABS_CHANGE_LOG_1_0_5"); ?>
+                </li>
+                <li>
+                    <span class="version-fixed">1.0.4</span> <?php echo Text::_("PLG_SYSTEM_ECLABS_CHANGE_LOG_1_0_4"); ?>
+                </li>
+                <li>
+                    <span class="version-fixed">1.0.3</span> <?php echo Text::_("PLG_SYSTEM_ECLABS_CHANGE_LOG_1_0_3"); ?>
+                </li>
+                <li>
+                    <span class="version-upgraded">1.0.2</span> <?php echo Text::_("PLG_SYSTEM_ECLABS_CHANGE_LOG_1_0_2"); ?>
+                </li>
+                <li>
+                    <span class="version-fixed">1.0.1</span> <?php echo Text::_("PLG_SYSTEM_ECLABS_CHANGE_LOG_1_0_1"); ?>
+                </li>
                 <li><span class="version-new">1.0.0</span> First version.</li>
             </ul>
             <?php if ($pluginId) { ?>
             <a class="btn btn-primary btn-large"
-               href="<?php echo Route::_('index.php?option=com_plugins&task=plugin.edit&extension_id=' . $pluginId); ?>"><?php echo Text::_("PLG_SYSTEM_ECLABS_START_USING");?></a>
+               href="<?php echo Route::_('index.php?option=com_plugins&task=plugin.edit&extension_id=' . $pluginId); ?>"><?php echo Text::_("PLG_SYSTEM_ECLABS_START_USING"); ?></a>
         <?php } ?>
             <?php if (0): ?>
 
@@ -146,10 +164,12 @@ if (!class_exists('plgSystemECLabsInstallerScript'))
          */
         private static function checkCompatible(): bool
         {
-            $app = Factory::getApplication();
+            $app      = Factory::getApplication();
             $jversion = new Version();
-            if (!$jversion->isCompatible('4.0.0')) {
+            if (!$jversion->isCompatible('4.0.0'))
+            {
                 $app->enqueueMessage(Text::_('PLG_SYSTEM_ECLABS_ERROR_COMPATIBLE_JOOMLA_4'), 'error');
+
                 return false;
             }
 
@@ -163,6 +183,7 @@ if (!class_exists('plgSystemECLabsInstallerScript'))
             if (is_null($db->setQuery($query)->loadResult()))
             {
                 $app->enqueueMessage(Text::_('PLG_SYSTEM_ECLABS_ERROR_COMPATIBLE_ECLABS'), 'error');
+
                 return false;
             }
 
@@ -188,7 +209,7 @@ if (!class_exists('plgSystemECLabsInstallerScript'))
         {
             return [];
         }
-	}
+    }
 }
 
 /**
@@ -235,8 +256,102 @@ trait plgSystemECLabsInstallerScriptTrait__UNIQUE_SUFFIX__
      *
      * @since  1.0.0
      */
-    static  array $externalFiles = array();
+    static array $externalFiles = array();
 
+    /**
+     * Method to check compatible.
+     *
+     * @param   string            $type    Type of PostFlight action.
+     * @param   InstallerAdapter  $parent  Parent object calling object.
+     *
+     * @return  boolean  Compatible current version or not.
+     *
+     * @throws Exception
+     * @since 2.0.0
+     */
+    public function preflight(string $type, InstallerAdapter $parent): bool
+    {
+
+        $manifest = $parent->getManifest();
+
+        if (!in_array($type, ['install', 'update']))
+        {
+            return true;
+        }
+
+        if (!self::checkCompatible())
+        {
+            return false;
+        }
+
+        self::$parent           = $parent;
+        self::$name             = trim($manifest->name);
+        self::$current_version  = trim($manifest->version);
+        self::$previous_version = self::getPreviousVersion();
+        self::$dependencies     = self::_getDependencies();
+        self::$externalFiles    = self::_getExternalFiles();
+
+        return true;
+    }
+
+    /**
+     * Check all compatibilities requirements for element
+     * @return bool true if compatible
+     * @throws Exception
+     * @since 2.0.0
+     */
+    abstract private static function checkCompatible(): bool;
+
+    /**
+     * Get previous version for element
+     * @return string
+     * @since 2.0.0
+     */
+    private static function getPreviousVersion(): string
+    {
+
+        $xml_file = self::getXmlFile();
+
+        if (!$xml_file)
+        {
+            return '';
+        }
+
+        $manifest = new JPackageManifest($xml_file);
+
+        return isset($manifest->version) ? trim($manifest->version) : '';
+    }
+
+    /**
+     * Get path for manifest file
+     * @return string
+     * @since 2.0.0
+     */
+    private static function getXmlFile(): string
+    {
+        $xml_file = JPATH_MANIFESTS . '/packages/pkg_' . self::$name . '.xml';
+
+        if (file_exists($xml_file))
+        {
+            return $xml_file;
+        }
+
+        $xml_file = JPATH_LIBRARIES . '/' . self::$name . '.xml';
+
+        if (file_exists($xml_file))
+        {
+            return $xml_file;
+        }
+
+        $xml_file = JPATH_ADMINISTRATOR . '/components/com_' . self::$name . '/' . self::$name . '.xml';
+
+        if (file_exists($xml_file))
+        {
+            return $xml_file;
+        }
+
+        return '';
+    }
 
     /**
      * Устанавливает внешние файлы текущего расширения.
@@ -273,95 +388,10 @@ trait plgSystemECLabsInstallerScriptTrait__UNIQUE_SUFFIX__
     abstract private static function _getExternalFiles(): array;
 
     /**
-     * Устанавливает наименование element расширения (как в таблице #__extension)
-     * @return string
-     *
-     * @since 2.0.0
-     */
-    abstract private static function _getElement(): string;
-
-    /**
-     * Устанавливает тип расширения (как в таблице #__extension)
-     * @return string
-     *
-     * @since 2.0.0
-     */
-    abstract private static function _getElementType(): string;
-
-    /**
-     * Устанавливает каталог плагина (как в таблице #__extension)
-     * @return string
-     *
-     * @since 2.0.0
-     */
-    abstract private static function _getElementFolder(): string;
-
-    /**
-     * Формирует историю изменений расширения. Используется html.
-     * Например:
-     * ?>
-     * <h3><?php echo Text::_("PLG_SYSTEM_RECEIPTSLOADER_CHANGE_LOG_TITLE"); ?></h3>
-     * <ul class="version-history">
-     * <li><span class="version-upgraded">1.0.1</span> <?php echo Text::_("PLG_SYSTEM_RECEIPTSLOADER_CHANGE_LOG_1_0_1");?></li>
-     * <li><span class="version-new">1.0.0</span> First version.</li>
-     * </ul>
-     * <?php
-     *
-     * @return void
-     *
-     * @since 2.0.0
-     */
-    abstract private static function _renderHistory(): void;
-
-    /**
-     * Check all compatibilities requirements for element
-     * @return bool true if compatible
-     * @throws Exception
-     * @since 2.0.0
-     */
-    abstract private static function checkCompatible(): bool;
-
-    /**
-     * Method to check compatible.
-     *
-     * @param   string            $type    Type of PostFlight action.
-     * @param   InstallerAdapter  $parent  Parent object calling object.
-     *
-     * @return  boolean  Compatible current version or not.
-     *
-     * @throws Exception
-     * @since 2.0.0
-     */
-    public function preflight(string $type, InstallerAdapter $parent): bool
-    {
-
-        $manifest = $parent->getManifest();
-
-        if (!in_array($type, ['install', 'update']))
-        {
-            return true;
-        }
-
-        if (!self::checkCompatible())
-        {
-            return false;
-        }
-
-        self::$parent           = $parent;
-        self::$name             = trim($manifest->name);
-        self::$current_version  = trim($manifest->version);
-        self::$previous_version = self::getPreviousVersion();
-        self::$dependencies     = self::_getDependencies();
-        self::$externalFiles     = self::_getExternalFiles();
-
-        return true;
-    }
-
-    /**
      * Runs right after any installation action.
      *
-     * @param string $type Type of PostFlight action. Possible values are:
-     * @param InstallerAdapter $parent Parent object calling object.
+     * @param   string            $type    Type of PostFlight action. Possible values are:
+     * @param   InstallerAdapter  $parent  Parent object calling object.
      *
      * @return  boolean  True on success
      * @throws Exception
@@ -373,9 +403,10 @@ trait plgSystemECLabsInstallerScriptTrait__UNIQUE_SUFFIX__
         if ($type !== 'uninstall')
         {
             // Parse layouts
-            self::_parseLayouts($installer->getManifest()->layouts,  $installer);
+            self::_parseLayouts($installer->getManifest()->layouts, $installer);
             // Copy external files
-            if(count(self::$externalFiles)){
+            if (count(self::$externalFiles))
+            {
                 self::_copyExternalFiles($installer);
             }
 
@@ -384,10 +415,12 @@ trait plgSystemECLabsInstallerScriptTrait__UNIQUE_SUFFIX__
                 self::installDependencies();
             }
 
-        } else {
+        }
+        else
+        {
             // Remove layouts
             $manifest = $installer->getManifest();
-            if($manifest)
+            if ($manifest)
             {
                 $layout = $installer->getManifest()->layouts;
                 if ($layout)
@@ -396,10 +429,11 @@ trait plgSystemECLabsInstallerScriptTrait__UNIQUE_SUFFIX__
                 }
             }
             // Remove external files
-            if(count(self::$externalFiles))
+            if (count(self::$externalFiles))
             {
                 self::_removeExternalFiles();
             }
+
             return true;
         }
 
@@ -480,7 +514,6 @@ trait plgSystemECLabsInstallerScriptTrait__UNIQUE_SUFFIX__
         return true;
     }
 
-
     /**
      * Method to parse through a layout element of the installation manifest and take appropriate action.
      *
@@ -531,48 +564,6 @@ trait plgSystemECLabsInstallerScriptTrait__UNIQUE_SUFFIX__
     }
 
     /**
-     * Method to parse through a layouts element of the installation manifest and remove the files that were installed.
-     *
-     * @param   SimpleXMLElement  $element  The XML node to process.
-     *
-     * @return  boolean  True on success.
-     *
-     * @since  1.0.0
-     */
-    protected function _removeLayouts(SimpleXMLElement $element): bool
-    {
-        if (!$element || !count($element->children())) return false;
-
-        // Get the array of file nodes to process
-        $files = $element->children();
-
-        // Get source
-        $folder = ((string) $element->attributes()->destination) ? '/' . $element->attributes()->destination : null;
-        $source = Path::clean(JPATH_ROOT . '/layouts' . $folder);
-
-        // Process each file in the $files array (children of $tagName).
-        foreach ($files as $file)
-        {
-            $path = Path::clean($source . '/' . $file);
-
-            // Actually delete the files/folders
-            if (is_dir($path)) $val = Folder::delete($path);
-            else $val = File::delete($path);
-
-            if ($val === false)
-            {
-                Log::add('Failed to delete ' . $path, Log::WARNING, 'jerror');
-
-                return false;
-            }
-        }
-
-        if (!empty($folder)) Folder::delete($source);
-
-        return true;
-    }
-
-    /**
      * Method to copy external files.
      *
      * @param   Installer  $installer  Installer calling object.
@@ -586,7 +577,7 @@ trait plgSystemECLabsInstallerScriptTrait__UNIQUE_SUFFIX__
         $copyFiles = [];
         foreach (self::$externalFiles as $path)
         {
-            if($path['src'] && $path['dest'])
+            if ($path['src'] && $path['dest'])
             {
                 $path['src']  = Path::clean($path['src']);
                 $path['dest'] = Path::clean($path['dest']);
@@ -606,39 +597,6 @@ trait plgSystemECLabsInstallerScriptTrait__UNIQUE_SUFFIX__
         }
 
         return $installer->copyFiles($copyFiles, true);
-    }
-
-    /**
-     * Method to delete external files.
-     *
-     * @return  bool  True on success.
-     *
-     * @since  2.0.0
-     */
-    private function _removeExternalFiles(): bool
-    {
-        // Process each file in the $files array (children of $tagName).
-        foreach (self::$externalFiles as $path)
-        {
-            // Actually delete the files/folders
-            if (is_dir($path['dest']))
-            {
-                $val = Folder::delete($path['dest']);
-            }
-            else
-            {
-                $val = File::delete($path['dest']);
-            }
-
-            if ($val === false)
-            {
-                Log::add('Failed to delete ' . $path, Log::WARNING, 'jerror');
-
-                return false;
-            }
-        }
-
-        return true;
     }
 
     /**
@@ -719,7 +677,7 @@ trait plgSystemECLabsInstallerScriptTrait__UNIQUE_SUFFIX__
         /** @var  SimpleXMLElement $item */
         foreach ($xml->update as $item)
         {
-            $tp = $item->children()->targetPlatform;
+            $tp          = $item->children()->targetPlatform;
             $dep_version = (string) ($tp->attributes()->version);
             /*            echo "<pre>";
                         var_export((string) ($tp->attributes()->version));
@@ -732,57 +690,6 @@ trait plgSystemECLabsInstallerScriptTrait__UNIQUE_SUFFIX__
         }
 
         return false;
-    }
-
-    /**
-     * Get previous version for element
-     * @return string
-     * @since 2.0.0
-     */
-    private static function getPreviousVersion(): string
-    {
-
-        $xml_file = self::getXmlFile();
-
-        if (!$xml_file)
-        {
-            return '';
-        }
-
-        $manifest = new JPackageManifest($xml_file);
-
-        return isset($manifest->version) ? trim($manifest->version) : '';
-    }
-
-    /**
-     * Get path for manifest file
-     * @return string
-     * @since 2.0.0
-     */
-    private static function getXmlFile(): string
-    {
-        $xml_file = JPATH_MANIFESTS . '/packages/pkg_' . self::$name . '.xml';
-
-        if (file_exists($xml_file))
-        {
-            return $xml_file;
-        }
-
-        $xml_file = JPATH_LIBRARIES . '/' . self::$name . '.xml';
-
-        if (file_exists($xml_file))
-        {
-            return $xml_file;
-        }
-
-        $xml_file = JPATH_ADMINISTRATOR . '/components/com_' . self::$name . '/' . self::$name . '.xml';
-
-        if (file_exists($xml_file))
-        {
-            return $xml_file;
-        }
-
-        return '';
     }
 
     /**
@@ -832,8 +739,8 @@ trait plgSystemECLabsInstallerScriptTrait__UNIQUE_SUFFIX__
      */
     private static function installDependency(string $url): bool
     {
-        $app = Factory::getApplication();
-        $dispatcher              = Factory::getContainer()->get(DispatcherInterface::class);
+        $app        = Factory::getApplication();
+        $dispatcher = Factory::getContainer()->get(DispatcherInterface::class);
         // Load installer plugins for assistance if required:
         PluginHelper::importPlugin('installer', null, true, $dispatcher);
 
@@ -886,7 +793,7 @@ trait plgSystemECLabsInstallerScriptTrait__UNIQUE_SUFFIX__
                 'subject' => $installModel/*self::$parent*/,
                 'package' => &$package, // @todo: Remove reference in Joomla 6, see InstallerEvent::__constructor()
         ]);
-        $results = $dispatcher->dispatch('onInstallerBeforeInstaller', $eventBeforeInst)->getArgument('result', []);
+        $results         = $dispatcher->dispatch('onInstallerBeforeInstaller', $eventBeforeInst)->getArgument('result', []);
 
         if (in_array(true, $results, true))
         {
@@ -970,45 +877,14 @@ trait plgSystemECLabsInstallerScriptTrait__UNIQUE_SUFFIX__
         $app->setUserState('com_installer.redirect_url', $installer->get('redirect_url'));
 
         // Cleanup the install files.
-        if (!is_file($package['packagefile'])) {
+        if (!is_file($package['packagefile']))
+        {
             $package['packagefile'] = $app->get('tmp_path') . '/' . $package['packagefile'];
         }
 
         JInstallerHelper::cleanupInstall($package['packagefile'], $package['extractdir']);
 
         return $result;
-    }
-
-    /**
-     * Вызывается при обновлении
-     *
-     * @param   InstallerAdapter  $parent
-     *
-     * @return bool
-     *
-     * @throws Exception
-     * @since 2.0.0
-     */
-    public function update(InstallerAdapter $parent): bool
-    {
-        if (!self::_checkIfUpdate())
-        {
-            return self::runSQL("install.sql");
-        }
-
-        return true;
-    }
-
-    /**
-     * Проверяет необходимо ли отдельные действия при обновлении
-     *
-     * @return bool
-     *
-     * @since 2.0.0
-     */
-    private function _checkIfUpdate(): bool
-    {
-        return false;
     }
 
     /**
@@ -1074,6 +950,154 @@ trait plgSystemECLabsInstallerScriptTrait__UNIQUE_SUFFIX__
 
         return true;
     }
+
+    /**
+     * Method to parse through a layouts element of the installation manifest and remove the files that were installed.
+     *
+     * @param   SimpleXMLElement  $element  The XML node to process.
+     *
+     * @return  boolean  True on success.
+     *
+     * @since  1.0.0
+     */
+    protected function _removeLayouts(SimpleXMLElement $element): bool
+    {
+        if (!$element || !count($element->children())) return false;
+
+        // Get the array of file nodes to process
+        $files = $element->children();
+
+        // Get source
+        $folder = ((string) $element->attributes()->destination) ? '/' . $element->attributes()->destination : null;
+        $source = Path::clean(JPATH_ROOT . '/layouts' . $folder);
+
+        // Process each file in the $files array (children of $tagName).
+        foreach ($files as $file)
+        {
+            $path = Path::clean($source . '/' . $file);
+
+            // Actually delete the files/folders
+            if (is_dir($path)) $val = Folder::delete($path);
+            else $val = File::delete($path);
+
+            if ($val === false)
+            {
+                Log::add('Failed to delete ' . $path, Log::WARNING, 'jerror');
+
+                return false;
+            }
+        }
+
+        if (!empty($folder)) Folder::delete($source);
+
+        return true;
+    }
+
+    /**
+     * Method to delete external files.
+     *
+     * @return  bool  True on success.
+     *
+     * @since  2.0.0
+     */
+    private function _removeExternalFiles(): bool
+    {
+        // Process each file in the $files array (children of $tagName).
+        foreach (self::$externalFiles as $path)
+        {
+            // Actually delete the files/folders
+            if (is_dir($path['dest']))
+            {
+                $val = Folder::delete($path['dest']);
+            }
+            else
+            {
+                $val = File::delete($path['dest']);
+            }
+
+            if ($val === false)
+            {
+                Log::add('Failed to delete ' . $path, Log::WARNING, 'jerror');
+
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Устанавливает тип расширения (как в таблице #__extension)
+     * @return string
+     *
+     * @since 2.0.0
+     */
+    abstract private static function _getElementType(): string;
+
+    /**
+     * Устанавливает каталог плагина (как в таблице #__extension)
+     * @return string
+     *
+     * @since 2.0.0
+     */
+    abstract private static function _getElementFolder(): string;
+
+    /**
+     * Устанавливает наименование element расширения (как в таблице #__extension)
+     * @return string
+     *
+     * @since 2.0.0
+     */
+    abstract private static function _getElement(): string;
+
+    /**
+     * Вызывается при обновлении
+     *
+     * @param   InstallerAdapter  $parent
+     *
+     * @return bool
+     *
+     * @throws Exception
+     * @since 2.0.0
+     */
+    public function update(InstallerAdapter $parent): bool
+    {
+        if (!self::_checkIfUpdate())
+        {
+            return self::runSQL("install.sql");
+        }
+
+        return true;
+    }
+
+    /**
+     * Проверяет необходимо ли отдельные действия при обновлении
+     *
+     * @return bool
+     *
+     * @since 2.0.0
+     */
+    private function _checkIfUpdate(): bool
+    {
+        return false;
+    }
+
+    /**
+     * Формирует историю изменений расширения. Используется html.
+     * Например:
+     * ?>
+     * <h3><?php echo Text::_("PLG_SYSTEM_RECEIPTSLOADER_CHANGE_LOG_TITLE"); ?></h3>
+     * <ul class="version-history">
+     * <li><span class="version-upgraded">1.0.1</span> <?php echo Text::_("PLG_SYSTEM_RECEIPTSLOADER_CHANGE_LOG_1_0_1");?></li>
+     * <li><span class="version-new">1.0.0</span> First version.</li>
+     * </ul>
+     * <?php
+     *
+     * @return void
+     *
+     * @since 2.0.0
+     */
+    abstract private static function _renderHistory(): void;
 
     /**
      * Вызывается при удалении

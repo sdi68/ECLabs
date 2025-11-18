@@ -130,6 +130,44 @@ class ECLModal extends ECL {
     }
 
     /**
+     * Привязать модальное окно к ссылке
+     * @param paramsAttributeSelector   Атрибут ссылки для привязки
+     * @public
+     */
+    static bindModal(paramsAttributeSelector = 'data-eclmodal') {
+        let modals = document.querySelectorAll('[' + paramsAttributeSelector + ']');
+        // Предотвращаем дублирование обработки событий
+        if (modals) {
+            modals.forEach(function (element) {
+                //element.replaceWith(element.cloneNode(true));
+                ECL.clearAllEvents(element);
+            });
+        }
+        modals = document.querySelectorAll('[' + paramsAttributeSelector + ']');
+        if (modals) {
+            modals.forEach(function (element) {
+                // Получаем параметры мобильного окна
+                let _params = null;
+                if (element.getAttribute(paramsAttributeSelector)) {
+                    try {
+                        _params = JSON.parse(atob(element.getAttribute(paramsAttributeSelector)));
+                    } catch (e) {
+                        _params = false;
+                    }
+                    if (_params) {
+                        let myModal = new ECLModal(_params);
+
+                        element.addEventListener('click', function (e) {
+                            e.preventDefault();
+                            myModal.show();
+                        });
+                    }
+                }
+            });
+        }
+    }
+
+    /**
      * Инициализация параметров окна
      * @private
      * @param params Объект параметров модального окна
@@ -235,7 +273,7 @@ class ECLModal extends ECL {
      * Обновить содержимое модального окна
      * @private
      */
-    #updateModal(){
+    #updateModal() {
         let _modal = document.getElementById(this._wrapId);
         let _el = this.getElement('.modal-dialog', _modal, true);
         _el.removeAttribute('class');
@@ -256,7 +294,6 @@ class ECLModal extends ECL {
         _el = this.getElement('.modal-body', _modal, true);
         _el.innerHTML = this._content;
     }
-
 
     /**
      * Сформировать обертку модального окна
@@ -306,7 +343,7 @@ class ECLModal extends ECL {
                 modal.addEventListener('shown.bs.modal', function (e) {
                     window[_this._shown](e);
                 });
-            } else if(typeof this._shown === "function"){
+            } else if (typeof this._shown === "function") {
                 modal.addEventListener('shown.bs.modal', function (e) {
                     _this._shown(e);
                 });
@@ -317,7 +354,7 @@ class ECLModal extends ECL {
                 modal.addEventListener('hidden.bs.modal', function (e) {
                     window[_this._hidden](e);
                 });
-            } else if(typeof this._hidden === "function"){
+            } else if (typeof this._hidden === "function") {
                 modal.addEventListener('hidden.bs.modal', function (e) {
                     _this._hidden(e);
                 });
@@ -334,17 +371,17 @@ class ECLModal extends ECL {
                 this._modal.on('shown', function (e) {
                     window[_this._shown](e);
                 });
-            } else if(typeof this._shown === "function") {
+            } else if (typeof this._shown === "function") {
                 this._modal.on('shown', function (e) {
                     _this._shown(e);
                 });
             }
-                // Событие закрытия окна
+            // Событие закрытия окна
             if (typeof window[this._hidden] === "function") {
                 this._modal.on('hidden', function (e) {
                     window[_this._hidden](e);
                 });
-            } else if(typeof this._hidden === "function") {
+            } else if (typeof this._hidden === "function") {
                 this._modal.on('hidden', function (e) {
                     _this._hidden(e);
                 });
@@ -400,44 +437,6 @@ class ECLModal extends ECL {
                 default:
                     this.debug("hide", "Закрытие окна не возможно",);
             }
-        }
-    }
-
-    /**
-     * Привязать модальное окно к ссылке
-     * @param paramsAttributeSelector   Атрибут ссылки для привязки
-     * @public
-     */
-    static bindModal(paramsAttributeSelector = 'data-eclmodal') {
-        let modals = document.querySelectorAll('[' + paramsAttributeSelector + ']');
-        // Предотвращаем дублирование обработки событий
-        if (modals) {
-            modals.forEach(function (element) {
-                //element.replaceWith(element.cloneNode(true));
-                ECL.clearAllEvents(element);
-            });
-        }
-        modals = document.querySelectorAll('[' + paramsAttributeSelector + ']');
-        if (modals) {
-            modals.forEach(function (element) {
-                // Получаем параметры мобильного окна
-                let _params = null;
-                if (element.getAttribute(paramsAttributeSelector)) {
-                    try {
-                        _params = JSON.parse(atob(element.getAttribute(paramsAttributeSelector)));
-                    } catch (e) {
-                        _params = false;
-                    }
-                    if (_params) {
-                        let myModal = new ECLModal(_params);
-
-                        element.addEventListener('click', function (e) {
-                            e.preventDefault();
-                            myModal.show();
-                        });
-                    }
-                }
-            });
         }
     }
 }

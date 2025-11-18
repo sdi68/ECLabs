@@ -41,9 +41,9 @@ use Joomla\CMS\Language\Text;
                 <div class="mb-3 flex-nowrap input-group-sm">
                     <label for="has_token">
                         <input type="checkbox" id="has_token"
-							<?php echo isset($vars->user_data['ECL']['has_token']) && $vars->user_data['ECL']['has_token'] ? 'checked' : ''; ?>
+                                <?php echo isset($vars->user_data['ECL']['has_token']) && $vars->user_data['ECL']['has_token'] ? 'checked' : ''; ?>
                                value=""/>
-						<?php echo Text::_('PLG_SYSTEM_ECLABS_HAS_TOKEN'); ?>
+                        <?php echo Text::_('PLG_SYSTEM_ECLABS_HAS_TOKEN'); ?>
                     </label>
                 </div>
                 <div class="input-group mb-3 flex-nowrap input-group-sm">

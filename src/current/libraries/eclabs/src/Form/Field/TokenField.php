@@ -1,12 +1,13 @@
 <?php
 /**
- * @package        Econsult Labs Library
- * @version          __DEPLOYMENT_VERSION__
- * @author           ECL <info@econsultlab.ru>
+ * @package             Econsult Labs Library
+ * @version             __DEPLOYMENT_VERSION__
+ * @author              ECL <info@econsultlab.ru>
  * @link                https://econsultlab.ru
- * @copyright      Copyright © 2025 ECL All Rights Reserved
- * @license           http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
+ * @copyright           Copyright © 2025 ECL All Rights Reserved
+ * @license             http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
+
 namespace ECLabs\Library\Form\Field;
 
 \defined('_JEXEC') or die;
@@ -24,7 +25,7 @@ class TokenField extends FormField
 	 *
 	 * @since  1.0.13
 	 */
-	protected  $type = "token";
+	protected $type = "token";
 	/**
 	 * Name of the layout being used to render the field.
 	 *
@@ -41,12 +42,13 @@ class TokenField extends FormField
 	 * @since  1.0.13
 	 */
 	protected $length = null;
+
 	/**
 	 * Method to attach a Form object to the field.
 	 *
 	 * @param   \SimpleXMLElement  $element  The SimpleXMLElement object representing the `<field>` tag.
-	 * @param   mixed             $value    The form field value to validate.
-	 * @param   string            $group    The field name group control value.
+	 * @param   mixed              $value    The form field value to validate.
+	 * @param   string             $group    The field name group control value.
 	 *
 	 * @return  boolean  True on success.
 	 *
@@ -56,28 +58,14 @@ class TokenField extends FormField
 	{
 		if ($return = parent::setup($element, $value, $group))
 		{
-			$this->length     = (!empty((int) $this->element['length'])) ? $this->element['length'] : 10;
-			$suff = ECLVersion::getJoomlaVersionSuffix('_j');
-			if(!str_contains($this->layout, $suff))
+			$this->length = (!empty((int) $this->element['length'])) ? $this->element['length'] : 10;
+			$suff         = ECLVersion::getJoomlaVersionSuffix('_j');
+			if (!str_contains($this->layout, $suff))
 				$this->layout .= $suff;
-			$this->layout        = 'libraries.eclabs.fields.token.' . $this->layout;
+			$this->layout = 'libraries.eclabs.fields.token.' . $this->layout;
 		}
 
 		return $return;
-	}
-
-	/**
-	 * Method to get the data to be passed to the layout for rendering.
-	 *
-	 * @return  array Layout data array.
-	 *
-	 * @since  1.0.13
-	 */
-	protected function getLayoutData(): array
-	{
-		$data               = parent::getLayoutData();
-		$data['length']     = (int) $this->length;
-		return $data;
 	}
 
 	/**
@@ -90,6 +78,21 @@ class TokenField extends FormField
 	{
 		//return array_merge([JPATH_LIBRARIES . '/eclabs/layouts/token/'], parent::getLayoutPaths());
 		return parent::getLayoutPaths();
+	}
+
+	/**
+	 * Method to get the data to be passed to the layout for rendering.
+	 *
+	 * @return  array Layout data array.
+	 *
+	 * @since  1.0.13
+	 */
+	protected function getLayoutData(): array
+	{
+		$data           = parent::getLayoutData();
+		$data['length'] = (int) $this->length;
+
+		return $data;
 	}
 
 }

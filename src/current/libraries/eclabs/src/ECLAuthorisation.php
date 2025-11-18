@@ -48,6 +48,20 @@ class ECLAuthorisation
 	}
 
 	/**
+	 * Кодировщик строк
+	 *
+	 * @param   string  $str  Строка для кодирования
+	 *
+	 * @return string
+	 *
+	 * @since 1.0.0
+	 */
+	private static function _encrypt(string $str): string
+	{
+		return base64_encode($str);
+	}
+
+	/**
 	 * Декодирует после передачи параметры авторизации пользователя
 	 *
 	 * @param   string  $params  Кодированная строка параметров
@@ -84,20 +98,6 @@ class ECLAuthorisation
 		}
 
 		return 0;
-	}
-
-	/**
-	 * Кодировщик строк
-	 *
-	 * @param   string  $str  Строка для кодирования
-	 *
-	 * @return string
-	 *
-	 * @since 1.0.0
-	 */
-	private static function _encrypt(string $str): string
-	{
-		return base64_encode($str);
 	}
 
 	/**

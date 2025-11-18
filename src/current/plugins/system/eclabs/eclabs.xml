@@ -19,8 +19,8 @@
     <version>__DEPLOYMENT_VERSION__</version>
     <description>PLG_SYSTEM_ECLABS_DESCRIPTION</description>
     <namespace path="src">Joomla\Plugin\System\ECLabs</namespace>
-<!--    <ecltype>free</ecltype>-->
-    <dlid prefix="download_key" ecltype = "free" suffix=""/>
+    <!--    <ecltype>free</ecltype>-->
+    <dlid prefix="download_key" ecltype="free" suffix=""/>
     <!-- Scripts to run on installation -->
     <scriptfile>script.php</scriptfile>
 
@@ -69,19 +69,19 @@
                     <option value="1">JYES</option>
                     <option value="0">JNO</option>
                 </field>
-                <field name = "common_note"
+                <field name="common_note"
                        type="note"
                        class="alert alert-info"
-                       label = "PLG_SYSTEM_ECLABS_COMMON_NOTE_LABEL"
-                       description = "PLG_SYSTEM_ECLABS_COMMON_NOTE_DESC"
+                       label="PLG_SYSTEM_ECLABS_COMMON_NOTE_LABEL"
+                       description="PLG_SYSTEM_ECLABS_COMMON_NOTE_DESC"
                 />
                 <field
                         name="@about"
                         type="About"
-                        this_xml_path = "/plugins/system/eclabs/eclabs.xml"
+                        this_xml_path="/plugins/system/eclabs/eclabs.xml"
                         ext_page="/test"
                         ext_doc="/doc"
-                        free_update = "true"
+                        free_update="true"
                 />
             </fieldset>
         </fields>
