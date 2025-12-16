@@ -52,7 +52,7 @@ ECLLanguage::loadExtraLanguageFiles('com_plugins', JPATH_ADMINISTRATOR);
             foreach ($plugins_info as $plugin)
             {
                 $description = "";
-                $extension   = 'plg_' . $plugin['folder'] . '_' . $plugin['element'];
+                $extension   = 'plg_' . $folder . '_' . $plugin['element'];
                 ECLLanguage::loadExtraLanguageFiles($extension, JPATH_ADMINISTRATOR);
                 if (!empty($plugin['manifest_cache']))
                 {
