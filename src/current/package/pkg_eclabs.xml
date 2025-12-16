@@ -23,7 +23,7 @@
     </languages>
     <files folder="packages">
         <file type="library" id="eclabs">lib_eclabs.zip</file>
-        <file type="plugin" id="eclabs" group="system">plg_eclabs.zip</file>
+        <file type="plugin" id="eclabs" group="system">plg_system_eclabs.zip</file>
     </files>
     <updateservers>
         <server type="extension" priority="1" name="ECLabs library: package">
