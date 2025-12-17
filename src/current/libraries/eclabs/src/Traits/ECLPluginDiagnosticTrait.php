@@ -1,7 +1,7 @@
 <?php
 /**
  * @package             Econsult Labs Library
- * @version             __DEPLOYMENT_VERSION__
+ * @version             2.0.1
  * @author              ECL <info@econsultlab.ru>
  * @link                https://econsultlab.ru
  * @copyright           Copyright © 2025 ECL All Rights Reserved
@@ -15,21 +15,21 @@ trait ECLPluginDiagnosticTrait
 	/**
 	 * Контекст вызова диагностической информации
 	 * @var string
-	 * @since __DEPLOYMENT_VERSION__
+	 * @since 2.0.1
 	 */
 	protected string $_diagnosticContext = "";
 
 	/**
 	 * Заголовок вывода диагностической информации о плагине
 	 * @var string
-	 * @since __DEPLOYMENT_VERSION__
+	 * @since 2.0.1
 	 */
 	protected string $_diagnosticTitle = "";
 
 	/**
 	 * Построение элемента диагностической информации о плагине
 	 * @return array[]
-	 * @since __DEPLOYMENT_VERSION__
+	 * @since 2.0.1
 	 */
 	protected function _buildRequiredItem(): array
 	{

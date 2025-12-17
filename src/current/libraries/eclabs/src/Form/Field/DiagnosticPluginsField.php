@@ -1,7 +1,7 @@
 <?php
 /**
  * @package             Econsult Labs Library
- * @version             __DEPLOYMENT_VERSION__
+ * @version             2.0.1
  * @author              ECL <info@econsultlab.ru>
  * @link                https://econsultlab.ru
  * @copyright           Copyright © 2025 ECL All Rights Reserved
@@ -15,21 +15,21 @@ use Joomla\CMS\Form\Field\TextField;
 
 /**
  * Поле для вывода диагностической информации о плагинах приложения
- * @since __DEPLOYMENT_VERSION__
+ * @since 2.0.1
  */
 class DiagnosticPluginsField extends TextField
 {
 	/**
 	 * Field type name
 	 * @var string
-	 * @since __DEPLOYMENT_VERSION__
+	 * @since 2.0.1
 	 */
 	public $type = 'DiagnosticPlugins';
 
 	/**
 	 * Layout по-умолчанию
 	 * @var string
-	 * @since __DEPLOYMENT_VERSION__
+	 * @since 2.0.1
 	 */
 	protected $layout = 'default';
 
@@ -46,7 +46,7 @@ class DiagnosticPluginsField extends TextField
 	 * @return  boolean  True on success.
 	 *
 	 * @see     FormField::setup()
-	 * @since   __DEPLOYMENT_VERSION__
+	 * @since   2.0.1
 	 */
 	public function setup(\SimpleXMLElement $element, $value, $group = null): bool
 	{
@@ -64,7 +64,7 @@ class DiagnosticPluginsField extends TextField
 	/**
 	 * Формирует данные для вывода поля
 	 * @return array
-	 * @since   __DEPLOYMENT_VERSION__
+	 * @since   2.0.1
 	 */
 	protected function getLayoutData(): array
 	{
@@ -79,7 +79,7 @@ class DiagnosticPluginsField extends TextField
 	/**
 	 * Удаляет вывод названия поля
 	 * @return string
-	 * @since   __DEPLOYMENT_VERSION__
+	 * @since   2.0.1
 	 */
 	protected function getLabel(): string
 	{

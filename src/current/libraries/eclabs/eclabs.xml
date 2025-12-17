@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
   ~ @package        Econsult Labs Library
-  ~ @version          __DEPLOYMENT_VERSION__
+  ~ @version          2.0.1
   ~ @author           ECL <info@econsultlab.ru>
   ~ @link                https://econsultlab.ru
   ~ @copyright      Copyright © 2025 ECL All Rights Reserved
@@ -12,7 +12,7 @@
     <name>LIB_ECLABS</name>
     <libraryname>eclabs</libraryname>
     <description>LIB_ECLABS_DESCRIPTION</description>
-    <version>__DEPLOYMENT_VERSION__</version>
+    <version>2.0.1</version>
     <creationDate>21.01.2025</creationDate>
     <author>ECL</author>
     <authorEmail>info@econsultlab.ru</authorEmail>

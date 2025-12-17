@@ -2,7 +2,7 @@
 /**
  * @package              Econsult Labs Library
  * @subpackage           Econsult Labs system plugin
- * @version              __DEPLOYMENT_VERSION__
+ * @version              2.0.1
  * @author               ECL <info@econsultlab.ru>
  * @link                 https://econsultlab.ru
  * @copyright            Copyright © 2025 ECL All Rights Reserved
@@ -42,7 +42,7 @@ return new class () implements ServiceProviderInterface {
              *
              * @var  AdministratorApplication
              *
-             * @since  __DEPLOYMENT_VERSION__
+             * @since  2.0.1
              */
             protected AdministratorApplication $app;
 
@@ -51,7 +51,7 @@ return new class () implements ServiceProviderInterface {
              *
              * @var   DatabaseDriver
              *
-             * @since  __DEPLOYMENT_VERSION__
+             * @since  2.0.1
              */
             protected DatabaseDriver $db;
 
@@ -60,7 +60,7 @@ return new class () implements ServiceProviderInterface {
              *
              * @var  string
              *
-             * @since  __DEPLOYMENT_VERSION__
+             * @since  2.0.1
              */
             protected string $minimumJoomla = '4.2';
 
@@ -69,34 +69,34 @@ return new class () implements ServiceProviderInterface {
              *
              * @var  string
              *
-             * @since  __DEPLOYMENT_VERSION__
+             * @since  2.0.1
              */
             protected string $minimumPhp = '7.4';
 
             /**
              * Адаптер установщика
              * @var ?InstallerAdapter
-             * @since __DEPLOYMENT_VERSION__
+             * @since 2.0.1
              */
             protected ?InstallerAdapter $parent = null;
             /**
              * Текущая версия устанавливаемого элемента
              * @var string
-             * @since __DEPLOYMENT_VERSION__
+             * @since 2.0.1
              */
             protected string $current_version = "";
 
             /**
              * Тип устанавливаемого элемента (компонент, плагин, библиотека и т.п.)
              * @var string
-             * @since __DEPLOYMENT_VERSION__
+             * @since 2.0.1
              */
             protected string $type = "";
 
             /**
              * Наименование устанавливаемого элемента
              * @var string
-             * @since __DEPLOYMENT_VERSION__
+             * @since 2.0.1
              */
             protected string $name = "";
 
@@ -104,20 +104,20 @@ return new class () implements ServiceProviderInterface {
              * Группа устанавливаемого элемента (если плагин)
              * site или administrator если модуль
              * @var string
-             * @since __DEPLOYMENT_VERSION__
+             * @since 2.0.1
              */
             protected string $group = "";
 
             /**
              * Предыдущая версия устанавливаемого элемента
              * @var string
-             * @since __DEPLOYMENT_VERSION__
+             * @since 2.0.1
              */
             protected string $previous_version = "";
             /**
              * Зависимости устанавливаемого элемента
              * @var array
-             * @since __DEPLOYMENT_VERSION__
+             * @since 2.0.1
              */
             protected array $dependencies = array();
 
@@ -126,7 +126,7 @@ return new class () implements ServiceProviderInterface {
              *
              * @var  array
              *
-             * @since  __DEPLOYMENT_VERSION__
+             * @since  2.0.1
              */
             protected array $externalFiles = array();
 
@@ -142,14 +142,14 @@ return new class () implements ServiceProviderInterface {
              * "files" => array("/media/com_receipts/js/diagnostic.js")
              * );
              * @var array
-             * @since __DEPLOYMENT_VERSION__
+             * @since 2.0.1
              */
             protected array $to_remove = array();
 
             /**
              * Относительный путь к скриптам установки базы данных
              * @var string
-             * @since __DEPLOYMENT_VERSION__
+             * @since 2.0.1
              */
             protected string $sql_path = "";
 
@@ -159,7 +159,7 @@ return new class () implements ServiceProviderInterface {
              * @param   InstallerAdapter  $adapter  The adapter calling this method
              *
              * @return void
-             * @since __DEPLOYMENT_VERSION__
+             * @since 2.0.1
              */
             private function _initialize(InstallerAdapter $adapter): void
             {
@@ -191,7 +191,7 @@ return new class () implements ServiceProviderInterface {
              *
              * @return void
              *
-             * @since __DEPLOYMENT_VERSION__
+             * @since 2.0.1
              */
             private function _renderHistory(): void
             {
@@ -237,7 +237,7 @@ return new class () implements ServiceProviderInterface {
              * Check all compatibilities requirements for element
              * @return bool true if compatible
              * @throws Exception
-             * @since __DEPLOYMENT_VERSION__
+             * @since 2.0.1
              */
             private function _checkCompatible(): bool
             {
@@ -269,7 +269,7 @@ return new class () implements ServiceProviderInterface {
              *
              * @param   AdministratorApplication  $app  The application object.
              *
-             * @since __DEPLOYMENT_VERSION__
+             * @since 2.0.1
              */
             public function __construct(AdministratorApplication $app)
             {
@@ -284,7 +284,7 @@ return new class () implements ServiceProviderInterface {
              *
              * @return  boolean  True on success
              *
-             * @since   __DEPLOYMENT_VERSION__
+             * @since   2.0.1
              */
             public function install(InstallerAdapter $adapter): bool
             {
@@ -298,7 +298,7 @@ return new class () implements ServiceProviderInterface {
              *
              * @return  boolean  True on success
              *
-             * @since   __DEPLOYMENT_VERSION__
+             * @since   2.0.1
              */
             public function update(InstallerAdapter $adapter): bool
             {
@@ -319,7 +319,7 @@ return new class () implements ServiceProviderInterface {
              *
              * @return  boolean  True on success
              *
-             * @since   __DEPLOYMENT_VERSION__
+             * @since   2.0.1
              */
             public function uninstall(InstallerAdapter $adapter): bool
             {
@@ -334,7 +334,7 @@ return new class () implements ServiceProviderInterface {
              *
              * @return  boolean  True on success
              *
-             * @since   __DEPLOYMENT_VERSION__
+             * @since   2.0.1
              */
             public function preflight(string $type, InstallerAdapter $adapter): bool
             {
@@ -363,7 +363,7 @@ return new class () implements ServiceProviderInterface {
              *
              * @return  boolean  True on success
              *
-             * @since   __DEPLOYMENT_VERSION__
+             * @since   2.0.1
              */
             public function postflight(string $type, InstallerAdapter $adapter): bool
             {
@@ -465,7 +465,7 @@ return new class () implements ServiceProviderInterface {
              *
              * @param   InstallerAdapter  $adapter  Parent object calling object.
              *
-             * @since  __DEPLOYMENT_VERSION__
+             * @since  2.0.1
              */
             private function _enablePlugin(InstallerAdapter $adapter)
             {
@@ -483,7 +483,7 @@ return new class () implements ServiceProviderInterface {
             /**
              * Get previous version for element
              * @return string
-             * @since __DEPLOYMENT_VERSION__
+             * @since 2.0.1
              */
             private function _getPreviousVersion(): string
             {
@@ -503,7 +503,7 @@ return new class () implements ServiceProviderInterface {
             /**
              * Get path for manifest file
              * @return string
-             * @since __DEPLOYMENT_VERSION__
+             * @since 2.0.1
              */
             private function _getXmlFile(): string
             {
@@ -555,7 +555,7 @@ return new class () implements ServiceProviderInterface {
              * @return bool
              *
              * @throws Exception
-             * @since __DEPLOYMENT_VERSION__
+             * @since 2.0.1
              */
             private function _runSQL(string $file): bool
             {
@@ -608,7 +608,7 @@ return new class () implements ServiceProviderInterface {
              * @return void
              *
              * @throws Exception
-             * @since __DEPLOYMENT_VERSION__
+             * @since 2.0.1
              */
             private function _removeIts(): void
             {
@@ -669,7 +669,7 @@ return new class () implements ServiceProviderInterface {
              *
              * @return bool
              *
-             * @since __DEPLOYMENT_VERSION__
+             * @since 2.0.1
              */
             private function _checkIfUpdate(): bool
             {
@@ -684,7 +684,7 @@ return new class () implements ServiceProviderInterface {
              *
              * @return  boolean  True on success.
              *
-             * @since  __DEPLOYMENT_VERSION__
+             * @since  2.0.1
              */
             private function _parseLayouts(SimpleXMLElement $element, Installer $installer): bool
             {
@@ -733,7 +733,7 @@ return new class () implements ServiceProviderInterface {
              *
              * @return  boolean  True on success.
              *
-             * @since  __DEPLOYMENT_VERSION__
+             * @since  2.0.1
              */
             private function _removeLayouts(SimpleXMLElement $element): bool
             {
@@ -773,7 +773,7 @@ return new class () implements ServiceProviderInterface {
              *
              * @return  bool  True on success.
              *
-             * @since  __DEPLOYMENT_VERSION__
+             * @since  2.0.1
              */
             private function _removeExternalFiles(): bool
             {
@@ -808,7 +808,7 @@ return new class () implements ServiceProviderInterface {
              *
              * @return  bool True on success, False on failure.
              *
-             * @since  __DEPLOYMENT_VERSION__
+             * @since  2.0.1
              */
             private function _copyExternalFiles(Installer $installer): bool
             {
@@ -840,7 +840,7 @@ return new class () implements ServiceProviderInterface {
             /**
              * Install all dependencies for this element
              * @throws Exception
-             * @since  __DEPLOYMENT_VERSION__
+             * @since  2.0.1
              */
             private function _installDependencies(): bool
             {
@@ -872,7 +872,7 @@ return new class () implements ServiceProviderInterface {
              *
              * @return array | false (if unsuccessful)
              * @throws Exception
-             * @since  __DEPLOYMENT_VERSION__
+             * @since  2.0.1
              */
             private function _getDependencyInfo(array $dependency): array|false
             {
@@ -935,7 +935,7 @@ return new class () implements ServiceProviderInterface {
              *
              * @return bool
              *
-             * @since __DEPLOYMENT_VERSION__
+             * @since 2.0.1
              */
             private function _needDependencyInstall(array $info): bool
             {
@@ -971,7 +971,7 @@ return new class () implements ServiceProviderInterface {
              * @return bool
              *
              * @throws Exception
-             * @since __DEPLOYMENT_VERSION__
+             * @since 2.0.1
              */
             private function _installDependency(string $url): bool
             {

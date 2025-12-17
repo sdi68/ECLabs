@@ -1,7 +1,7 @@
 <?php
 /**
  * @package             Econsult Labs Library
- * @version             __DEPLOYMENT_VERSION__
+ * @version             2.0.1
  * @author              ECL <info@econsultlab.ru>
  * @link                https://econsultlab.ru
  * @copyright           Copyright © 2025 ECL All Rights Reserved
@@ -22,7 +22,7 @@ class ECLUriHelper extends UriHelper
 	 * @param   string|array  $get_param  Наименование параметра или массив GET параметров
 	 *
 	 * @return string
-	 * @since __DEPLOYMENT_VERSION__
+	 * @since 2.0.1
 	 */
 	public static function removeGetParam(string $url, string|array $get_param): string
 	{

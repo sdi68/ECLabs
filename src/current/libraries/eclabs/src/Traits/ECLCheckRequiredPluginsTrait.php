@@ -1,7 +1,7 @@
 <?php
 /**
  * @package             Econsult Labs Library
- * @version             __DEPLOYMENT_VERSION__
+ * @version             2.0.1
  * @author              ECL <info@econsultlab.ru>
  * @link                https://econsultlab.ru
  * @copyright           Copyright © 2025 ECL All Rights Reserved
@@ -21,14 +21,14 @@ use Joomla\CMS\Plugin\PluginHelper;
 /**
  * Контроль наличия обязательных плагинов.
  * Применяется, например, в DisplayController.
- * @since __DEPLOYMENT_VERSION__
+ * @since 2.0.1
  */
 trait ECLCheckRequiredPluginsTrait
 {
 	/**
 	 * @var array Массив контролируемых плагинов
 	 * Формат элемента: ["folder"=>{тип плагина},"name"=>{Имя плагина}]
-	 * @since __DEPLOYMENT_VERSION__
+	 * @since 2.0.1
 	 */
 	protected array $_requiredPlugins = [];
 
@@ -36,7 +36,7 @@ trait ECLCheckRequiredPluginsTrait
 	 * Проверяет наличие и запуск обязательных плагинов.
 	 * Если найдены не установленные или не запущенные плагины выдается сообщение об ошибке.
 	 * @throws Exception
-	 * @since __DEPLOYMENT_VERSION__
+	 * @since 2.0.1
 	 */
 	public function checkRequiredPlugins(): void
 	{

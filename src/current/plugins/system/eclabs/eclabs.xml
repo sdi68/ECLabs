@@ -2,7 +2,7 @@
 <!--
   ~ @package         Econsult Labs Library
   ~ @subpackage   Econsult Labs system plugin
-  ~ @version           __DEPLOYMENT_VERSION__
+  ~ @version           2.0.1
   ~ @author            ECL <info@econsultlab.ru>
   ~ @link                 https://econsultlab.ru
   ~ @copyright      Copyright © 2025 ECL All Rights Reserved
@@ -16,7 +16,7 @@
     <license>GNU General Public License version 2 or later; see LICENSE.txt</license>
     <authorEmail>info@econsultlab.ru</authorEmail>
     <authorUrl>https://econsultlab.ru</authorUrl>
-    <version>__DEPLOYMENT_VERSION__</version>
+    <version>2.0.1</version>
     <description>PLG_SYSTEM_ECLABS_DESCRIPTION</description>
     <namespace path="src">Joomla\Plugin\System\ECLabs</namespace>
     <!--    <ecltype>free</ecltype>-->
